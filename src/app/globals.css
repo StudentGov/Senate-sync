@@ -19,3 +19,9 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+.page{
+  justify-self: center;
+}
+h1{
+  font-size: 70px;
+}
