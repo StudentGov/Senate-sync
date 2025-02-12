@@ -6,12 +6,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
 
-interface TestProps {
+interface Props {
     selectedDate: string | null;
     setSelectedDate: (date: string | null) => void;
   }
 
-export default function ({selectedDate, setSelectedDate}:TestProps) {
+export default function Calendar({selectedDate, setSelectedDate}:Props) {
     const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17'));
 
   const handleDateChange = (newDate: any) => {
@@ -20,6 +20,7 @@ export default function ({selectedDate, setSelectedDate}:TestProps) {
   };
   return (
     <div className="test">
+      {`Selected date: ${selectedDate}`}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateCalendar value={value} onChange={handleDateChange} />
       </LocalizationProvider>

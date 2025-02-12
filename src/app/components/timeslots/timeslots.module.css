@@ -1,0 +1,23 @@
+.timeslots{
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+}
+.time{
+    border: 2px solid #ebf0f7; /* Set border color and weight */
+    background-color: white; /* Optional background color */
+    padding: 10px 20px; /* Padding for better appearance */
+    font-size: 16px; /* Set font size */
+    border-radius: 10px;
+    cursor: pointer;
+    width: 300px;
+}
+.time:hover {
+    border-color: #0056b3; /* Change border color on hover */
+    color: #0056b3; /* Change text color to match */
+}
+.selected {
+    background-color: #007bff;  /* Blue color for selected button */
+    color: white;  /* Text color */
+    border-color: #007bff;
+  }
