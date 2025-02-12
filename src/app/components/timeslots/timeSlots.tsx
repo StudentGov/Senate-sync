@@ -8,7 +8,7 @@ interface Props {
 
 const TimeSlots = ({ slots, setSelectedTime }: Props) => {
   const [selectedTime, setSelectedTimeState] = useState<string | null>(null);
-
+  
   // Handle the selection of a time slot
   const handleSelect = (slot: string) => {
     setSelectedTimeState(slot);  // Update the selected time
@@ -18,7 +18,7 @@ const TimeSlots = ({ slots, setSelectedTime }: Props) => {
   return (
     <div className={style.timeslots}>
       {`Selected time: ${selectedTime}`}
-      {slots &&
+      {slots ?
         slots.map((slot, index) => (
           <button
             key={index}
@@ -27,7 +27,7 @@ const TimeSlots = ({ slots, setSelectedTime }: Props) => {
           >
             {slot}
           </button>
-        ))}
+        )): <h2>No Available time slots</h2>}
     </div>
   );
 };
