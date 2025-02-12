@@ -13,8 +13,8 @@ export default function SchedulingPage(){
 
     return (
         <div className={styles.schedulingPage}>
-            <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
-            <TimeSlots slots={selectedDate? Data[selectedDate] :[]} setSelectedTime={setSelectedTime}/>
+            <Calendar selectedTime={selectedTime} selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
+            <TimeSlots slots={selectedDate? Data[selectedDate] :[]} selectedTime={selectedTime} setSelectedTime={setSelectedTime}/>
             
         </div>
     )

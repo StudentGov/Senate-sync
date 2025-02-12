@@ -3,16 +3,15 @@ import style from './timeslots.module.css';
 
 interface Props {
   slots: string[] | null;
+  selectedTime: string | null;
   setSelectedTime: (date: string | null) => void;
 }
 
-const TimeSlots = ({ slots, setSelectedTime }: Props) => {
-  const [selectedTime, setSelectedTimeState] = useState<string | null>(null);
+const TimeSlots = ({ slots,selectedTime, setSelectedTime }: Props) => {
   
   // Handle the selection of a time slot
   const handleSelect = (slot: string) => {
-    setSelectedTimeState(slot);  // Update the selected time
-    setSelectedTime(slot);  // Call the parent component's function
+    setSelectedTime(slot);  // Update the selected time
   };
 
   return (
