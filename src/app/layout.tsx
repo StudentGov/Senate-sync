@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/navBar/NavBar";
+import { CollapsedProvider } from "./components/sideBar/sideBarContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,17 +24,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  try {
-    return (
-      <html lang="en">
-        <body className="antialiased">
+  return (
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <CollapsedProvider>
           <NavBar />
           {children}
-        </body>
-      </html>
-    );
-  } catch (error) {
-    console.error("Error in RootLayout:", error);
-    return <html><body><h1>Something went wrong</h1></body></html>;
-  }
+        </CollapsedProvider>
+      </body>
+    </html>
+  );
 }

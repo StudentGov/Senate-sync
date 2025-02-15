@@ -2,7 +2,6 @@
     position: absolute; /* Positions over right component */
     left: 0;
     top:100px;
-    height: calc(100vh - 50px);
     background-color: rgb(243, 242, 242); 
 }
 .sideBarItem{
@@ -14,5 +13,8 @@
     display: flex;
     width:30px;
     justify-self: center;
-    margin: 20px;
+    height: 30px;
+}
+.x{
+    height: calc(100vh - 50px);
 }

@@ -15,7 +15,7 @@ export default function SideBar({collapsed, setCollapsed}: SideBarProps) {
   return (
     <div className={styles.sideBar}> {/* Conditional class for visibility */}
       <Image src={Logo} alt="logo" className={styles.logo} onClick={() => setCollapsed(!collapsed)}/>
-        <div className={collapsed ? 'hidden' : 'block'}>
+        <div className={`${styles.x} ${collapsed ? 'hidden' : 'block'}`}>
           <Sidebar>
             <Menu>
                 <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/currentAgendas')}> Current Agendas </MenuItem>
