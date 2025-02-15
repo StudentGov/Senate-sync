@@ -1,0 +1,18 @@
+.sideBar{
+    position: absolute; /* Positions over right component */
+    left: 0;
+    top:100px;
+    height: calc(100vh - 50px);
+    background-color: rgb(243, 242, 242); 
+}
+.sideBarItem{
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    margin-top: 10px;
+}
+.logo{
+    display: flex;
+    width:30px;
+    justify-self: center;
+    margin: 20px;
+}

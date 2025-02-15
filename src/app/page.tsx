@@ -6,9 +6,9 @@ export default function HomePage() {
   const router = useRouter();
   return (
     <div className={styles.homePage}>
-
       <h1>Home Page</h1>
       <button className={styles.scheduleNow} onClick={() => router.push('/schedule')} >Schedule</button>
+      <button className={styles.scheduleNow} onClick={() => router.push('/senate')} >Sign In</button>
     </div>
   );
 }

@@ -23,14 +23,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <NavBar />
-        {children}
-      </body>
-    </html>
-  );
+  try {
+    return (
+      <html lang="en">
+        <body className="antialiased">
+          <NavBar />
+          {children}
+        </body>
+      </html>
+    );
+  } catch (error) {
+    console.error("Error in RootLayout:", error);
+    return <html><body><h1>Something went wrong</h1></body></html>;
+  }
 }
