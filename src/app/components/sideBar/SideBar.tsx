@@ -19,9 +19,9 @@ export default function SideBar({collapsed, setCollapsed}: SideBarProps) {
           <Sidebar>
             <Menu>
                 <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/currentAgendas')}> Current Agendas </MenuItem>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/PastAgendas')}> Past Agendas </MenuItem>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/Profile')}> Profile </MenuItem>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/Settings')}> Settings </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/pastAgendas')}> Past Agendas </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/profile')}> Profile </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/settings')}> Settings </MenuItem>
             </Menu>
           </Sidebar>
         </div>
