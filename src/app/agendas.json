@@ -1,0 +1,53 @@
+[
+    {
+      "agenda": "agenda1",
+      "visible": true,
+      "closed": false
+    },
+    {
+      "agenda": "agenda2",
+      "visible": true,
+      "closed": true
+    },
+    {
+      "agenda": "agenda3",
+      "visible": true,
+      "closed": false
+    },
+    {
+      "agenda": "agenda4",
+      "visible": false,
+      "closed": false
+    },
+    {
+      "agenda": "agenda5",
+      "visible": true,
+      "closed": true
+    },
+    {
+      "agenda": "agenda6",
+      "visible": false,
+      "closed": true
+    },
+    {
+      "agenda": "agenda7",
+      "visible": false,
+      "closed": false
+    },
+    {
+      "agenda": "agenda8",
+      "visible": true,
+      "closed": false
+    },
+    {
+      "agenda": "agenda9",
+      "visible": true,
+      "closed": true
+    },
+    {
+      "agenda": "agenda10",
+      "visible": false,
+      "closed": true
+    }
+  ]
+  
