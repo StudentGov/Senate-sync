@@ -16,7 +16,7 @@
     padding: 30px 25px;
     height: 60vh;
     max-width: 800px;
-    margin-top:20px;
+    margin-top:5px;
 }
 .content {
     overflow-y: auto;  /* Make this section scrollable */
@@ -24,5 +24,25 @@
     scrollbar-width:none;
 }
 .currentAgendas h1{
-    font-size: 45px;
+    font-size: 30px;
+    font-weight: bolder;
+}
+.top{
+    display: flex;
+    width: 80%;
+    max-width: 800px;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0px 10px;
+}
+.top button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    font-size: 10px;
+    width:70px;
+    background-color: purple;
+    color:white;
+    border-radius: 5px;
 }

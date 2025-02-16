@@ -8,10 +8,11 @@ interface AgendaProps {
     visible: boolean;
     closed: boolean;
   };
+  page:string
 }
 
 
-export default function AgendaSection({ agenda }: AgendaProps){
+export default function AgendaSection({ agenda, page }: AgendaProps){
   const [visibile, setVisibile] = useState<boolean>(agenda.visible)
   function handleToggle(){
     setVisibile(!visibile)
@@ -21,8 +22,13 @@ export default function AgendaSection({ agenda }: AgendaProps){
       <h2>{agenda.agenda}</h2>
         <div className={styles.buttons}>
           <Switch checked={visibile} onChange={handleToggle}/>
-          <button onClick={() => {}}>Close</button>
-          <button onClick={() => {}}>Vote</button>
+          {page==='current'?(
+            <>
+              <button onClick={() => {}}>Close</button>
+              <button onClick={() => {}}>Vote</button>
+            </>
+          ):<button onClick={() => {}}>View Voting</button>
+          }
         </div>    
       </div>
   );
