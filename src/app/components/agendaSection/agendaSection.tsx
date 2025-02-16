@@ -24,7 +24,7 @@ export default function AgendaSection({ agenda, page }: AgendaProps){
       <h2>{agenda.agenda}</h2>
         <div className={styles.buttons}>
           {selectedOption}
-          <Switch checked={visibile} onChange={handleToggle}/>
+          <Switch checked={visibile} onChange={handleToggle} className={styles.toggle}/>
           {page==='current'?(
             <>
               <button onClick={() => {}}>Close</button>

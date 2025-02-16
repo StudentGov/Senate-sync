@@ -1,0 +1,153 @@
+body.active-modal {
+    overflow-y: hidden;
+}
+
+.btnModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    font-size: 10px;
+    width:70px;
+    background-color: purple;
+    color:white;
+    border-radius: 5px;
+}
+
+.modal, .overlay {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    z-index: 10;
+}
+
+.overlay {
+    background: rgba(49,49,49,0.8);
+    display: flex;
+}
+.modalContent {
+    position: absolute;
+    display: flex;
+    /* flex-direction: column; */
+    grid-template-columns: 1fr 1fr;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1.4;
+    background: #dddddd;
+    padding: 14px 28px;
+    border-radius: 3px;
+    min-width: 300px;
+    z-index: 100;
+    gap: 20;
+    /* padding-top: 50 ; */
+    max-width: 80vw;
+    padding-bottom: 100;
+
+}
+
+.closeModal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 7px;
+    height: 30px;
+    font-size: 10px;
+    width:70px;
+    background-color: purple;
+    color:white;
+    border-radius: 5px;
+}
+.inputs{
+    display: flex;
+    flex-direction: column;
+    gap:50px;
+    justify-content: center;
+    width: 50%;
+}
+.inputs label {
+    font-size: 16px;
+    margin-bottom: -50px; /* Space between label and input */
+    display: block; /* Makes the label take up its own line */
+  }
+.inputs input{
+    border: 1px solid #ccc;
+    border-color: rgb(65, 65, 65);
+    text-indent: 10px;
+}
+.options{
+    display: flex;
+    flex-direction: column;
+    background-color: #dddddd;
+    /* background-color: #548858; */
+    width: 400;
+    /* margin-left: auto; */
+    /* height: 350px; */
+    margin-top: 50px;
+    height: 250px; 
+    max-width: 50%;
+}
+.content{
+    display: flex;
+    flex-direction: column;
+    background-color: #c5c4c4;
+    /* background-color: #ff0000; */
+    width: 100%;
+    margin-left: auto;
+    height: 100%;
+    gap:10px;
+    overflow-y: auto; /* Allow vertical scrolling */
+    max-height: 100%; /* Set the max-height so scrolling occurs after 5 items */
+    border: 1px solid #999999; /* Optional: Add border for better visibility */
+    padding: 10px;
+}
+.content::-webkit-scrollbar {
+    width: 0; /* Hide the scrollbar by default */
+  }
+.content:hover::-webkit-scrollbar {
+    width: 6px; /* Show the scrollbar when hovering */
+    background-color: rgb(90, 87, 87);
+}
+.option{
+    display: flex;
+    background-color: rgb(255, 255, 255);
+    height: 30px;
+    align-items: center;
+    padding: 0 10;
+}
+.option span{
+    flex-grow: 1; /* Allow the span to take up remaining space */
+    overflow: hidden; /* Ensure text doesn't overflow the container */
+    text-overflow: ellipsis; /* Show ellipsis when the text overflows */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+.push{
+    position: absolute;
+    display: flex;
+    top: 80%;
+    right: 20px;
+    color:red;
+    align-items: center;
+}
+.push button{
+    padding: 5px 7px;
+    height: 30px;
+    font-size: 10px;
+    width:80px;
+    height: 40px;
+    background-color: purple;
+    color:white;
+    border-radius: 5px;
+}
+.delete{
+    width: 20px;
+    height: 20px;
+    margin-left: auto;
+}
+.delete:hover{
+    cursor: pointer;
+}

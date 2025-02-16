@@ -43,5 +43,9 @@
   color:white;
   border-radius: 5px;
 }
+.toggle{
+  position: relative; /* Keeps it within the normal document flow */
+
+}
 
 

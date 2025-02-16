@@ -35,14 +35,3 @@
     align-items: baseline;
     padding: 0px 10px;
 }
-.top button{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 30px;
-    font-size: 10px;
-    width:70px;
-    background-color: purple;
-    color:white;
-    border-radius: 5px;
-}
