@@ -2,52 +2,62 @@
     {
       "agenda": "agenda1",
       "visible": true,
-      "closed": false
+      "closed": false,
+      "options":["Yes", "No"]
     },
     {
       "agenda": "agenda2",
       "visible": true,
-      "closed": true
+      "closed": true,
+      "options":["Yes", "No"]
     },
     {
       "agenda": "agenda3",
       "visible": true,
-      "closed": false
+      "closed": false,
+      "options":["A", "B", "C"]
     },
     {
       "agenda": "agenda4",
       "visible": false,
-      "closed": false
+      "closed": false,
+      "options":["1", "2", "3", "4"]
     },
     {
       "agenda": "agenda5",
       "visible": true,
-      "closed": true
+      "closed": true,
+      "options":["Yes", "No"]
     },
     {
       "agenda": "agenda6",
       "visible": false,
-      "closed": true
+      "closed": true,
+      "options":["Yes", "No"]
     },
     {
       "agenda": "agenda7",
       "visible": false,
-      "closed": false
+      "closed": false,
+      "options":["Yes", "No"]
     },
     {
       "agenda": "agenda8",
       "visible": true,
-      "closed": false
+      "closed": false,
+      "options":["Yes", "No"]
     },
     {
       "agenda": "agenda9",
       "visible": true,
-      "closed": true
+      "closed": true,
+      "options":["Yes", "No"]
     },
     {
       "agenda": "agenda10",
       "visible": false,
-      "closed": true
+      "closed": true,
+      "options":["Yes", "No"]
     }
   ]
   
