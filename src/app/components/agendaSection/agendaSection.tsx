@@ -2,12 +2,15 @@ import { useState } from 'react';
 import styles from './agendaSection.module.css';
 import Switch from '@mui/material/Switch';
 import DropDownOptions from '../dropDown/dropDown';
+import PieChart from '../../components/pieChart/pieChart'
 
 interface AgendaProps {
   agenda: {
+    id:string,
     agenda: string;
     visible: boolean;
     closed: boolean;
+    options:string[];
   };
   page:string
 }
@@ -28,6 +31,7 @@ export default function AgendaSection({ agenda, page }: AgendaProps){
           {page==='current'?(
             <>
               <button onClick={() => {}}>Close</button>
+              <PieChart id={agenda.id} agendaName={agenda.agenda}/>
               <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption}/>
             </>
           ):<button onClick={() => {}}>View Voting</button>

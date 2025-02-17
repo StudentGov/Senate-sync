@@ -30,12 +30,12 @@ export default function Modal() {
     }
     else{
         setMessage("");
-        const newAgenda = {agenda:inputAgenda, visible:false, closed:false, options:options}
+        const newAgenda = {id:(AgendaData.length).toString(), agenda:inputAgenda, visible:false, closed:false, options:options}
         AgendaData.push(newAgenda)
         setInputAgenda('');
         setOptions([]);
         setInputOption('');
-        setMessage("");
+        setMessage("Added agenda successfully");
     }
   }
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {

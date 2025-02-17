@@ -15,8 +15,14 @@
   cursor: default;
   height: 60px;
   box-sizing: border-box; /* Ensures the padding and border are included in the element's size */
+  
 }
-
+.section h2{
+  flex-grow: 1; /* Allow the span to take up remaining space */
+  overflow: hidden; /* Ensure text doesn't overflow the container */
+  text-overflow: ellipsis; /* Show ellipsis when the text overflows */
+  white-space: nowrap; /* Prevent text wrapping */
+}
 /* Ensure the middle divider between sections has consistent appearance */
 .section:not(:last-child) {
   border-bottom: none;  /* Only add bottom border if it's not the last section */

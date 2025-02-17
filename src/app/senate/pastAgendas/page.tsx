@@ -17,7 +17,8 @@ export default function CurrentAgendas(){
             <div className={styles.sections}>
                 <div className={styles.content}>
                 {AgendaData.map((item, index) => (
-                    <AgendaSection key={index} agenda={item} page={'past'}/>
+                    (item.closed &&
+                    <AgendaSection key={index} agenda={item} page={'past'}/>)
                 ))}
                 </div>
             </div>
