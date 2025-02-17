@@ -63,7 +63,9 @@ body.active-modal {
     background-color: purple;
     color:white;
     border-radius: 5px;
+    z-index: 200;
 }
+
 .title{
     position: absolute;
     top: 5%;
@@ -76,9 +78,8 @@ body.active-modal {
 .individual{
     position: absolute;
     display: flex;
-    top: 80%;
+    top: 90%;
     right: 20px;
-    color:red;
     align-items: center;
 }
 .individual button{

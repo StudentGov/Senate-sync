@@ -57,6 +57,7 @@ export default function Modal() {
         <div className={styles.modal}>
           <div onClick={toggleModal} className={styles.overlay}></div>
           <div className={styles.modalContent}>
+            <button className={styles.closeModal} onClick={toggleModal}>CLOSE</button>
             <div className={styles.inputs}>
                 <label htmlFor="inputField">Write Agenda</label>
                 <input value={inputAgenda} placeholder="Enter Agenda" onChange={(e) => setInputAgenda(e.target.value)} required />
@@ -76,9 +77,7 @@ export default function Modal() {
                     </div>
             </div>
 
-            <button className={styles.closeModal} onClick={toggleModal}>
-              CLOSE
-            </button>
+
 
             <div className={styles.push}>
                 {message}

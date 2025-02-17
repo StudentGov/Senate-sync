@@ -28,19 +28,19 @@
     },
     "5": {
       "data": [
-        { "id": 0, "value": 10, "label": "Yes" },
+        { "id": 0, "value": 34, "label": "Yes" },
         { "id": 1, "value": 15, "label": "No" }
       ]
     },
     "6": {
       "data": [
         { "id": 0, "value": 10, "label": "Yes" },
-        { "id": 1, "value": 15, "label": "No" }
+        { "id": 1, "value": 23, "label": "No" }
       ]
     },
     "7": {
       "data": [
-        { "id": 0, "value": 10, "label": "Yes" },
+        { "id": 0, "value": 41, "label": "Yes" },
         { "id": 1, "value": 15, "label": "No" }
       ]
     },

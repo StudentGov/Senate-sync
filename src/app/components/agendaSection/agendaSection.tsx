@@ -34,7 +34,7 @@ export default function AgendaSection({ agenda, page }: AgendaProps){
               <PieChart id={agenda.id} agendaName={agenda.agenda}/>
               <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption}/>
             </>
-          ):<button onClick={() => {}}>View Voting</button>
+          ):<PieChart id={agenda.id} agendaName={agenda.agenda}/>
           }
         </div>    
       </div>

@@ -52,28 +52,27 @@ export default function PieChartPopUp({id, agendaName}: {id:string, agendaName:s
         <div className={styles.modal}>
             <div onClick={toggleModal} className={styles.overlay}></div>
             <div className={styles.modalContent}>
-            <h2 className={styles.title}>{agendaName}</h2>
-            <button className={styles.closeModal} onClick={toggleModal}>CLOSE</button>
-            <PieChart
-            series={[
-                {
-                arcLabel: (item) => `${(item.value/sum*100).toFixed(2)}%`,
-                arcLabelMinAngle: 35,
-                arcLabelRadius: '60%',
-                ...data,
-                },
-            ]}
-            sx={{
-                [`& .${pieArcLabelClasses.root}`]: {
-                fontWeight: 'bold',
-                },
-            }}
-            {...size}
-            />
-            <div className={styles.individual}>
-                <button onClick={() => {}}>Individual Stats</button>
-            </div>
-
+                <h2 className={styles.title}>{agendaName}</h2>
+                <button className={styles.closeModal} onClick={toggleModal}>CLOSE</button>
+                <PieChart
+                series={[
+                    {
+                    arcLabel: (item) => `${(item.value/sum*100).toFixed(2)}%`,
+                    arcLabelMinAngle: 35,
+                    arcLabelRadius: '60%',
+                    ...data,
+                    },
+                ]}
+                sx={{
+                    [`& .${pieArcLabelClasses.root}`]: {
+                    fontWeight: 'bold',
+                    },
+                }}
+                {...size}
+                />
+                <div className={styles.individual}>
+                    <button onClick={() => {}}>Individual Stats</button>
+                </div>
             </div>
         </div>
         )}

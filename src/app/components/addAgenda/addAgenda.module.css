@@ -128,7 +128,7 @@ body.active-modal {
 .push{
     position: absolute;
     display: flex;
-    top: 80%;
+    top: 85%;
     right: 20px;
     color:red;
     align-items: center;

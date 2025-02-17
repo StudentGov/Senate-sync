@@ -13,7 +13,7 @@
   letter-spacing: 0.005em;
   word-spacing: 0.05em;
   cursor: default;
-  height: 60px;
+  height: 90px;
   box-sizing: border-box; /* Ensures the padding and border are included in the element's size */
   
 }
@@ -53,5 +53,7 @@
   position: relative; /* Keeps it within the normal document flow */
 
 }
-
+/* @media screen and (min-width:){
+  
+} */
 
