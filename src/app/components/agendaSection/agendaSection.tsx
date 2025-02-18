@@ -18,7 +18,7 @@ interface AgendaProps {
 
 export default function AgendaSection({ agenda, page }: AgendaProps){
   const [visibile, setVisibile] = useState<boolean>(agenda.visible)
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<string>("N/A");
   function handleToggle(){
     setVisibile(!visibile)
   }
@@ -26,7 +26,7 @@ export default function AgendaSection({ agenda, page }: AgendaProps){
     <div className={styles.section}>
       <h2>{agenda.agenda}</h2>
         <div className={styles.buttons}>
-          {selectedOption}
+          <small>{selectedOption}</small>
           <Switch checked={visibile} onChange={handleToggle} className={styles.toggle}/>
           {page==='current'?(
             <>

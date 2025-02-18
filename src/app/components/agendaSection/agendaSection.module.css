@@ -36,7 +36,15 @@
 }
 .buttons{
   display: flex;
+  align-items: center;
   gap: 10px;
+}
+.buttons small{
+  flex-grow: 1;
+  overflow: hidden; /* Ensure text doesn't overflow the container */
+  text-overflow: ellipsis; /* Show ellipsis when the text overflows */
+  white-space: nowrap; /* Prevent text wrapping */
+  max-width: 20vw;
 }
 .buttons button {
   display: flex;

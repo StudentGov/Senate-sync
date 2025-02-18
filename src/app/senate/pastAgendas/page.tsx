@@ -16,6 +16,13 @@ export default function CurrentAgendas(){
             <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
             <div className={styles.sections}>
                 <div className={styles.content}>
+                <div className={styles.labels}>
+                        <label>Title</label>
+                        <div className={styles.rightLabels}>
+                            <label>Visible</label>
+
+                        </div>
+                    </div>
                 {AgendaData.map((item, index) => (
                     (item.closed &&
                     <AgendaSection key={index} agenda={item} page={'past'}/>)
