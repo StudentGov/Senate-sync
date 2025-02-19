@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Agenda {
+  id       Int      @id @default(autoincrement())  // Primary Key
+  agenda   String
+  visible  Boolean
+  closed   Boolean
+  options  Option[] // One-to-Many relation (One agenda has many options)
+}
+
+model Option {
+  id       Int      @id @default(autoincrement())  // Primary Key
+  value    Int
+  label    String
+  agendaId Int      // This is the foreign key column
+  agenda   Agenda   @relation(fields: [agendaId], references: [id], onDelete: Cascade) // Relationship
+}
