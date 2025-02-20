@@ -27,19 +27,19 @@ export default function HomePage() {
       <div>
         <button
           className={styles.navButton}
-          onClick={() => router.push("/schedule")}
+          onClick={() => router.push("/student/schedule")}
         >
           Schedule
         </button>
         <button
           className={styles.navButton}
-          onClick={() => handleNavigation("/attorney")}
+          onClick={() => handleNavigation("/attorney/dashboard")}
         >
           Attorney
         </button>
         <button
           className={styles.navButton}
-          onClick={() => handleNavigation("/senate")}
+          onClick={() => handleNavigation("/senate/dashboard")}
         >
           Senate
         </button>
