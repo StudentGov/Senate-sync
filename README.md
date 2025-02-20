@@ -50,7 +50,7 @@ To get started with the development environment:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/senate-sync.git
+   git clone https://github.com/StudentGov/Senate-sync.git
    cd senate-sync
    ```
 
