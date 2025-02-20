@@ -1,23 +1,38 @@
 "use client";
 
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import NavBar from "./components/navBar/NavBar";
+import { ClerkProvider, SignedIn } from "@clerk/nextjs";
+import { useAssignRole } from "../app/hooks/useAssignRole"; 
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
           <header className="flex justify-end items-center p-4 gap-4 h-16">
-            <SignedOut>
-              <SignInButton />
-              <SignUpButton />
-            </SignedOut>
             <SignedIn>
-              <UserButton />
-              <AssignRoleOnLogin /> {/* Automatically assigns role after login */}
+              <AssignRoleAfterLogin />
             </SignedIn>
           </header>
+          <NavBar />
           {children}
         </body>
       </html>
@@ -25,41 +40,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   );
 }
 
-// **Assign Role to User on Login**
-function AssignRoleOnLogin() {
-  const { user } = useUser();
-  const [roleChecked, setRoleChecked] = useState(false);
-
-  useEffect(() => {
-    if (!user || roleChecked) return; // Prevent multiple executions
-
-    const checkAndAssignRole = async () => {
-      try {
-        const response = await fetch(`/api/get-user-metadata?userId=${user.id}`);
-        const data = await response.json();
-
-        if (data.role) {
-          console.log("User already has role:", data.role);
-          setRoleChecked(true); // Mark as checked
-          return;
-        }
-
-        console.log("Assigning 'student' role to user:", user.id);
-        await fetch("/api/assign-role", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: user.id, role: "student" }),
-        });
-
-        console.log("Role assigned successfully.");
-        setRoleChecked(true); // Prevent further execution
-      } catch (error) {
-        console.error("Error checking/assigning role:", error);
-      }
-    };
-
-    checkAndAssignRole();
-  }, [user, roleChecked]);
-
+/**
+ * Component to trigger the role assignment API after user login.
+ * Utilizes the custom hook 'useAssignRole' to check and assign the default role.
+ * This ensures the role assignment logic is executed only once per login.
+ */
+function AssignRoleAfterLogin() {
+  // Custom hook to call the role assignment API
+  useAssignRole();
+  
+  // This component does not render anything on the UI
   return null;
 }

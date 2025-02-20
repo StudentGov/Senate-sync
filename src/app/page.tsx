@@ -1,5 +1,5 @@
 "use client";
-import styles from './home.module.css'
+import styles from "./home.module.css";
 import { useRouter } from "next/navigation";
 import { useUser, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 
@@ -24,14 +24,23 @@ export default function HomePage() {
       <h1>Home Page</h1>
 
       {/* Navigation Buttons */}
-      <div className={styles.buttonContainer}>
-        <button className={styles.navButton} onClick={() => router.push("/schedule")}>
-          Scheduling
+      <div>
+        <button
+          className={styles.navButton}
+          onClick={() => router.push("/schedule")}
+        >
+          Schedule
         </button>
-        <button className={styles.navButton} onClick={() => handleNavigation("/attorney")}>
+        <button
+          className={styles.navButton}
+          onClick={() => handleNavigation("/attorney")}
+        >
           Attorney
         </button>
-        <button className={styles.navButton} onClick={() => handleNavigation("/senate")}>
+        <button
+          className={styles.navButton}
+          onClick={() => handleNavigation("/senate")}
+        >
           Senate
         </button>
       </div>
@@ -43,7 +52,10 @@ export default function HomePage() {
           <UserButton />
         </SignedIn>
         <SignedOut>
-          <button className={styles.loginBtn} onClick={() => router.push("/auth/sign-in")}>
+          <button
+            className={styles.loginBtn}
+            onClick={() => router.push("/auth/sign-in")}
+          >
             Sign In
           </button>
         </SignedOut>
