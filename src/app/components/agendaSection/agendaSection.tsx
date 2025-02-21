@@ -30,7 +30,7 @@ export default function AgendaSection({ agenda, page }: AgendaProps){
           <Switch checked={visibile} onChange={handleToggle} className={styles.toggle}/>
           {page==='current'?(
             <>
-              <button onClick={() => {}}>Close</button>
+              <button onClick={() => {agenda.closed=true}}>Close</button>
               <PieChart id={agenda.id} agendaName={agenda.agenda}/>
               <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption}/>
             </>

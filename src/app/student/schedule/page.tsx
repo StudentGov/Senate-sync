@@ -1,9 +1,9 @@
 'use client';
 import React, { useState } from 'react'
 import styles from './schedule.module.css'
-import Calendar from '../components/schedulingCalendar/schedulingCalendar'
-import TimeSlots from '../components/timeslots/timeSlots';
-import Data from '../db.json'
+import Calendar from '../../components/schedulingCalendar/schedulingCalendar'
+import TimeSlots from '../../components/timeslots/timeSlots';
+import Data from '../../db.json'
 import dayjs, { Dayjs } from 'dayjs';
 
 export default function SchedulingPage(){
