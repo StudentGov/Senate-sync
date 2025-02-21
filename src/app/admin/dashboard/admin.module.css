@@ -1,0 +1,16 @@
+.tableContainer table {
+    width: 80%;
+    border-collapse: collapse;
+  }
+  
+  .tableContainer th,
+  .tableContainer td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .tableContainer th {
+    background-color: #f4f4f4;
+  }
+  
