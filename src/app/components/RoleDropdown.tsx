@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const roles = ["student", "attorney", "senate_member", "senate_speaker", "super_admin"];
+const roles = ["student", "attorney", "senate_member", "senate_speaker"];
 
 interface RoleDropdownProps {
   userId: string;
@@ -21,21 +21,28 @@ export default function RoleDropdown({ userId, currentRole }: RoleDropdownProps)
    * Sends a POST request to the backend API to update the role in Clerk.
    */
   const handleRoleChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newRole = event.target.value;
-    setSelectedRole(newRole);
+    const role = event.target.value; // Use "role" instead of "newRole"
+    console.log("Selected Role:", role); // Debug log to check selected role
+
+    setSelectedRole(role);
 
     try {
       // Call the backend API to update the user's role
       const response = await fetch("/api/update-user-role", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, newRole }),
+        body: JSON.stringify({ userId, role }), // Send "role" instead of "newRole"
       });
 
       // Parse the response and handle the result
       const data = await response.json();
-      console.log(data.message);
-      alert("Role updated successfully!");
+      if (response.ok) {
+        console.log(data.message);
+        alert("Role updated successfully!");
+      } else {
+        console.error("Failed to update role:", data.error);
+        alert(`Failed to update role: ${data.error}`);
+      }
     } catch (error) {
       console.error("Error updating role:", error);
       alert("Failed to update role. Please try again.");
