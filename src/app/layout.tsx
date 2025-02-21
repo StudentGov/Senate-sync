@@ -3,8 +3,12 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/navBar/NavBar";
+
+import { CollapsedProvider } from "./components/sideBar/sideBarContext";
+
 import { ClerkProvider, SignedIn } from "@clerk/nextjs";
 import { useAssignRole } from "../app/hooks/useAssignRole"; 
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+
     <ClerkProvider>
       <html lang="en">
         <body
@@ -52,3 +57,4 @@ function AssignRoleAfterLogin() {
   // This component does not render anything on the UI
   return null;
 }
+

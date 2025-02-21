@@ -20,6 +20,7 @@ export default function HomePage() {
 
   return (
     <div className={styles.homePage}>
+
       {/* Main Heading */}
       <h1>Home Page</h1>
 
@@ -60,6 +61,7 @@ export default function HomePage() {
           </button>
         </SignedOut>
       </div>
+
     </div>
   );
 }

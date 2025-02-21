@@ -1,0 +1,61 @@
+.pastAgendas{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    padding-left: 250px;
+    transition: padding 0.3s ease-in-out;
+    padding-right: 10%;
+}
+.sections{
+    display: flex;
+    flex-direction: column;
+    width: calc(100vw - 300px);
+    border-radius: 10px;
+    padding: 0 25px;
+    height: 60vh;
+    margin: 0px auto;
+    width: 100%;
+}
+.content {
+    overflow-y: auto;  /* Make this section scrollable */
+    flex-grow: 1;  /* Allow the content to take as much space as needed but not exceed the viewport */
+    scrollbar-width:none;
+}
+.pastAgendas h1{
+    font-size: 30px;
+    font-weight: bolder;
+    margin-top: 30;
+}
+.top{
+    display: flex;
+    width: calc(100vw - 300px);
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0px 30px;
+    margin: 0 auto;
+    width: 100%;
+}
+.labels{
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    padding-left: 20px;
+    width: 100%;
+    background-color: #e4e4e44f;
+    height: 35px;
+    align-items: center;
+    border-radius: 5px;
+}
+.rightLabels{
+    display: flex;
+    gap:12px;
+    margin-right: 75px;
+}
+@media screen and (max-width: 1024px) {
+    .pastAgendas{
+        padding: 0;
+    }
+}
