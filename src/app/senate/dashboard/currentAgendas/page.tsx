@@ -1,10 +1,10 @@
 'use client';
-import styles from './currentAgendas.module.css'
+import styles from './CurrentAgendas.module.css'
 import { useCollapsedContext } from '../../../components/sideBar/sideBarContext'
 import SideBar from '../../../components/sideBar/SideBar'
-import AgendaSection from '../../../components/agendaSection/agendaSection'
+import AgendaSection from '../../../components/agendaSection/AgendaSection'
 import AgendaData from '../../../agendas.json'
-import AddAgenda from '../../../components/addAgenda/addAgenda'
+import AddAgenda from '../../../components/addAgenda/AddAgenda'
 
 export default function CurrentAgendas(){
     const { collapsed, setCollapsed } = useCollapsedContext();

@@ -8,7 +8,7 @@
     align-items: center;
     background-color: #48316F; /* Optional */
     padding: 0 20px; /* Optional */
-    z-index: 1000
+    z-index: 500
   }
   
   .img{

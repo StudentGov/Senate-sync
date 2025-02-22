@@ -37,8 +37,10 @@ export default function RootLayout({
               <AssignRoleAfterLogin />
             </SignedIn>
           </header>
-          <NavBar />
-          {children}
+          <CollapsedProvider>   
+            <NavBar />
+            {children}
+          </CollapsedProvider>
         </body>
       </html>
     </ClerkProvider>

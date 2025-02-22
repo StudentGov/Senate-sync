@@ -1,6 +1,6 @@
 "use client";
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
-import styles from './sideBar.module.css'
+import styles from './SideBar.module.css'
 import { useRouter } from "next/navigation";
 import Logo from '../../assets/menu.png'
 import Image from 'next/image'
@@ -18,10 +18,10 @@ export default function SideBar({collapsed, setCollapsed}: SideBarProps) {
         <div className={`${styles.x} ${collapsed ? 'hidden' : 'block'}`}>
           <Sidebar onClick={() => setCollapsed(!collapsed)}>
             <Menu>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/currentAgendas')}> Current Agendas </MenuItem>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/pastAgendas')}> Past Agendas </MenuItem>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/profile')}> Profile </MenuItem>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/settings')}> Settings </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/dashboard/currentAgendas')}> Current Agendas </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/dashboard/pastAgendas')}> Past Agendas </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/dashboard/profile')}> Profile </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/dashboard/settings')}> Settings </MenuItem>
             </Menu>
           </Sidebar>
         </div>

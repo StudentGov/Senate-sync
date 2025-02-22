@@ -8,7 +8,7 @@ interface CollapsedContextType {
 }
 
 const CollapsedContext = createContext<CollapsedContextType | undefined>(undefined);
-
+console.log(2613)
 export const CollapsedProvider = ({ children }: { children: ReactNode }) => {
   const [collapsed, setCollapsed] = useState<boolean>(true);
 
@@ -20,6 +20,7 @@ export const CollapsedProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useCollapsedContext = (): CollapsedContextType => {
+  console.log(112613)
   const context = useContext(CollapsedContext);
   if (!context) {
     throw new Error('useCollapsedContext must be used within a CollapsedProvider');
