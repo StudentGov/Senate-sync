@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import styles from './navBar.module.css'
+import styles from './NavBar.module.css'
 import logo from '../../assets/image.png'
 import { useRouter } from "next/navigation";
 

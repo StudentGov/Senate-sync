@@ -1,0 +1,66 @@
+{
+    "1": {
+      "data": [
+        { "id": 0, "value": 10, "label": "Yes" },
+        { "id": 1, "value": 5, "label": "No" }
+      ]
+    },
+    "2": {
+      "data": [
+        { "id": 0, "value": 10, "label": "Yes" },
+        { "id": 1, "value": 15, "label": "No" }
+      ]
+    },
+    "3": {
+      "data": [
+        { "id": 0, "value": 10, "label": "A" },
+        { "id": 1, "value": 15, "label": "B" },
+        { "id": 2, "value": 20, "label": "C" }
+      ]
+    },
+    "4": {
+      "data": [
+        { "id": 0, "value": 10, "label": "1" },
+        { "id": 1, "value": 15, "label": "2" },
+        { "id": 2, "value": 20, "label": "3" },
+        { "id": 3, "value": 20, "label": "4" }
+      ]
+    },
+    "5": {
+      "data": [
+        { "id": 0, "value": 34, "label": "Yes" },
+        { "id": 1, "value": 15, "label": "No" }
+      ]
+    },
+    "6": {
+      "data": [
+        { "id": 0, "value": 10, "label": "Yes" },
+        { "id": 1, "value": 23, "label": "No" }
+      ]
+    },
+    "7": {
+      "data": [
+        { "id": 0, "value": 41, "label": "Yes" },
+        { "id": 1, "value": 15, "label": "No" }
+      ]
+    },
+    "8": {
+      "data": [
+        { "id": 0, "value": 10, "label": "Yes" },
+        { "id": 1, "value": 15, "label": "No" }
+      ]
+    },
+    "9": {
+      "data": [
+        { "id": 0, "value": 10, "label": "Yes" },
+        { "id": 1, "value": 15, "label": "No" }
+      ]
+    },
+    "10": {
+      "data": [
+        { "id": 0, "value": 10, "label": "Yes" },
+        { "id": 1, "value": 15, "label": "No" }
+      ]
+    }
+  }
+  

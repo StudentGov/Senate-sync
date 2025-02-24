@@ -1,0 +1,94 @@
+body.active-modal {
+    overflow-y: hidden;
+}
+
+.btnModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    font-size: 10px;
+    width:70px;
+    background-color: purple;
+    color:white;
+    border-radius: 5px;
+}
+
+.modal, .overlay {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    z-index: 10;
+}
+
+.overlay {
+    background: rgba(49,49,49,0.8);
+    display: flex;
+}
+.modalContent {
+    position: absolute;
+    display: flex;
+    /* flex-direction: column; */
+    grid-template-columns: 1fr 1fr;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1.4;
+    background: #f0f0f0;
+    padding: 14px 28px;
+    border-radius: 3px;
+    width: 80vw;
+    min-width: 300px;
+    z-index: 100;
+    gap: 20;
+    /* padding-top: 50 ; */
+    max-width: 800;
+    padding-bottom: 100;
+    height: 60vh;
+
+}
+
+.closeModal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 7px;
+    height: 30px;
+    font-size: 10px;
+    width:70px;
+    background-color: purple;
+    color:white;
+    border-radius: 5px;
+    z-index: 200;
+}
+
+.title{
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    font-size: 30px;
+    font-weight: bolder;
+    color: black;
+}
+
+.individual{
+    position: absolute;
+    display: flex;
+    top: 90%;
+    right: 20px;
+    align-items: center;
+}
+.individual button{
+    padding: 5px 7px;
+    height: 30px;
+    font-size: 12px;
+    width:80px;
+    height: 40px;
+    background-color: purple;
+    color:white;
+    border-radius: 5px;
+}

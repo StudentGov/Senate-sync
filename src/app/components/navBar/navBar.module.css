@@ -8,11 +8,11 @@
     align-items: center;
     background-color: #48316F; /* Optional */
     padding: 0 20px; /* Optional */
-    z-index: 1000
+    z-index: 500
   }
   
   .img{
-    margin-left: 100px;
+    margin-left: 10%;
     height: 100%;
     width: auto;
   }
