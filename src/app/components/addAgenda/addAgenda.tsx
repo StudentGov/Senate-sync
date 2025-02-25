@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from './AddAgenda.module.css'
+import styles from './addAgenda.module.css'
 import BinLogo from '../../assets/bin.png'
 import Image from 'next/image'
 import AgendaData from '../../agendas.json'

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import styles from './AgendaSection.module.css';
+import styles from './agendaSection.module.css';
 import Switch from '@mui/material/Switch';
-import DropDownOptions from '../dropDown/DropDown';
+import DropDownOptions from '../dropDown/DropDown'
 import PieChart from '../pieChart/PieChart'
 
 interface AgendaProps {
