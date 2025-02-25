@@ -1,7 +1,7 @@
 
 "use client";
 import styles from './Senate.module.css'
-import SideBar from '../../components/sideBar/SideBar'
+import SideBar from '../../components/sideBar/sideBar'
 import { useCollapsedContext } from '../../components/sideBar/sideBarContext';
 
 export default function SenatePage(){
