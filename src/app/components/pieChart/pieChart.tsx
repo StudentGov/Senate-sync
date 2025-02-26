@@ -3,7 +3,7 @@ import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 // import { desktopOS, valueFormatter } from './webUsageStats';
 import Data from '../../voting.json'
 
-import styles from './PieChart.module.css'
+import styles from './pieChart.module.css'
 
 interface DataItem {
     id: number;

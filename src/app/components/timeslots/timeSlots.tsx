@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import style from './Timeslots.module.css';
+import style from './timeslots.module.css';
 
 interface Props {
   slots: string[] | null;

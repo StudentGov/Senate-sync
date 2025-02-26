@@ -1,6 +1,6 @@
 "use client";
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
-import styles from './SideBar.module.css'
+import styles from './sideBar.module.css'
 import { useRouter } from "next/navigation";
 import Logo from '../../assets/menu.png'
 import Image from 'next/image'
