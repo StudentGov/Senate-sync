@@ -1,7 +1,7 @@
 'use client';
 import styles from './currentAgendas.module.css'
 import { useCollapsedContext } from '../../../components/sideBar/sideBarContext'
-import SideBar from '../../../components/sideBar/sideBar'
+import SideBar from '../../../components/sideBar/SideBar'
 import AgendaSection from '../../../components/agendaSection/agendaSection'
 import AgendaData from '../../../agendas.json'
 import AddAgenda from '../../../components/addAgenda/addAgenda'
