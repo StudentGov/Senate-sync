@@ -2,7 +2,7 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavBar from "./components/navBar/NavBar";
+import NavBar from "./components/navBar/navBar";
 
 import { CollapsedProvider } from "./components/sideBar/sideBarContext";
 
