@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React /*, { useState }*/ from 'react'; 
+// Commented out useState because it's not used in this component, but it may be needed later
+
 import style from './timeslots.module.css';
 
 interface Props {

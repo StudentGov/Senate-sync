@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from './addAgenda.module.css'
 import BinLogo from '../../assets/bin.png'
 import Image from 'next/image'
@@ -10,16 +10,21 @@ export default function Modal() {
   const [options, setOptions]= useState<string[]>([]);
   const [inputAgenda, setInputAgenda] = useState<string>("")
   const [message, setMessage] = useState<string>("");
- 
+
   const toggleModal = () => {
     setModal(!modal);
   };
 
-  if(modal) {
-    document.body.classList.add('active-modal')
-  } else {
-    document.body.classList.remove('active-modal')
-  }
+  // UseEffect to manage modal state safely on the client side
+  useEffect(() => {
+    if (typeof window !== "undefined") { // Check if running on the client
+      if (modal) {
+        document.body.classList.add('active-modal');
+      } else {
+        document.body.classList.remove('active-modal');
+      }
+    }
+  }, [modal]); // Re-run when modal state changes
 
   const handleSubmit = () => {
     if (!inputAgenda){
@@ -29,13 +34,13 @@ export default function Modal() {
         setMessage("Options are missing")
     }
     else{
-        setMessage("");
+      setMessage("");
         const newAgenda = {id:(AgendaData.length).toString(), agenda:inputAgenda, visible:false, closed:false, options:options}
         AgendaData.push(newAgenda)
-        setInputAgenda('');
-        setOptions([]);
-        setInputOption('');
-        setMessage("Added agenda successfully");
+      setInputAgenda('');
+      setOptions([]);
+      setInputOption('');
+      setMessage("Added agenda successfully");
     }
   }
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -59,29 +64,29 @@ export default function Modal() {
           <div className={styles.modalContent}>
             <button className={styles.closeModal} onClick={toggleModal}>CLOSE</button>
             <div className={styles.inputs}>
-                <label htmlFor="inputField">Write Agenda</label>
+              <label htmlFor="inputField">Write Agenda</label>
                 <input value={inputAgenda} placeholder="Enter Agenda" onChange={(e) => setInputAgenda(e.target.value)} required />
-                <label htmlFor="inputField">Add Option</label>
+              <label htmlFor="inputField">Add Option</label>
                 <input value={inputOption} placeholder="Enter Option" onChange={(e) => setInputOption(e.target.value)} onKeyDown={handleEnter}/>
             </div>
             <div className={styles.options}>
-                <span>Options</span>
-                <div className={styles.content}>
-                        {options.map((option, index) => (
-                            <div key={index} className={styles.option}>
-                                <span>{option}</span>
+              <span>Options</span>
+              <div className={styles.content}>
+                {options.map((option, index) => (
+                  <div key={index} className={styles.option}>
+                    <span>{option}</span>
                                 <Image src={BinLogo} alt='X' onClick={() => handleDelete(option)} className={styles.delete}/>
-                            </div>
+                  </div>
                             
-                        ))}
-                    </div>
+                ))}
+              </div>
             </div>
 
 
 
             <div className={styles.push}>
-                {message}
-                <button onClick={handleSubmit}>Push Agenda</button>
+              {message}
+              <button onClick={handleSubmit}>Push Agenda</button>
             </div>
 
           </div>
