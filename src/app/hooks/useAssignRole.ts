@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 /**
  * Custom hook to assign a default role ("student") after login.
- * This ensures new users receive a default role upon their first login.
+ * If the email domain is unauthorized, redirects to /unauthorized.
  */
 export function useAssignRole() {
   const { user } = useUser();
+  const router = useRouter();
   const [roleAssigned, setRoleAssigned] = useState(false);
 
   useEffect(() => {
@@ -26,7 +28,12 @@ export function useAssignRole() {
         const data = await response.json();
         console.log(data.message);
 
-        // Mark role as assigned to prevent further execution
+        // If no role is assigned, redirect to unauthorized
+        if (data.message.includes("No role assigned")) {
+          router.replace("/unauthorized");
+          return;
+        }
+
         setRoleAssigned(true);
       } catch (error) {
         console.error("Error assigning role:", error);
@@ -34,7 +41,7 @@ export function useAssignRole() {
     };
 
     assignDefaultRole();
-  }, [user, roleAssigned]);
+  }, [user, roleAssigned, router]);
 
   return null;
 }
