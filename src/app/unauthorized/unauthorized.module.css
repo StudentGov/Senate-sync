@@ -5,3 +5,30 @@
   height: 100vh;
   width: 100vw;
 }
+.slideContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.slide {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.slideTitle {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.reasons {
+  padding-left: 1.5rem;
+}
+
+.listItem {
+  margin-bottom: 0.5rem;
+}
