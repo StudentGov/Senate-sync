@@ -12,11 +12,13 @@ interface AgendaProps {
     closed: boolean;
     options:string[];
   };
-  page:string
+  page:string;
+  isMember:boolean;
+  isSpeaker:boolean
 }
 
 
-export default function AgendaSection({ agenda, page }: AgendaProps){
+export default function AgendaSection({ agenda, page, isMember, isSpeaker }: AgendaProps){
   const [visibile, setVisibile] = useState<boolean>(agenda.visible)
   const [selectedOption, setSelectedOption] = useState<string>("N/A");
   function handleToggle(){
@@ -26,13 +28,13 @@ export default function AgendaSection({ agenda, page }: AgendaProps){
     <div className={styles.section}>
       <h2>{agenda.agenda}</h2>
         <div className={styles.buttons}>
-          <small>{selectedOption}</small>
-          <Switch checked={visibile} onChange={handleToggle} className={styles.toggle}/>
+          {isMember && <small>{selectedOption}</small>}
+          {isSpeaker && <Switch checked={visibile} onChange={handleToggle} className={styles.toggle}/>}
           {page==='current'?(
             <>
-              <button onClick={() => {agenda.closed=true}}>Close</button>
+              {isSpeaker && <button onClick={() => {agenda.closed=true}}>Close</button>}
               <PieChart id={agenda.id} agendaName={agenda.agenda}/>
-              <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption}/>
+              {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption}/>}
             </>
           ):<PieChart id={agenda.id} agendaName={agenda.agenda}/>
           }
