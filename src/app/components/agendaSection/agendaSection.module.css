@@ -34,6 +34,9 @@
   border: 0.1px solid #48316F;
   border-radius: 7px;
 }
+.date{ 
+  margin-right:5%
+}
 .buttons{
   display: flex;
   align-items: center;

@@ -40,7 +40,6 @@
 }
 .labels{
     display: flex;
-    justify-content: space-between;
     font-size: 15px;
     padding-left: 20px;
     width: 100%;
@@ -51,10 +50,23 @@
 }
 .rightLabels{
     display: flex;
-    gap:12px;
-    margin-right: 125px;
+    margin-left: auto;
+    margin-right:120px;
+    /* margin-right: 210px; */
 }
-
+.date{
+    margin-right: 100%;
+}
+.labels button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: purple;
+    color: white;
+    height: 100%;
+    width: 70px;
+    margin-right: 10px;
+}
 @media screen and (max-width: 1024px) {
     .currentAgendas{
         padding: 0;

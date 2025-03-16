@@ -11,6 +11,7 @@ interface AgendaProps {
     visible: boolean;
     closed: boolean;
     options:string[];
+    date: string
   };
   page:string;
   isMember:boolean;
@@ -27,6 +28,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker }: Age
   return (
     <div className={styles.section}>
       <h2>{agenda.agenda}</h2>
+      <h3 className={styles.date}>{agenda.date}</h3>
         <div className={styles.buttons}>
           {isMember && <small>{selectedOption}</small>}
           {isSpeaker && <Switch checked={visibile} onChange={handleToggle} className={styles.toggle}/>}
@@ -34,7 +36,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker }: Age
             <>
               {isSpeaker && <button onClick={() => {agenda.closed=true}}>Close</button>}
               <PieChart id={agenda.id} agendaName={agenda.agenda}/>
-              {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption}/>}
+              {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'}/>}
             </>
           ):<PieChart id={agenda.id} agendaName={agenda.agenda}/>
           }
