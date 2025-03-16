@@ -8,14 +8,15 @@ import { styled } from '@mui/system';
 interface DropDownOptionsProps {
   options: string[];
   setSelectedOption: (options: string) => void;
+  text:string
 }
 
-export default function DropDownOptions({ options, setSelectedOption }:DropDownOptionsProps) {
+export default function DropDownOptions({ options, setSelectedOption, text }:DropDownOptionsProps) {
 
 
   return (
     <Dropdown>
-      <MenuButton>Vote</MenuButton>
+      <MenuButton>{text}</MenuButton>
       <Menu slots={{ listbox: Listbox }}>
         {options.map((item, index) => (
           <MenuItem key={index} onClick={() => setSelectedOption(item)}>{item}</MenuItem>
