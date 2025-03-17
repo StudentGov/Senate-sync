@@ -2,6 +2,7 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -19,6 +20,7 @@
     "@mui/material": "^6.4.4",
     "@mui/x-charts": "^7.26.0",
     "@mui/x-date-pickers": "^7.26.0",
+    "@supabase/supabase-js": "^2.49.1",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "drizzle-kit": "^0.30.4",

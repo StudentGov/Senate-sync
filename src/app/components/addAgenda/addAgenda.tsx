@@ -1,8 +1,10 @@
+'use client' 
 import React, { useState, useEffect } from "react";
 import styles from './addAgenda.module.css'
 import BinLogo from '../../assets/bin.png'
 import Image from 'next/image'
 import AgendaData from '../../agendas.json'
+
 
 export default function Modal() {
   const [modal, setModal] = useState<boolean>(false);
@@ -35,12 +37,19 @@ export default function Modal() {
     }
     else{
       setMessage("");
-        const newAgenda = {id:(AgendaData.length).toString(), agenda:inputAgenda, visible:false, closed:false, options:options}
-        AgendaData.push(newAgenda)
+      // const newAgenda = {id:(AgendaData.length).toString(), agenda:inputAgenda, visible:false, closed:false, options:options}
+      // AgendaData.push(newAgenda)
       setInputAgenda('');
       setOptions([]);
       setInputOption('');
       setMessage("Added agenda successfully");
+      const newRow = {
+        title:inputAgenda,
+        is_visible: true,
+        is_open: true,
+        options:{'options':options}
+    }
+      callInsertAPI(newRow);
     }
   }
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -53,6 +62,37 @@ export default function Modal() {
   const handleDelete = (option: string) => {
     setOptions((prev) => prev.filter(item => item !== option))
   }
+  // Example call from a front-end (React, Next.js, etc.)
+  async function callInsertAPI(newRow) {
+    console.log("In call insert api function")
+    const response = await fetch('/api/insert-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        table: 'Agendas',
+        newRow:newRow
+        // newRow: { title: 'Some Title', description: 'Some Description' },
+      }),
+    })
+
+    const json = await response.json()
+    if (!response.ok) {
+      console.error('API error:', json.error)
+    } else {
+      console.log('Insert successful:', json)
+    }
+  }
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("/api/get-data");
+      const data = await response.json();
+      console.log(data)
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+  fetchData();
 
   return (
     <>

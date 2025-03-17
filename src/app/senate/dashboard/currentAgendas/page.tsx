@@ -21,18 +21,18 @@ export default function CurrentAgendas(){
     const { collapsed, setCollapsed } = useCollapsedContext();
     const { user, isSignedIn } = useUser();
     const [isMember, setIsMember] = useState<boolean>(false);
-    const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
+    const [isSpeaker, setIsSpeaker] = useState<boolean>(true);
     const [selectedOption, setSelectedOption] = useState<string>("Date");
 
-    useEffect(() => {
-        if (isSignedIn && user?.publicMetadata?.role === "senate_member") {
-            setIsMember(true);
-            console.log(user.publicMetadata.role)
-          }
-        else if (isSignedIn && user?.publicMetadata?.role === "senate_speaker") {
-            setIsSpeaker(true);
-          }
-      }, [user]);
+    // useEffect(() => {
+    //     if (isSignedIn && user?.publicMetadata?.role === "senate_member") {
+    //         setIsMember(true);
+    //         console.log(user.publicMetadata.role)
+    //       }
+    //     else if (isSignedIn && user?.publicMetadata?.role === "senate_speaker") {
+    //         setIsSpeaker(true);
+    //       }
+    //   }, [user]);
     const sortedAgendaData: Agenda[] = [...AgendaData].sort((a, b) => {
         if (selectedOption === "Title") {
             return a.agenda.localeCompare(b.agenda); // Sorting by Title alphabetically
