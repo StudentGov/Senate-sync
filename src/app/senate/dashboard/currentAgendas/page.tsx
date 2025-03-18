@@ -23,6 +23,7 @@ export default function CurrentAgendas(){
     const [isMember, setIsMember] = useState<boolean>(false);
     const [isSpeaker, setIsSpeaker] = useState<boolean>(true);
     const [selectedOption, setSelectedOption] = useState<string>("Date");
+    const [agendas, setAgendas] = useState([]);
 
     // useEffect(() => {
     //     if (isSignedIn && user?.publicMetadata?.role === "senate_member") {
@@ -33,16 +34,30 @@ export default function CurrentAgendas(){
     //         setIsSpeaker(true);
     //       }
     //   }, [user]);
-    const sortedAgendaData: Agenda[] = [...AgendaData].sort((a, b) => {
+    const sortedAgendaData: Agenda[] = [...agendas].sort((a, b) => {
         if (selectedOption === "Title") {
-            return a.agenda.localeCompare(b.agenda); // Sorting by Title alphabetically
+            return a.title.localeCompare(b.title); // Sorting by Title alphabetically
         } else if (selectedOption === "Date") {
-            const dateA = new Date(a.date); // Convert 'date' string to Date object
-            const dateB = new Date(b.date);
+            const dateA = new Date(a.created_at); // Convert 'date' string to Date object
+            const dateB = new Date(b.created_at);
             return dateB.getTime() - dateA.getTime(); // Sorting by Date (using getTime for comparison)
         }
         return 0; // No sorting if 'N/A'
     });
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+              const response = await fetch("/api/get-data");
+              const data = await response.json();
+              console.log(data, typeof data.data)
+              setAgendas(data.data)
+            } catch (error) {
+              console.error("Error fetching users:", error);
+            }
+          };
+          fetchData();
+    }, [])
+
 
     return (
         <div className={styles.currentAgendas}>
@@ -63,12 +78,12 @@ export default function CurrentAgendas(){
                         </div>
                         <DropDownOptions options={["Title", "Date"]} setSelectedOption={setSelectedOption} text={'Sort'}/>
                     </div>
-                {sortedAgendaData.map((item, index) => (
-                    !item.closed && 
+                {sortedAgendaData.length > 0 ? sortedAgendaData.map((item, index) => (
+                    item.is_open && 
                     (
                     <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker}/>
                     )
-                ))}
+                )):<></>}
                 </div>
             </div>
         </div>

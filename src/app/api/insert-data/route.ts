@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import 'dotenv/config'
-
+// import { createClient } from '@supabase/supabase-js'
+// import 'dotenv/config'
+import { supabase } from '../../../supabase/main';
 
 async function insertData(supabase, table, newRow) {
 
@@ -17,12 +17,7 @@ async function insertData(supabase, table, newRow) {
 }
 export async function POST(request) {
     try {
-        // return NextResponse.json(['userList']);
-        const supabase_url = process.env.SUPABASE_URL
-        const supabase_key = process.env.SUPABASE_KEY
 
-        const supabase = createClient(supabase_url, supabase_key)
-        // 1) Parse the JSON body from the request
         const { table, newRow } = await request.json()
     
         // 2) Check if we got the required fields
