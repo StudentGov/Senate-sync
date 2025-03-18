@@ -20,18 +20,18 @@ export default function PastAgendas(){
     const { collapsed, setCollapsed } = useCollapsedContext();
     const { user, isSignedIn } = useUser();
     const [isMember, setIsMember] = useState<boolean>(false);
-    const [isSpeaker, setIsSpeaker] = useState<boolean>(true);
+    const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
     const [selectedOption, setSelectedOption] = useState<string>("Date");
     const [agendas, setAgendas] = useState([]);
-    // useEffect(() => {
-    //     if (isSignedIn && user?.publicMetadata?.role === "senate_member") {
-    //         setIsMember(true);
-    //         console.log(user.publicMetadata.role)
-    //       }
-    //     else if (isSignedIn && user?.publicMetadata?.role === "senate_speaker") {
-    //         setIsSpeaker(true);
-    //       }
-    //   }, [user]);
+    useEffect(() => {
+      if (isSignedIn && (user?.publicMetadata?.role === "senate_member" || user?.publicMetadata?.role === "super_admin")) {
+          setIsMember(true);
+          console.log(user.publicMetadata.role)
+        }
+      if (isSignedIn && (user?.publicMetadata?.role === "senate_speaker" || user?.publicMetadata?.role === "super_admin")) {
+          setIsSpeaker(true);
+        }
+    }, [user]);
     useEffect(() => {
         const fetchData = async () => {
             try {
