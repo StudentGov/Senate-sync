@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
         const newRow = {
             voter_id:user.id,
             agenda_id: agendaId,
-            option_text: '-',
+            option_text: 'N/A',
             name:`${user.firstName} ${user.lastName}`
         }
         
