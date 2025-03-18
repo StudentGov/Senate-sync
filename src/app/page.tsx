@@ -40,7 +40,8 @@ export default function HomePage() {
         </button>
         <button
           className={styles.navButton}
-          onClick={() => handleNavigation("/senate/dashboard")}
+          // onClick={() => handleNavigation("/senate/dashboard")}
+          onClick={() => handleNavigation("/senate/dashboard/currentAgendas")}
         >
           Senate
         </button>
