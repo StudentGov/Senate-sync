@@ -83,40 +83,38 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user,
       }
     callInsertAPI()
   }
-  // useEffect(() => {
-  //   // Define the async function
-  //   async function handleVote() {
-  //     const response = await fetch('/api/handle-votes', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({
-  //         agendaId: agenda.id, 
-  //         user: user,
-  //       }),
-  //     });
+  const closeAgenda = async () => {
+    try {
+      const response = await fetch("/api/handle-close", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: agenda.id }),
+      });
   
-  //     const result = await response.json();
-  //     console.log(result)
-  //     if (!result.success) {
-  //       console.error('Error:', result.message);
-  //     } else {
-  //       console.log('OK:', result.message, result.data);
-  //     }
-  //   }
-  //   // Call the async function
-  //   handleVote();
-  // }, []); // empty array => run once on component mount
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log("Agenda closed successfully:", data);
+      } else {
+        console.error("Error closing agenda:", data.error);
+      }
+    } catch (error) {
+      console.error("Request failed:", error);
+    }
+  };
   return (
     <div className={styles.section}>
       
       <h2>{agenda.title}</h2>
-      <h3 className={styles.date}>{agenda.created_at}</h3>
+      <h3 className={styles.date}>{new Date(agenda.created_at).toLocaleDateString("en-US")}</h3>
         <div className={styles.buttons}>
           {isMember && <small>{selectedOption}</small>}
           {isSpeaker && <Switch checked={visibile} onChange={handleToggle} className={styles.toggle}/>}
           {page==='current'?(
             <>
-              {isSpeaker && <button onClick={() => {agenda.is_open=true}}>Close</button>}
+              {isSpeaker && <button onClick={closeAgenda}>Close</button>}
               <PieChart id={'1'} agendaName={agenda.title}/>
               {isMember && <DropDownOptions options={agenda.options.options} setSelectedOption={setSelectedOption} text={'Vote'}/>}
             </>

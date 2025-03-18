@@ -20,8 +20,8 @@ interface Agenda {
 export default function CurrentAgendas(){
     const { collapsed, setCollapsed } = useCollapsedContext();
     const { user, isSignedIn } = useUser();
-    const [isMember, setIsMember] = useState<boolean>(true);
-    const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
+    const [isMember, setIsMember] = useState<boolean>(false);
+    const [isSpeaker, setIsSpeaker] = useState<boolean>(true);
     const [selectedOption, setSelectedOption] = useState<string>("Date");
     const [agendas, setAgendas] = useState([]);
 
@@ -78,7 +78,6 @@ export default function CurrentAgendas(){
         // console.log(result.data)
         return result
       }
-      // Call the async function
 
     return (
         <div className={styles.currentAgendas}>
