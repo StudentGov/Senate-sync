@@ -1,17 +1,18 @@
 
 import { NextResponse } from "next/server";
-import { createClient } from '@supabase/supabase-js'
-import 'dotenv/config'
+// import { createClient } from '@supabase/supabase-js'
+// import 'dotenv/config'
+import { supabase } from '../../../supabase/main'
 
 export async function GET() {
 
 
     try {
-        return NextResponse.json(['userList']);
-        const supabase_url = process.env.SUPABASE_URL
-        const supabase_key = process.env.SUPABASE_KEY
+        // return NextResponse.json(['userList']);
+        // const supabase_url = process.env.SUPABASE_URL
+        // const supabase_key = process.env.SUPABASE_KEY
 
-        const supabase = createClient(supabase_url, supabase_key)
+        // const supabase = createClient(supabase_url, supabase_key)
             // Perform the "select *" from your Agendas table
         const { data, error } = await supabase
             .from('Agendas')

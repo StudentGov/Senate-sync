@@ -83,16 +83,7 @@ export default function Modal() {
     }
   }
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch("/api/get-data");
-      const data = await response.json();
-      console.log(data)
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-  fetchData();
+
 
   return (
     <>
