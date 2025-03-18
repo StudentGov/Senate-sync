@@ -20,8 +20,8 @@ interface Agenda {
 export default function CurrentAgendas(){
     const { collapsed, setCollapsed } = useCollapsedContext();
     const { user, isSignedIn } = useUser();
-    const [isMember, setIsMember] = useState<boolean>(false);
-    const [isSpeaker, setIsSpeaker] = useState<boolean>(true);
+    const [isMember, setIsMember] = useState<boolean>(true);
+    const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
     const [selectedOption, setSelectedOption] = useState<string>("Date");
     const [agendas, setAgendas] = useState([]);
 
@@ -58,6 +58,27 @@ export default function CurrentAgendas(){
           fetchData();
     }, [])
 
+    async function handleVote(agenda, user) {
+        const response = await fetch('/api/handle-votes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            agendaId: agenda.id, 
+            user: user,
+          }),
+        });
+    
+        const result = await response.json();
+        // console.log(result)
+        if (!result.success) {
+          console.error('Error:', result.message);
+        } else {
+        //   console.log('OK:', result.message, result.data);
+        }
+        // console.log(result.data)
+        return result
+      }
+      // Call the async function
 
     return (
         <div className={styles.currentAgendas}>
@@ -80,8 +101,8 @@ export default function CurrentAgendas(){
                     </div>
                 {sortedAgendaData.length > 0 ? sortedAgendaData.map((item, index) => (
                     item.is_open && 
-                    (
-                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker}/>
+                    (      
+                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} user={user} vote={() => handleVote(item, user)}/>
                     )
                 )):<></>}
                 </div>

@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server'
-// import { createClient } from '@supabase/supabase-js'
-// import 'dotenv/config'
 import { supabase } from '../../../supabase/main';
 
 async function insertData(supabase, table, newRow) {

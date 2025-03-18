@@ -1,17 +1,4 @@
 
-// async function getTableData(supabase) {
-//     const { data, error } = await supabase
-//       .from('Agendas')
-//       .select('*'); // '*' fetches all columns
-
-//     if (error) {
-//       console.error('Error fetching data:', error);
-//     } else {
-//       console.log('Data from table:', data);
-//       console.log(data[0].options.options)
-//       return data;
-//     }
-//   }
 import supabase from '../../../supabase/main'
 import { NextResponse } from "next/server";
 // Our API endpoint – handles GET requests
