@@ -34,7 +34,7 @@ export default function Individual({id}: Props){
                         <button className={styles.closeModal} onClick={toggleModal}>back</button>
                         <div className={styles.sections}>
                             <div className={styles.content}>
-                                {voteData[id].map((item, indx) => {
+                                {voteData[id as keyof typeof voteData].map((item, indx) => {
                                     return (
                                         <div key={indx} className={styles.section}>
                                             <h2 className={styles.name}>{item.id}. {item.name}</h2>   

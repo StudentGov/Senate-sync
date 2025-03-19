@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import styles from './addAgenda.module.css'
 import BinLogo from '../../assets/bin.png'
 import Image from 'next/image'
-import AgendaData from '../../agendas.json'
 
 
 export default function Modal() {
@@ -63,7 +62,7 @@ export default function Modal() {
     setOptions((prev) => prev.filter(item => item !== option))
   }
   // Example call from a front-end (React, Next.js, etc.)
-  async function callInsertAPI(newRow) {
+  async function callInsertAPI(newRow: { title: string; is_visible: boolean; is_open: boolean; options: { options: string[] } }) {
     console.log("In call insert api function")
     const response = await fetch('/api/insert-data', {
       method: 'POST',

@@ -27,7 +27,8 @@ export async function POST(request: NextRequest) {
       data,
       message: `Updated vote with voter_id=${voter_id}, agenda_id=${agenda_id}.`,
     });
-  } catch (err: any) {
-    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+    return NextResponse.json({ success: false, message: errorMessage }, { status: 500 });
   }
 }

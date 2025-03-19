@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import { supabase } from '../../../supabase/main';
 
-async function insertData(supabase, table, newRow) {
+import { SupabaseClient } from '@supabase/supabase-js';
+
+async function insertData<T extends Record<string, unknown>>(supabase: SupabaseClient, table: string, newRow: T) {
 
     const { data, error } = await supabase
         .from(table)        
@@ -13,7 +15,7 @@ async function insertData(supabase, table, newRow) {
         console.log('Insert successful:', data);
     }
 }
-export async function POST(request) {
+export async function POST(request: Request) {
     try {
 
         const { table, newRow } = await request.json()
@@ -30,6 +32,6 @@ export async function POST(request) {
         return NextResponse.json({ data: insertedData }, { status: 200 })
         } catch (error) {
         // 5) Handle any errors
-        return NextResponse.json({ error: error.message }, { status: 500 })
+        return NextResponse.json({ error: (error as Error).message }, { status: 500 })
         }
   }
