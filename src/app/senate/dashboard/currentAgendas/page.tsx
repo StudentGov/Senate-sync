@@ -13,14 +13,15 @@ interface Agenda {
     agenda: string;
     visible: boolean;
     closed: boolean;
-    options: string[];
+    options: { options: string[] }; //  Wrapped options inside an object
     date: string;
-    title: string; // Add this property to fix the error
-    created_at: string; // Add this property to fix the error
-    is_open: boolean; // Add this property to fix the error
-    is_visible: boolean; // Add this property to fix the error
-    user: number; // Add this property to fix the error
-  }
+    title: string;
+    created_at: string;
+    is_open: boolean;
+    is_visible: boolean;
+    user: number;
+}
+
 export default function CurrentAgendas(){
     const { collapsed, setCollapsed } = useCollapsedContext();
     const { user, isSignedIn } = useUser();
@@ -32,35 +33,37 @@ export default function CurrentAgendas(){
     useEffect(() => {
         if (isSignedIn && (user?.publicMetadata?.role === "senate_member" || user?.publicMetadata?.role === "super_admin")) {
             setIsMember(true);
-            console.log(user.publicMetadata.role)
-          }
+            console.log(user.publicMetadata.role);
+        }
         if (isSignedIn && (user?.publicMetadata?.role === "senate_speaker" || user?.publicMetadata?.role === "super_admin")) {
             setIsSpeaker(true);
-          }
-      }, [user, isSignedIn]);
+        }
+    }, [user, isSignedIn]);
+
     const sortedAgendaData: Agenda[] = [...agendas].sort((a, b) => {
         if (selectedOption === "Title") {
-            return a.title.localeCompare(b.title); // Sorting by Title alphabetically
+            return a.title.localeCompare(b.title);
         } else if (selectedOption === "Date") {
-            const dateA = new Date(a.created_at); // Convert 'date' string to Date object
+            const dateA = new Date(a.created_at);
             const dateB = new Date(b.created_at);
-            return dateB.getTime() - dateA.getTime(); // Sorting by Date (using getTime for comparison)
+            return dateB.getTime() - dateA.getTime();
         }
-        return 0; // No sorting if 'N/A'
+        return 0;
     });
+
     useEffect(() => {
         const fetchData = async () => {
             try {
               const response = await fetch("/api/get-data");
               const data = await response.json();
-              console.log(data, typeof data.data)
-              setAgendas(data.data)
+              console.log(data, typeof data.data);
+              setAgendas(data.data.map((agenda: Agenda) => ({ ...agenda, options: { options: agenda.options } }))); //  Ensure options are correctly wrapped
             } catch (error) {
               console.error("Error fetching users:", error);
             }
-          };
-          fetchData();
-    }, [])
+        };
+        fetchData();
+    }, []);
 
     async function handleVote(agenda: Agenda, user: unknown) {
         const response = await fetch('/api/handle-votes', {
@@ -73,15 +76,11 @@ export default function CurrentAgendas(){
         });
     
         const result = await response.json();
-        // console.log(result)
         if (!result.success) {
           console.error('Error:', result.message);
-        } else {
-        //   console.log('OK:', result.message, result.data);
         }
-        // console.log(result.data)
-        return result
-      }
+        return result;
+    }
 
     return (
         <div className={styles.currentAgendas}>
@@ -102,15 +101,21 @@ export default function CurrentAgendas(){
                         </div>
                         <DropDownOptions options={["Title", "Date"]} setSelectedOption={setSelectedOption} text={'Sort'}/>
                     </div>
-                {sortedAgendaData.length > 0 ? sortedAgendaData.map((item, index) => (
-                    item.is_open && 
-                    (      
-                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} vote={() => handleVote(item, user)} user={user}/>
-                    )
-                )):<></>}
+                    {sortedAgendaData.length > 0 ? sortedAgendaData.map((item, index) => (
+                        item.is_open && (
+                            <AgendaSection 
+                                key={index} 
+                                agenda={item} 
+                                page={'current'} 
+                                isMember={isMember} 
+                                isSpeaker={isSpeaker} 
+                                vote={() => handleVote(item, user)} 
+                                user={{ id: user?.id as unknown as number }}
+                            />
+                        )
+                    )) : <></>}
                 </div>
             </div>
         </div>
-
-    )
+    );
 }

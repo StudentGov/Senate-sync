@@ -16,7 +16,7 @@ interface AgendaProps {
   page: string;
   isMember: boolean;
   isSpeaker: boolean;
-  user: any; //  Ensured user property exists
+  user: { id: number }; //  Defined user type with an id property
   vote: () => Promise<unknown>; //  Kept vote as a separate function
 }
 
@@ -48,7 +48,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              voter_id: user.id,
+              voter_id: user.id, // Ensure user has a defined type with id
               agenda_id: agenda.id,
               vote: selectedOption,
             }),
