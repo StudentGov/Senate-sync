@@ -34,6 +34,9 @@
   border: 0.1px solid #48316F;
   border-radius: 7px;
 }
+.date{ 
+  margin-right:5%
+}
 .buttons{
   display: flex;
   align-items: center;
@@ -45,6 +48,7 @@
   text-overflow: ellipsis; /* Show ellipsis when the text overflows */
   white-space: nowrap; /* Prevent text wrapping */
   max-width: 20vw;
+  margin-right: 15px
 }
 .buttons button {
   display: flex;

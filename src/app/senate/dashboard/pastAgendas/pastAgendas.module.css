@@ -51,8 +51,20 @@
 }
 .rightLabels{
     display: flex;
-    gap:12px;
-    margin-right: 75px;
+    gap:80px;
+    margin-left: auto;
+    margin-right: 5px;
+
+}
+.labels button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: purple;
+    color: white;
+    height: 100%;
+    width: 70px;
+    margin-right: 5px;
 }
 @media screen and (max-width: 1024px) {
     .pastAgendas{
