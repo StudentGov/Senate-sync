@@ -24,14 +24,15 @@ export default function PastAgendas(){
     const [selectedOption, setSelectedOption] = useState<string>("Date");
 
     useEffect(() => {
-        if (isSignedIn && user?.publicMetadata?.role === "senate_member") {
+        if (isSignedIn && (user?.publicMetadata?.role === "senate_member" || user?.publicMetadata?.role === "super_admin")) {
             setIsMember(true);
-            console.log(user.publicMetadata.role)
-          }
-        else if (isSignedIn && user?.publicMetadata?.role === "senate_speaker") {
+            console.log(user.publicMetadata.role);
+        }
+        if (isSignedIn && (user?.publicMetadata?.role === "senate_speaker" || user?.publicMetadata?.role === "super_admin")) {
             setIsSpeaker(true);
-          }
-      }, [user]);
+        }
+    }, [isSignedIn, user]);
+
     const sortedAgendaData: Agenda[] = [...AgendaData].sort((a, b) => {
         if (selectedOption === "Title") {
             return a.agenda.localeCompare(b.agenda); // Sorting by Title alphabetically
