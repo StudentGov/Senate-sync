@@ -4,18 +4,22 @@ import styles from './currentAgendas.module.css'
 import { useCollapsedContext } from '../../../components/sideBar/sideBarContext'
 import SideBar from '../../../components/sideBar/SideBar'
 import AgendaSection from '../../../components/agendaSection/agendaSection'
-import AgendaData from '../../../agendas.json'
 import AddAgenda from '../../../components/addAgenda/addAgenda'
 import { useUser } from "@clerk/nextjs";
 import DropDownOptions from '../../../components/dropDown/dropDown'
 
 interface Agenda {
-    id: string;
+    id: number;
     agenda: string;
     visible: boolean;
     closed: boolean;
     options: string[];
     date: string;
+    title: string; // Add this property to fix the error
+    created_at: string; // Add this property to fix the error
+    is_open: boolean; // Add this property to fix the error
+    is_visible: boolean; // Add this property to fix the error
+    user: number; // Add this property to fix the error
   }
 export default function CurrentAgendas(){
     const { collapsed, setCollapsed } = useCollapsedContext();
@@ -23,7 +27,7 @@ export default function CurrentAgendas(){
     const [isMember, setIsMember] = useState<boolean>(false);
     const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
     const [selectedOption, setSelectedOption] = useState<string>("Date");
-    const [agendas, setAgendas] = useState([]);
+    const [agendas, setAgendas] = useState<Agenda[]>([]);
 
     useEffect(() => {
         if (isSignedIn && (user?.publicMetadata?.role === "senate_member" || user?.publicMetadata?.role === "super_admin")) {
@@ -33,7 +37,7 @@ export default function CurrentAgendas(){
         if (isSignedIn && (user?.publicMetadata?.role === "senate_speaker" || user?.publicMetadata?.role === "super_admin")) {
             setIsSpeaker(true);
           }
-      }, [user]);
+      }, [user, isSignedIn]);
     const sortedAgendaData: Agenda[] = [...agendas].sort((a, b) => {
         if (selectedOption === "Title") {
             return a.title.localeCompare(b.title); // Sorting by Title alphabetically
@@ -58,7 +62,7 @@ export default function CurrentAgendas(){
           fetchData();
     }, [])
 
-    async function handleVote(agenda, user) {
+    async function handleVote(agenda: Agenda, user: unknown) {
         const response = await fetch('/api/handle-votes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -101,7 +105,9 @@ export default function CurrentAgendas(){
                 {sortedAgendaData.length > 0 ? sortedAgendaData.map((item, index) => (
                     item.is_open && 
                     (      
-                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} user={user} vote={() => handleVote(item, user)}/>
+                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} vote={() => handleVote(item, user)} user={{
+                      id: 0
+                    }}/>
                     )
                 )):<></>}
                 </div>

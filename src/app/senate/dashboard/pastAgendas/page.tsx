@@ -4,17 +4,21 @@ import styles from './pastAgendas.module.css'
 import { useCollapsedContext } from '../../../components/sideBar/sideBarContext'
 import SideBar from '../../../components/sideBar/SideBar'
 import AgendaSection from '../../../components/agendaSection/agendaSection'
-import AgendaData from '../../../agendas.json'
 import { useUser } from "@clerk/nextjs";
 import DropDownOptions from '../../../components/dropDown/dropDown'
 
 interface Agenda {
-    id: string;
+    id: number;
+    title: string; // Added title property
     agenda: string;
     visible: boolean;
+    is_visible: boolean; // Added is_visible property
     closed: boolean;
     options: string[];
     date: string;
+    created_at: string;
+    is_open: boolean;
+    user: number; // Added user property
   }
 export default function PastAgendas(){
     const { collapsed, setCollapsed } = useCollapsedContext();
@@ -22,7 +26,7 @@ export default function PastAgendas(){
     const [isMember, setIsMember] = useState<boolean>(false);
     const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
     const [selectedOption, setSelectedOption] = useState<string>("Date");
-    const [agendas, setAgendas] = useState([]);
+    const [agendas, setAgendas] = useState<Agenda[]>([]);
     useEffect(() => {
       if (isSignedIn && (user?.publicMetadata?.role === "senate_member" || user?.publicMetadata?.role === "super_admin")) {
           setIsMember(true);
@@ -31,14 +35,14 @@ export default function PastAgendas(){
       if (isSignedIn && (user?.publicMetadata?.role === "senate_speaker" || user?.publicMetadata?.role === "super_admin")) {
           setIsSpeaker(true);
         }
-    }, [user]);
+    }, [isSignedIn, user]);
     useEffect(() => {
         const fetchData = async () => {
             try {
               const response = await fetch("/api/get-data");
               const data = await response.json();
               console.log(data, typeof data.data)
-              setAgendas(data.data)
+              setAgendas(data.data.map((agenda: Agenda) => ({ ...agenda, id: Number(agenda.id) })));
             } catch (error) {
               console.error("Error fetching users:", error);
             }
@@ -47,15 +51,11 @@ export default function PastAgendas(){
     }, [])
     const sortedAgendaData: Agenda[] = [...agendas].sort((a, b) => {
         if (selectedOption === "Title") {
-            return a.title.localeCompare(b.title); // Sorting by Title alphabetically
-        } else if (selectedOption === "Date") {
-            const dateA = new Date(a.created_at); // Convert 'date' string to Date object
-            const dateB = new Date(b.created_at);
-            return dateB.getTime() - dateA.getTime(); // Sorting by Date in descending order (most recent first)
+            return a.agenda.localeCompare(b.agenda); // Sorting by Title alphabetically
         }
         return 0; // No sorting if 'N/A'
     });
-    async function handleVote(agenda, user) {
+    async function handleVote(agenda: Agenda, user: unknown) {
         const response = await fetch('/api/handle-votes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -95,7 +95,9 @@ export default function PastAgendas(){
                     </div>
                 {sortedAgendaData.map((item, index) => (
                     (!item.is_open &&
-                    <AgendaSection key={index} agenda={item} page={'past'} isMember={isMember} isSpeaker={isSpeaker} user={user} vote={() => handleVote(item, user)}/>)
+                    <AgendaSection key={index} agenda={item} page={'past'} isMember={isMember} isSpeaker={isSpeaker} vote={() => handleVote(item, user)} user={{
+                    id: 0
+                  }}/>)
                 ))}
                 </div>
             </div>
