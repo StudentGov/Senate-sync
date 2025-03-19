@@ -1,6 +1,6 @@
 // app/api/votes/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '../../../supabase/main'
+import supabase from '../../../supabase/main'
 
 export async function POST(request: NextRequest) {
   try {
