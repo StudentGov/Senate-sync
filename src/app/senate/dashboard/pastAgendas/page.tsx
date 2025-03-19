@@ -95,9 +95,7 @@ export default function PastAgendas(){
                     </div>
                 {sortedAgendaData.map((item, index) => (
                     (!item.is_open &&
-                    <AgendaSection key={index} agenda={item} page={'past'} isMember={isMember} isSpeaker={isSpeaker} vote={() => handleVote(item, user)} user={{
-                    id: 0
-                  }}/>)
+                    <AgendaSection key={index} agenda={item} page={'past'} isMember={isMember} isSpeaker={isSpeaker} vote={() => handleVote(item, user)} user={user}/>)
                 ))}
                 </div>
             </div>

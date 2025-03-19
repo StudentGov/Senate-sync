@@ -105,9 +105,7 @@ export default function CurrentAgendas(){
                 {sortedAgendaData.length > 0 ? sortedAgendaData.map((item, index) => (
                     item.is_open && 
                     (      
-                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} vote={() => handleVote(item, user)} user={{
-                      id: 0
-                    }}/>
+                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} vote={() => handleVote(item, user)} user={user}/>
                     )
                 )):<></>}
                 </div>

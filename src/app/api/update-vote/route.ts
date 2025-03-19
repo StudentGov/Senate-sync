@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
 
     // 3) Handle potential errors
     if (error) {
+      
       throw new Error(error.message);
     }
 

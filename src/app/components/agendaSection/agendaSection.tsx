@@ -10,14 +10,13 @@ interface AgendaProps {
     title: string;
     is_visible: boolean;
     is_open: boolean;
-    options: string[];
+    options: {options: string[]};
     created_at: string;
-    user: number;
   };
   page: string;
   isMember: boolean;
   isSpeaker: boolean;
-  user: { id: number }; //  Ensured user property exists
+  user: any; //  Ensured user property exists
   vote: () => Promise<unknown>; //  Kept vote as a separate function
 }
 
@@ -44,6 +43,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user,
     } else {
       async function updateVote() {
         try {
+      
           const response = await fetch('/api/update-vote', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -116,7 +116,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user,
           <>
             {isSpeaker && <button onClick={closeAgenda}>Close</button>}
             <PieChart agenda={agenda} />
-            {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'} />}
+            {isMember && <DropDownOptions options={agenda.options.options} setSelectedOption={setSelectedOption} text={'Vote'} />}
           </>
         ) : (
           <PieChart agenda={agenda} />
