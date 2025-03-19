@@ -35,7 +35,7 @@ export default function Modal() {
     }
     else{
       setMessage("");
-        const newAgenda = {id:(AgendaData.length).toString(), agenda:inputAgenda, visible:false, closed:false, options:options}
+        const newAgenda = {id:(AgendaData.length).toString(), agenda:inputAgenda, visible:false, closed:false, options:options, date:"01/11/2025"}
         AgendaData.push(newAgenda)
       setInputAgenda('');
       setOptions([]);
