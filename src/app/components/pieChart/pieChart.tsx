@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import Data from '../../voting.json';
-// import { desktopOS, valueFormatter } from './webUsageStats';
+import Individual from '../individual/individual';
 import styles from './pieChart.module.css';
 
 interface DataItem {
@@ -81,7 +81,7 @@ export default function PieChartPopUp({id, agendaName}: {id:string, agendaName:s
                             {...size}
                         />
                         <div className={styles.individual}>
-                            <button onClick={() => {}}>Individual Stats</button>
+                            <Individual id={id}/>
                         </div>
                     </div>
                 </div>
