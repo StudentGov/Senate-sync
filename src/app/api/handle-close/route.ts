@@ -1,6 +1,6 @@
 import { supabase } from '../../../supabase/main'
 
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     const { id } = await request.json();
 
@@ -18,7 +18,7 @@ export async function POST(request) {
     }
 
     return Response.json({ success: true, data }, { status: 200 });
-  } catch (error) {
+  } catch {
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

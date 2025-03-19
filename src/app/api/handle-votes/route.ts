@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     // 1) Attempt to select a single vote row
     //    If there are 0 rows, it returns an error with code 406
     //    If there are multiple rows (which can't happen with unique constraint), also 406
-    const { data: existingVote, error: selectError } = await supabase
+    const { data: existingVote } = await supabase
       .from('Votes')
       .select('*')
       .eq('agenda_id', agendaId)
@@ -50,7 +50,8 @@ export async function POST(request: NextRequest) {
           });
     }
 
-  } catch (err: any) {
-    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+    return NextResponse.json({ success: false, message: errorMessage }, { status: 500 });
   }
 }
