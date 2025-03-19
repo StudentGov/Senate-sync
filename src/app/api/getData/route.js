@@ -1,5 +1,5 @@
 
-import { supabase } from '../../../supabase/main';
+import supabase from '../../../supabase/main'
 import { NextResponse } from "next/server";
 // Our API endpoint – handles GET requests
 export async function GET() {
