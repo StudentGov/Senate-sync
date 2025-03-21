@@ -3,12 +3,16 @@ import Image from "next/image";
 import styles from './navBar.module.css'
 import logo from '../../assets/image.png'
 import { useRouter } from "next/navigation";
+import SearchBar from "../SearchBar";
 
 export default function Navbar() {
     const router = useRouter();
+    
+
   return (
     <div className={styles.navBar}>
     <Image src={logo} alt="MNSU Logo" className={styles.img} onClick={() => router.push('/')}/>
+    
     </div>
   );
 }
