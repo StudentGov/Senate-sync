@@ -6,39 +6,44 @@ import PieChart from '../pieChart/pieChart'
 
 interface AgendaProps {
   agenda: {
-    id:string,
-    agenda: string;
-    visible: boolean;
-    closed: boolean;
-    options:string[];
-    date: string
+    id:number,
+    title: string;
+    is_visible: boolean;
+    is_open: boolean;
+    created_at: string;
+    options: any
   };
   page:string;
   isMember:boolean;
   isSpeaker:boolean
 }
-
+interface Option {
+  id: number;
+  optionText: string;
+}
 
 export default function AgendaSection({ agenda, page, isMember, isSpeaker }: AgendaProps){
-  const [visibile, setVisibile] = useState<boolean>(agenda.visible)
-  const [selectedOption, setSelectedOption] = useState<string>("N/A");
+  const [visibile, setVisibile] = useState<boolean>(agenda.is_visible)
+  const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: "N/A"} );
   function handleToggle(){
     setVisibile(!visibile)
   }
+
   return (
     <div className={styles.section}>
-      <h2>{agenda.agenda}</h2>
-      <h3 className={styles.date}>{agenda.date}</h3>
+      <h2>{agenda.title}</h2>
+      <h3 className={styles.date}>{agenda.created_at}</h3>
         <div className={styles.buttons}>
-          {isMember && <small>{selectedOption}</small>}
+          {isMember && <small>{selectedOption.optionText}</small>}
           {isSpeaker && <Switch checked={visibile} onChange={handleToggle} className={styles.toggle}/>}
           {page==='current'?(
             <>
-              {isSpeaker && <button onClick={() => {agenda.closed=true}}>Close</button>}
-              <PieChart id={agenda.id} agendaName={agenda.agenda}/>
+              {isSpeaker && <button onClick={() => {agenda.is_open=true}}>Close</button>}
+              {/* <PieChart id={agenda.id} agendaName={agenda.title}/> */}
               {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'}/>}
             </>
-          ):<PieChart id={agenda.id} agendaName={agenda.agenda}/>
+          ):<></>
+          // <PieChart id={agenda.id} agendaName={agenda.title}/>
           }
         </div>    
       </div>
