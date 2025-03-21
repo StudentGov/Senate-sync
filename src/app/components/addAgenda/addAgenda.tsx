@@ -4,7 +4,7 @@ import BinLogo from '../../assets/bin.png'
 import Image from 'next/image'
 import AgendaData from '../../agendas.json'
 
-export default function Modal() {
+export default function Modal({ user }:any) {
   const [modal, setModal] = useState<boolean>(false);
   const [inputOption, setInputOption] = useState<string>("");
   const [options, setOptions]= useState<string[]>([]);
@@ -25,7 +25,24 @@ export default function Modal() {
       }
     }
   }, [modal]); // Re-run when modal state changes
-
+  
+    async function addAgenda() {
+      const response = await fetch("/api/add-agenda", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          speaker_id: user.id,
+          title: inputAgenda,
+          options:options
+        }),
+      });
+    
+      const data = await response.json();
+      console.log(data);
+    }
+  
   const handleSubmit = () => {
     if (!inputAgenda){
         setMessage("Agenda is missing")
@@ -34,6 +51,7 @@ export default function Modal() {
         setMessage("Options are missing")
     }
     else{
+      addAgenda();
       setMessage("");
         const newAgenda = {id:(AgendaData.length).toString(), agenda:inputAgenda, visible:false, closed:false, options:options, date:"01/11/2025"}
         AgendaData.push(newAgenda)
