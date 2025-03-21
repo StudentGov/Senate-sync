@@ -1,4 +1,4 @@
-import { turso } from "./src/db.js";
+import { turso } from "../../db.js";
 
 async function testConnection() {
   try {
