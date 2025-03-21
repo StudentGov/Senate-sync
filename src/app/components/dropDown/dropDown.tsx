@@ -5,9 +5,13 @@ import { MenuButton as BaseMenuButton } from '@mui/base/MenuButton';
 import { MenuItem as BaseMenuItem, menuItemClasses } from '@mui/base/MenuItem';
 import { styled } from '@mui/system';
 
+interface Option {
+  id: number;
+  optionText: string;
+}
 interface DropDownOptionsProps {
-  options: string[];
-  setSelectedOption: (options: string) => void;
+  options: Option[];
+  setSelectedOption: (option: Option) => void;
   text:string
 }
 
@@ -18,8 +22,8 @@ export default function DropDownOptions({ options, setSelectedOption, text }:Dro
     <Dropdown>
       <MenuButton>{text}</MenuButton>
       <Menu slots={{ listbox: Listbox }}>
-        {options.map((item, index) => (
-          <MenuItem key={index} onClick={() => setSelectedOption(item)}>{item}</MenuItem>
+        {options.map((item: Option, index: number) => (
+          <MenuItem key={index} onClick={() => setSelectedOption(item)}>{item.optionText}</MenuItem>
         ))}
       </Menu>
     </Dropdown>
