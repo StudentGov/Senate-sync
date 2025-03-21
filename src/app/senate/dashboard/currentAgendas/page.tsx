@@ -49,7 +49,7 @@ export default function CurrentAgendas(){
         <div className={styles.currentAgendas}>
             <div className={styles.top}>
                 <h1>Current Agendas</h1>
-                {isSpeaker && <AddAgenda />}
+                {isSpeaker && <AddAgenda user={user}/>}
             </div>
 
             <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
@@ -67,7 +67,7 @@ export default function CurrentAgendas(){
                 {sortedAgendaData.map((item, index) => (
                     !item.closed && 
                     (
-                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker}/>
+                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} />
                     )
                 ))}
                 </div>
