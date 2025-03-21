@@ -38,6 +38,12 @@
     margin: 0 auto;
     width: 100%;
 }
+.searchAddContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjusts space between elements */
+}
+
 .labels{
     display: flex;
     justify-content: space-between;
@@ -55,6 +61,22 @@
     margin-right: 75px;
 
 }
+.sortButton {
+    padding: 8px 12px;
+    background-color: Purple; /* Maverick Purple */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.sortButton:hover {
+    background-color: #5a0072; /* Slightly darker Maverick Purple on hover */
+}
+
 
 @media screen and (max-width: 1024px) {
     .pastAgendas{

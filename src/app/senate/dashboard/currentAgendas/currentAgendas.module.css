@@ -63,18 +63,20 @@
 }
 .sortButton {
     padding: 8px 12px;
-    background-color: #6200ea;
+    background-color: Purple; /* Maverick Purple */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    transition: 0.2s ease-in-out;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .sortButton:hover {
-    background-color: #4500b5;
+    background-color: #5a0072; /* Slightly lighter hover effect */
 }
+
 
 
 @media screen and (max-width: 1024px) {
