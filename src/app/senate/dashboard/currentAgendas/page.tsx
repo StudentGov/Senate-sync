@@ -40,7 +40,7 @@ export default function CurrentAgendas(){
             setIsSpeaker(true);
         }
         fetchAgendas();
-
+        
     }, [isSignedIn, user]);
 
     async function fetchAgendas() {

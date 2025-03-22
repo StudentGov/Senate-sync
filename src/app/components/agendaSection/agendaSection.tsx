@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './agendaSection.module.css';
 import Switch from '@mui/material/Switch';
 import DropDownOptions from '../dropDown/dropDown';
@@ -28,6 +28,25 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker }: Age
   function handleToggle(){
     setVisibile(!visibile)
   }
+  useEffect(() => {
+    async function getUserVote() {
+      try {
+        const response = await fetch("/api/get-vote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ voter_id: "1234", agenda_id: agenda.id }),
+        });
+
+        const data = await response.json();
+        console.log(data)
+        setSelectedOption(data); // Update state with retrieved vote
+      } catch (error) {
+        console.error("Failed to fetch user vote:", error);
+      }
+    }
+
+    getUserVote();
+  }, []); // Re-fetch when voterId or agendaId changes
 
   return (
     <div className={styles.section}>
