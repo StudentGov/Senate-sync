@@ -56,6 +56,31 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
       console.error("Error updating visibility:", error);
     }
   }
+
+  async function handleClose(){
+    // Call API to update visibility in the database
+    try {
+      const response = await fetch("/api/handle-close", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          agenda_id: agenda.id
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Agenda closed successfully:", data.message);
+      } else {
+        console.error("Failed to close agenda:", data.error);
+      }
+    } catch (error) {
+      console.error("Error closing agenda:", error);
+    }
+  }
   // Fetch the user's vote when the component mounts or when user or agenda changes
   useEffect(() => {
     async function getUserVote() {
@@ -129,7 +154,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
           {isSpeaker && <Switch checked={visible} onChange={handleToggle} className={styles.toggle}/>}
           {page==='current'?(
             <>
-              {isSpeaker && <button onClick={() => {agenda.is_open=true}}>Close</button>}
+              {isSpeaker && <button onClick={handleClose}>Close</button>}
               {/* <PieChart id={agenda.id} agendaName={agenda.title}/> */}
               {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'}/>}
             </>
