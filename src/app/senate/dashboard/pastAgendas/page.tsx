@@ -101,7 +101,7 @@ export default function PastAgendas(){
                     </div>
                 {sortedAgendaData.map((item, index) => (
                     (!item.is_open &&
-                    <AgendaSection key={index} agenda={item} page={'past'} isMember={isMember} isSpeaker={isSpeaker}/>)
+                    <AgendaSection key={index} agenda={item} page={'past'} isMember={isMember} isSpeaker={isSpeaker} user={user}/>)
                 ))}
                 </div>
             </div>
