@@ -24,12 +24,38 @@ interface Option {
 }
 
 export default function AgendaSection({ agenda, page, isMember, isSpeaker, user }: AgendaProps){
-  const [visibile, setVisibile] = useState<boolean>(agenda.is_visible)
+  const [visible, setVisible] = useState<boolean>(agenda.is_visible)
   const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: null} );
-  function handleToggle(){
-    setVisibile(!visibile)
-  }
+  // Toggle the visibility
+  async function handleToggle() {
+    // Toggle the visibility
+    const newVisibility = !visible;
+    setVisible(newVisibility);
 
+    // Call API to update visibility in the database
+    try {
+      const response = await fetch("/api/update-agenda-visibility", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          agenda_id: agenda.id,
+          is_visible: newVisibility,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Visibility updated successfully:", data.message);
+      } else {
+        console.error("Failed to update visibility:", data.error);
+      }
+    } catch (error) {
+      console.error("Error updating visibility:", error);
+    }
+  }
   // Fetch the user's vote when the component mounts or when user or agenda changes
   useEffect(() => {
     async function getUserVote() {
@@ -100,7 +126,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
       <h3 className={styles.date}>{agenda.created_at}</h3>
         <div className={styles.buttons}>
           {isMember && <small>{selectedOption.optionText}</small>}
-          {isSpeaker && <Switch checked={visibile} onChange={handleToggle} className={styles.toggle}/>}
+          {isSpeaker && <Switch checked={visible} onChange={handleToggle} className={styles.toggle}/>}
           {page==='current'?(
             <>
               {isSpeaker && <button onClick={() => {agenda.is_open=true}}>Close</button>}
