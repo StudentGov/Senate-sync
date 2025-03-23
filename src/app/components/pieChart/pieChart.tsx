@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react';
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
-import Data from '../../voting.json';
-import Individual from '../individual/individual';
 import styles from './pieChart.module.css';
+
+
+interface AgendaProps {
+    agenda: {
+      id:number,
+      title: string;
+      is_visible: boolean;
+      is_open: boolean;
+      created_at: string;
+      options: any
+    };
+}
 
 interface DataItem {
     id: number;
@@ -10,35 +20,27 @@ interface DataItem {
     label: string;
 }
 
-// Updated to allow string indexing
-interface DataObject {
-    [key: string]: {
-        data: DataItem[];
-    };
-}
-
-// Explicitly typing the imported JSON as DataObject
-const VotingData: DataObject = Data;
-
-export default function PieChartPopUp({id, agendaName}: {id:string, agendaName:string}) {
+export default function PieChartPopUp({agenda}: AgendaProps) {
     const [modal, setModal] = useState<boolean>(false);
     const [sum, setSum] = useState<number>(0);
+    const [voteData, setVoteData] = useState<DataItem[]>([]);
 
     const toggleModal = () => {
         setModal(!modal);
     };
-
+    useEffect(() => {
+        fetchVotes();
+    }, [])
     // Calculate the sum of values
     useEffect(() => {
-        // Get the data for the specific id
-        const agendaData = (VotingData[id]?.data || []) as DataItem[]; // Fixed TypeScript error
-    
+
         // Calculate the sum of values
-        const totalValue = agendaData.reduce((sum, item) => sum + item.value, 0);
-    
+        const totalValue = voteData.reduce((sum, item) => sum + item.value, 0);
         // Update state
         setSum(totalValue);
-    }, [id]);
+
+
+    }, [voteData]);
 
     // UseEffect to manage modal state safely on the client side
     useEffect(() => {
@@ -51,8 +53,34 @@ export default function PieChartPopUp({id, agendaName}: {id:string, agendaName:s
         }
     }, [modal]); // Re-run when modal state changes
 
+    async function fetchVotes() {
+        try {
+          const response = await fetch('/api/get-vote-count', { // Replace '/api/your-endpoint' with the actual API URL
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json', // Set content type to JSON
+            },
+            body: JSON.stringify({ agenda_id:agenda.id }), // Send the agenda_id in the request body
+          });
+      
+          if (!response.ok) {
+            throw new Error('Failed to fetch options');
+          }
+      
+          const data = await response.json();
+          console.log('Fetched options:', data);
+          setVoteData(data.data)
+          // You can return or use the data here
+          return data;
+      
+        } catch (error) {
+          console.error('Error fetching options:', error);
+        }
+      }
+      
+
     const size = { width: 400, height: 500 };
-    const chartData = { data: VotingData[id]?.data || [] }; // Fixed TypeScript error
+    const chartData = { data: voteData || [] }; // Fixed TypeScript error
 
     return (
         <>
@@ -62,7 +90,7 @@ export default function PieChartPopUp({id, agendaName}: {id:string, agendaName:s
                 <div className={styles.modal}>
                     <div onClick={toggleModal} className={styles.overlay}></div>
                     <div className={styles.modalContent}>
-                        <h2 className={styles.title}>{agendaName}</h2>
+                        <h2 className={styles.title}>{agenda.title}</h2>
                         <button className={styles.closeModal} onClick={toggleModal}>CLOSE</button>
                         <PieChart
                             series={[
@@ -81,7 +109,7 @@ export default function PieChartPopUp({id, agendaName}: {id:string, agendaName:s
                             {...size}
                         />
                         <div className={styles.individual}>
-                            <Individual id={id}/>
+                            {/* <Individual id={id}/> */}
                         </div>
                     </div>
                 </div>
