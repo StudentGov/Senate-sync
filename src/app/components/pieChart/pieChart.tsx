@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import styles from './pieChart.module.css';
+import Individual from '../individual/individual';
 
 
 interface AgendaProps {
@@ -33,7 +34,6 @@ export default function PieChartPopUp({agenda}: AgendaProps) {
     }, [])
     // Calculate the sum of values
     useEffect(() => {
-
         // Calculate the sum of values
         const totalValue = voteData.reduce((sum, item) => sum + item.value, 0);
         // Update state
@@ -109,7 +109,7 @@ export default function PieChartPopUp({agenda}: AgendaProps) {
                             {...size}
                         />
                         <div className={styles.individual}>
-                            {/* <Individual id={id}/> */}
+                            {agenda.is_visible ? <Individual agenda_id={agenda.id}/>:<></>}
                         </div>
                     </div>
                 </div>
