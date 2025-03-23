@@ -155,7 +155,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
           {page==='current'?(
             <>
               {isSpeaker && <button onClick={handleClose}>Close</button>}
-              {/* <PieChart id={agenda.id} agendaName={agenda.title}/> */}
+              <PieChart agenda={agenda}/>
               {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'}/>}
             </>
           ):<></>
