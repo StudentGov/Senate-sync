@@ -22,22 +22,28 @@ export async function POST(req: Request) {
     const allowedDomains = ["@mnsu.edu", "@go.minnstate.edu", "@minnstate.edu"];
     const emailDomain = email.substring(email.indexOf("@"));
 
-    // Check if the email domain is allowed
-    const isAllowedDomain = allowedDomains.some(domain => emailDomain.endsWith(domain));
-    
-    // If email domain is not allowed, do not assign any role
-    if (!isAllowedDomain) {
-      console.log(`Unauthorized email domain: ${email}`);
-      return NextResponse.json({ message: "Email domain is not allowed. No role assigned." });
-    }
-
     // Fetch user metadata from Clerk
     const user = await clerkClient.users.getUser(userId);
     const existingRole = user.publicMetadata?.role;
 
-    // If a role already exists, return without reassigning
+    // If a role already exists, return it in the response 
     if (existingRole) {
-      return NextResponse.json({ message: `User already has role: ${existingRole}` });
+      return NextResponse.json({
+        message: `User already has role: ${existingRole}`,
+        role: existingRole, 
+      });
+    }
+
+    // Check if the email domain is allowed
+    const isAllowedDomain = allowedDomains.some(domain => emailDomain.endsWith(domain));
+
+    // If email domain is not allowed, do not assign any role 
+    if (!isAllowedDomain) {
+      console.log(`Unauthorized email domain: ${email}`);
+      return NextResponse.json({
+        message: "Email domain is not allowed. No role assigned.",
+        role: null, 
+      });
     }
 
     // Assign default role "student" for allowed domains
@@ -46,7 +52,10 @@ export async function POST(req: Request) {
     });
 
     // Return a success message confirming the role assignment
-    return NextResponse.json({ message: "Default role 'student' assigned successfully" });
+    return NextResponse.json({
+      message: "Default role 'student' assigned successfully",
+      role: "student",
+    });
   } catch (error) {
     // Error Handling
     console.error("Error assigning default role:", error);
