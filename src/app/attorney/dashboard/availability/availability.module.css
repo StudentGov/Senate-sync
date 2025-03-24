@@ -1,0 +1,33 @@
+.availabilityPage {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevents horizontal scrollbar */
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.headerContainer {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.headerContainer h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.calendarWrapper {
+  width: 100%;
+  max-width: 1100px;
+  font-size: 0.9rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
