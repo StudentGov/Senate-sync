@@ -13,7 +13,7 @@ interface DropDownOptionsProps {
   options: Option[];
   setSelectedOption: (option: Option) => void;
   text:string;
-  setUserChangedVote: ((vote: boolean) => void) | null
+  setUserChangedVote?: ((vote: boolean) => void) | null;
 }
 
 export default function DropDownOptions({ options, setSelectedOption, text, setUserChangedVote }:DropDownOptionsProps) {

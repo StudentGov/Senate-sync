@@ -105,7 +105,7 @@ export default function PastAgendas(){
                         <div className={styles.rightLabels}>
                             {isMember && <label>Voted</label>}
                             {isSpeaker && <label>Visible</label>}
-                            <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'} setUserChangedVote={null}/>
+                            <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'}/>
                         </div>
                     </div>
                 {sortedAgendaData.map((item, index) => (
