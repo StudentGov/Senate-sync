@@ -68,6 +68,7 @@ body.active-modal {
     gap:50px;
     justify-content: center;
     width: 50%;
+    padding-top: 50px
 }
 .inputs label {
     font-size: 16px;
@@ -78,6 +79,20 @@ body.active-modal {
     border: 1px solid #ccc;
     border-color: rgb(65, 65, 65);
     text-indent: 10px;
+    width: 90%;
+    /* margin-bottom: -50px;; */
+}
+.description{
+    height: 150px;
+}
+.addOptions{
+    display: flex;
+    gap: 10px
+}
+.addOptions button{
+    background-color: rgb(51, 51, 51);
+    color: white;
+    width: 30px
 }
 .options{
     display: flex;
@@ -118,6 +133,7 @@ body.active-modal {
     height: 30px;
     align-items: center;
     padding: 0 10;
+
 }
 .option span{
     flex-grow: 1; /* Allow the span to take up remaining space */
@@ -150,4 +166,32 @@ body.active-modal {
 }
 .delete:hover{
     cursor: pointer;
+}
+
+@media screen and (max-width:600px) {
+    .modalContent{
+        flex-direction: column;
+        top: 55%;
+        padding-bottom: 65px;
+    }
+    .inputs{
+        width: 100%;
+    }
+    .content{
+        width: 60vw;
+    }
+    .inputs label{
+        margin-top: -20px;
+    }
+    .options{
+        margin-top: 0px;
+        height: 200px
+    }
+    .push{
+        top:90%
+    }
+    .description{
+        height: 100px;
+
+    }
 }

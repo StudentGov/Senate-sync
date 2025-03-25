@@ -3,14 +3,14 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { speaker_id, title, options }: { speaker_id: string; title: string; options: string[] } = await req.json();
+    const { speaker_id, title, options, description }: { speaker_id: string; title: string; options: string[], description: string } = await req.json();
 
     // Create an agenda
     const agendaResult = await turso.execute({
       sql: `
           INSERT INTO Agendas (speaker_id, title, description, is_visible, is_open)
           VALUES (?, ?, ?, ?, ?)`,
-      args: [speaker_id, title, "N/A", true, true],
+      args: [speaker_id, title, description, true, true],
     });
 
     // Ensure agendaResult has a valid lastInsertRowid

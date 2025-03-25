@@ -20,9 +20,15 @@ export default function Modal({ user }: ModalProps) {
   const [options, setOptions]= useState<string[]>([]);
   const [inputAgenda, setInputAgenda] = useState<string>("")
   const [message, setMessage] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
 
   const toggleModal = () => {
     setModal(!modal);
+    setInputAgenda('');
+    setOptions([]);
+    setInputOption('');
+    setDescription('');
+    setMessage('');
   };
 
   // UseEffect to manage modal state safely on the client side
@@ -45,7 +51,8 @@ export default function Modal({ user }: ModalProps) {
         body: JSON.stringify({
           speaker_id: user.id,
           title: inputAgenda,
-          options:options
+          options:options,
+          description:description
         }),
       });
     
@@ -63,8 +70,6 @@ export default function Modal({ user }: ModalProps) {
     else{
       addAgenda();
       setMessage("");
-        const newAgenda = {id:(AgendaData.length).toString(), agenda:inputAgenda, visible:false, closed:false, options:options, date:"01/11/2025"}
-        AgendaData.push(newAgenda)
       setInputAgenda('');
       setOptions([]);
       setInputOption('');
@@ -81,6 +86,7 @@ export default function Modal({ user }: ModalProps) {
   const handleDelete = (option: string) => {
     setOptions((prev) => prev.filter(item => item !== option))
   }
+  
 
   return (
     <>
@@ -95,7 +101,13 @@ export default function Modal({ user }: ModalProps) {
               <label htmlFor="inputField">Write Agenda</label>
                 <input value={inputAgenda} placeholder="Enter Agenda" onChange={(e) => setInputAgenda(e.target.value)} required />
               <label htmlFor="inputField">Add Option</label>
+              <div className={styles.addOptions}>
                 <input value={inputOption} placeholder="Enter Option" onChange={(e) => setInputOption(e.target.value)} onKeyDown={handleEnter}/>
+                <button onClick={() => {setOptions((prev) => [...prev, inputOption]); setInputOption("");}}>+</button>
+              </div>
+
+              <label htmlFor="description">Description:</label>
+                <textarea className={styles.description} name="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter your description here..."  />
             </div>
             <div className={styles.options}>
               <span>Options</span>
@@ -109,9 +121,6 @@ export default function Modal({ user }: ModalProps) {
                 ))}
               </div>
             </div>
-
-
-
             <div className={styles.push}>
               {message}
               <button onClick={handleSubmit}>Push Agenda</button>
