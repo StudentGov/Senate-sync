@@ -33,6 +33,7 @@ interface AgendaProps {
 export default function AgendaSection({ agenda, page, isMember, isSpeaker, user }: AgendaProps){
   const [visible, setVisible] = useState<boolean>(agenda.is_visible)
   const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: "N/A"} );
+  const [userChangedVote, setUserChangedVote] = useState<boolean>(false);
   // Toggle the visibility
   async function handleToggle() {
     // Toggle the visibility
@@ -120,6 +121,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
         alert("Please select an option");
         return;
       }
+      setUserChangedVote(false);
 
       try {
         const response = await fetch("/api/update-user-vote", {
@@ -146,7 +148,10 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
     }
 
     // Only call the API if selectedOption has a valid optionText
-    if (selectedOption && selectedOption.optionText !== "N/A" && selectedOption.id !== null && selectedOption.id > -1) {
+    // if (selectedOption && selectedOption.optionText !== "N/A" && selectedOption.id !== null && selectedOption.id > -1) {
+    //   handleVoteSubmit();
+    // }
+    if (userChangedVote){
       handleVoteSubmit();
     }
 
@@ -162,7 +167,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
             <>
               {isSpeaker && <button onClick={handleClose}>Close</button>}
               <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
-              {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'}/>}
+              {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'} setUserChangedVote={setUserChangedVote}/>}
             </>
           ):<PieChart agenda={agenda} isSpeaker={isSpeaker}/>
           }

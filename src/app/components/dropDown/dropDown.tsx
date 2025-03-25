@@ -12,10 +12,11 @@ interface Option {
 interface DropDownOptionsProps {
   options: Option[];
   setSelectedOption: (option: Option) => void;
-  text:string
+  text:string;
+  setUserChangedVote: (vote: boolean) => void
 }
 
-export default function DropDownOptions({ options, setSelectedOption, text }:DropDownOptionsProps) {
+export default function DropDownOptions({ options, setSelectedOption, text, setUserChangedVote }:DropDownOptionsProps) {
 
 
   return (
@@ -23,7 +24,7 @@ export default function DropDownOptions({ options, setSelectedOption, text }:Dro
       <MenuButton>{text}</MenuButton>
       <Menu slots={{ listbox: Listbox }}>
         {options.map((item: Option, index: number) => (
-          <MenuItem key={index} onClick={() => setSelectedOption(item)}>{item.optionText}</MenuItem>
+          <MenuItem key={index} onClick={() => {setSelectedOption(item); setUserChangedVote(true)}}>{item.optionText}</MenuItem>
         ))}
       </Menu>
     </Dropdown>
