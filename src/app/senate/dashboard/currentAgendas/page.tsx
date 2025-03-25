@@ -111,7 +111,7 @@ export default function CurrentAgendas(){
                         <div className={styles.rightLabels}>
                             {isMember && <label>Voted</label>}
                             {isSpeaker && <label>Visible</label>}
-                            <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'}/>
+                            <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'} setUserChangedVote={null}/>
                         </div>
                     </div>
                 {sortedAgendaData.map((item, index) => (
