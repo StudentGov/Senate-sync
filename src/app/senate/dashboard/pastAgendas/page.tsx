@@ -101,12 +101,12 @@ export default function PastAgendas(){
                 <div className={styles.content}>
                     <div className={styles.labels}>
                         <label>Title</label>
+                        <label className={styles.date}>Date</label>
                         <div className={styles.rightLabels}>
-                            <label>Date</label>
                             {isMember && <label>Voted</label>}
                             {isSpeaker && <label>Visible</label>}
+                            <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'}/>
                         </div>
-                        <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'}/>
                     </div>
                 {sortedAgendaData.map((item, index) => (
                     (!item.is_open &&

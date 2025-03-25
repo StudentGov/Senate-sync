@@ -154,7 +154,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
   return (
     <div className={styles.section}>
       <h2>{agenda.title}</h2>
-      <h3 className={styles.date}>{agenda.created_at}</h3>
+      <h3 className={styles.date}>{new Date(agenda.created_at).toLocaleDateString("en-CA")}</h3>
         <div className={styles.buttons}>
           {isMember && <small>{selectedOption.optionText}</small>}
           {isSpeaker && <Switch checked={visible} onChange={handleToggle} className={styles.toggle}/>}

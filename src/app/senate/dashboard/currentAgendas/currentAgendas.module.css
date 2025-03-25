@@ -39,7 +39,9 @@
     width: 100%;
 }
 .labels{
-    display: flex;
+    /* display: flex; */
+    display: grid;
+    grid-template-columns: 8fr 1fr 1fr;
     font-size: 15px;
     padding-left: 20px;
     width: 100%;
@@ -50,12 +52,19 @@
 }
 .rightLabels{
     display: flex;
-    margin-left: auto;
-    margin-right:120px;
-    /* margin-right: 210px; */
+    align-items: center;
+    gap: 10px;
+    width: 15vw;
+    min-width: 160px;
 }
+.rightLabels label {
+    margin-left: -20px;
+}
+
 .date{
-    margin-right: 100%;
+    margin-right:5%;
+    width: 10vw;
+    margin-right: 30px;
 }
 .labels button {
     display: flex;
@@ -65,10 +74,16 @@
     color: white;
     height: 100%;
     width: 70px;
+    margin-left: auto;
     margin-right: 10px;
 }
 @media screen and (max-width: 1024px) {
     .currentAgendas{
         padding: 0;
+    }
+}
+@media screen and (max-width: 600px) {
+    .date{
+        display: none;
     }
 }

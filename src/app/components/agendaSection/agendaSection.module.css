@@ -1,5 +1,7 @@
 .section {
-  display: flex;
+  /* display: flex; */
+  display: grid;
+  grid-template-columns: 8fr 1fr 1fr;
   justify-content: space-between;
   align-items: center; /* Vertically aligns items */
   border-top: 1px solid #ece6e6; /* Divider at the top */
@@ -35,18 +37,23 @@
   border-radius: 7px;
 }
 .date{ 
-  margin-right:5%
+  margin-right:5%;
+  width: 10vw;
+  min-width: 90px;
+  margin-right: 20px;
 }
 .buttons{
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 15vw;
+  min-width: 160px;
 }
 .buttons small{
   flex-grow: 1;
   overflow: hidden; /* Ensure text doesn't overflow the container */
   text-overflow: ellipsis; /* Show ellipsis when the text overflows */
-  white-space: nowrap; /* Prevent text wrapping */
+  /* white-space: nowrap; Prevent text wrapping */
   max-width: 20vw;
   margin-right: 15px
 }
@@ -57,6 +64,7 @@
   height: 30px;
   font-size: 10px;
   width:40px;
+  min-width: 40px;
   background-color: purple;
   color:white;
   border-radius: 5px;
@@ -65,7 +73,9 @@
   position: relative; /* Keeps it within the normal document flow */
 
 }
-/* @media screen and (min-width:){
-  
-} */
+@media screen and (max-width:600px){
+  .date{
+    display: none;
+  }
+}
 
