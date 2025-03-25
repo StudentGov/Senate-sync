@@ -33,7 +33,7 @@ export default function CurrentAgendas(){
     const { collapsed, setCollapsed } = useCollapsedContext();
     const { user, isSignedIn } = useUser();
     const [isMember, setIsMember] = useState<boolean>(false);
-    const [isSpeaker, setIsSpeaker] = useState<boolean>(true);
+    const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
     const [selectedOption, setSelectedOption] = useState<Option>({id:1, optionText:"Date"});
     const [agendaData, setAgendaData] = useState<Agenda[]>([]);
 

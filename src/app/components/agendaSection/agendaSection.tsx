@@ -55,12 +55,12 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Visibility updated successfully:", data.message);
+        console.log(`Visibility for "${agenda.title}" updated successfully`);
       } else {
-        console.error("Failed to update visibility:", data.error);
+        console.error(`Failed to update visibility for "${agenda.title}":`, data.error);
       }
     } catch (error) {
-      console.error("Error updating visibility:", error);
+      console.error(`Error updating visibility for "${agenda.title}":`, error);
     }
   }
 
@@ -80,12 +80,12 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Agenda closed successfully:", data.message);
+        console.log(`Agenda "${agenda.title}" closed successfully:`, data.message);
       } else {
-        console.error("Failed to close agenda:", data.error);
+        console.error(`Failed to close agenda "${agenda.title}":`, data.error);
       }
     } catch (error) {
-      console.error("Error closing agenda:", error);
+      console.error(`Error closing agenda "${agenda.title}":`, error);
     }
   }
   // Fetch the user's vote when the component mounts or when user or agenda changes
@@ -134,14 +134,13 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
         });
 
         const data = await response.json();
-        console.log(data)
         if (response.ok) {
-          console.log("Success adding/updating vote:", data.message);
+          console.log(`Success adding/updating vote: for "${agenda.title}"`);
         } else {
           console.log("Error:", data.error);
         }
       } catch (error) {
-        console.error("Error submitting vote:", error);
+        console.error(`Error submitting vote for "${agenda.title}":`, error);
         alert("Error submitting vote");
       }
     }
@@ -162,10 +161,10 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
           {page==='current'?(
             <>
               {isSpeaker && <button onClick={handleClose}>Close</button>}
-              <PieChart agenda={agenda}/>
+              <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
               {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'}/>}
             </>
-          ):<PieChart agenda={agenda}/>
+          ):<PieChart agenda={agenda} isSpeaker={isSpeaker}/>
           }
         </div>    
       </div>

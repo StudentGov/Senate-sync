@@ -3,7 +3,8 @@ import ReactDOM from "react-dom";
 import styles from './individual.module.css'
 
 interface Props{
-    agenda_id:number
+    agenda_id:number,
+    agenda_title:string
 }
 interface VoteData{
     id: number,
@@ -11,15 +12,12 @@ interface VoteData{
     option: string
 }
 
-export default function Individual({agenda_id}: Props){
+export default function Individual({agenda_id, agenda_title}: Props){
     const [modal, setModal] = useState<boolean>(false);
     const [voteData, setVoteData] = useState<VoteData[]>([])
     const toggleModal = () => {
         setModal(!modal);
     };
-    useEffect(() => {
-        fetchVotes();
-    }, [])
     // UseEffect to manage modal state safely on the client side
     useEffect(() => {
         if (typeof window !== "undefined") { // Check if running on the client
@@ -42,16 +40,16 @@ export default function Individual({agenda_id}: Props){
           if (!response.ok) throw new Error('Failed to fetch votes');
       
           const data = await response.json();
-          console.log('Fetched Votes:', data);
+          console.log(`Fetched individual votes for ${agenda_title}:`, data);
           setVoteData(data.data)
         } catch (error) {
-          console.error('Error fetching votes:', error);
+          console.error(`Error fetching individaul votes for ${agenda_title}:`, error);
         }
       }
       
     return (
 <>
-            <button onClick={toggleModal} className={styles.btnModal}>Individual Stats</button>
+            <button onClick={() => {toggleModal(); fetchVotes();}} className={styles.btnModal}>Individual Stats</button>
 
             {modal && ReactDOM.createPortal(
                 <div className={styles.modal}>

@@ -12,6 +12,7 @@ interface AgendaProps {
       is_open: boolean;
       created_at: string;
     };
+    isSpeaker: boolean
 }
 
 interface DataItem {
@@ -20,7 +21,7 @@ interface DataItem {
     label: string;
 }
 
-export default function PieChartPopUp({agenda}: AgendaProps) {
+export default function PieChartPopUp({agenda, isSpeaker}: AgendaProps) {
     const [modal, setModal] = useState<boolean>(false);
     const [sum, setSum] = useState<number>(0);
     const [voteData, setVoteData] = useState<DataItem[]>([]);
@@ -28,9 +29,6 @@ export default function PieChartPopUp({agenda}: AgendaProps) {
     const toggleModal = () => {
         setModal(!modal);
     };
-    useEffect(() => {
-        fetchVotes();
-    }, [])
     // Calculate the sum of values
     useEffect(() => {
         // Calculate the sum of values
@@ -67,13 +65,13 @@ export default function PieChartPopUp({agenda}: AgendaProps) {
           }
       
           const data = await response.json();
-          console.log('Fetched options:', data);
+          console.log(`Fetched votes for ${agenda.title}:`, data);
           setVoteData(data.data)
           // You can return or use the data here
           return data;
       
         } catch (error) {
-          console.error('Error fetching options:', error);
+          console.error(`Error fetching votes for ${agenda.title}:`, error);
         }
       }
       
@@ -83,7 +81,7 @@ export default function PieChartPopUp({agenda}: AgendaProps) {
 
     return (
         <>
-            <button onClick={toggleModal} className={styles.btnModal}>View Voting</button>
+            <button onClick={() => {toggleModal(); fetchVotes()}} className={styles.btnModal}>View Voting</button>
 
             {modal && (
                 <div className={styles.modal}>
@@ -108,7 +106,7 @@ export default function PieChartPopUp({agenda}: AgendaProps) {
                             {...size}
                         />
                         <div className={styles.individual}>
-                            {agenda.is_visible ? <Individual agenda_id={agenda.id}/>:<></>}
+                            {agenda.is_visible || isSpeaker ? <Individual agenda_id={agenda.id} agenda_title={agenda.title}/>:<></>}
                         </div>
                     </div>
                 </div>
