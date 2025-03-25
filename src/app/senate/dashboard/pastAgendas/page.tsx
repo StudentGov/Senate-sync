@@ -4,7 +4,6 @@ import styles from './pastAgendas.module.css'
 import { useCollapsedContext } from '../../../components/sideBar/sideBarContext'
 import SideBar from '../../../components/sideBar/SideBar'
 import AgendaSection from '../../../components/agendaSection/agendaSection'
-import AgendaData from '../../../agendas.json'
 import { useUser } from "@clerk/nextjs";
 import DropDownOptions from '../../../components/dropDown/dropDown'
 
@@ -22,12 +21,17 @@ interface Agenda {
     created_at: string;
     options: Option[]
   }
+interface User {
+  id: string;
+  firstName: string,
+  lastName: string
+}
 export default function PastAgendas(){
     const { collapsed, setCollapsed } = useCollapsedContext();
     const { user, isSignedIn } = useUser();
     const [isMember, setIsMember] = useState<boolean>(false);
     const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
-    const [selectedOption, setSelectedOption] = useState<string>("Date");
+    const [selectedOption, setSelectedOption] = useState<Option>({id:1, optionText:"Date"});
     const [agendaData, setAgendaData] = useState<Agenda[]>([]);
 
     useEffect(() => {
@@ -70,9 +74,9 @@ export default function PastAgendas(){
       }
 
       const sortedAgendaData: Agenda[] = [...agendaData].sort((a, b) => {
-        if (selectedOption === "Title") {
+        if (selectedOption.optionText === "Title") {
           return a.title.localeCompare(b.title); // Sorting by Title alphabetically
-        } else if (selectedOption === "Date") {
+        } else if (selectedOption.optionText === "Date") {
           const dateA = new Date(a.created_at); // Convert 'created_at' string to Date object
           const dateB = new Date(b.created_at);
       
@@ -81,6 +85,11 @@ export default function PastAgendas(){
         }
         return 0; // No sorting if 'N/A'
       });
+      const userData: User = {
+        id: user?.id || '', // Default to empty string if undefined
+        firstName: user?.firstName || '', // Default to empty string if undefined
+        lastName: user?.lastName || '', // Default to empty string if undefined
+      };
     return (
         <div className={styles.pastAgendas}>
             <div className={styles.top}>
@@ -97,11 +106,11 @@ export default function PastAgendas(){
                             {isMember && <label>Voted</label>}
                             {isSpeaker && <label>Visible</label>}
                         </div>
-                        {/* <DropDownOptions options={["Title", "Date"]} setSelectedOption={setSelectedOption} text={'Sort'}/> */}
+                        <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'}/>
                     </div>
                 {sortedAgendaData.map((item, index) => (
                     (!item.is_open &&
-                    <AgendaSection key={index} agenda={item} page={'past'} isMember={isMember} isSpeaker={isSpeaker} user={user}/>)
+                    <AgendaSection key={index} agenda={item} page={'past'} isMember={isMember} isSpeaker={isSpeaker} user={userData}/>)
                 ))}
                 </div>
             </div>

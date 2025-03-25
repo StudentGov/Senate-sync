@@ -4,6 +4,16 @@ import Switch from '@mui/material/Switch';
 import DropDownOptions from '../dropDown/dropDown';
 import PieChart from '../pieChart/pieChart'
 
+interface Option {
+  id: number;
+  optionText: string;
+}
+interface User {
+  id: string;
+  firstName: string,
+  lastName: string
+}
+
 interface AgendaProps {
   agenda: {
     id:number,
@@ -11,21 +21,18 @@ interface AgendaProps {
     is_visible: boolean;
     is_open: boolean;
     created_at: string;
-    options: any
+    options: Option[]
   };
   page:string;
   isMember:boolean;
   isSpeaker:boolean;
-  user: any
+  user: User
 }
-interface Option {
-  id: number|null;
-  optionText: string|null;
-}
+
 
 export default function AgendaSection({ agenda, page, isMember, isSpeaker, user }: AgendaProps){
   const [visible, setVisible] = useState<boolean>(agenda.is_visible)
-  const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: null} );
+  const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: "N/A"} );
   // Toggle the visibility
   async function handleToggle() {
     // Toggle the visibility
@@ -94,7 +101,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
         const data = await response.json();
         // If the user hasn't voted, set default "N/A", else set the option data
         if (data.optionText === "N/A" || !data.optionText) {
-          setSelectedOption({ id: null, optionText: "N/A" });
+          setSelectedOption({ id: -1, optionText: "N/A" });
         } else {
           setSelectedOption({ id: data.option_id, optionText: data.optionText });
         }
@@ -158,8 +165,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
               <PieChart agenda={agenda}/>
               {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'}/>}
             </>
-          ):<></>
-          // <PieChart id={agenda.id} agendaName={agenda.title}/>
+          ):<PieChart agenda={agenda}/>
           }
         </div>    
       </div>

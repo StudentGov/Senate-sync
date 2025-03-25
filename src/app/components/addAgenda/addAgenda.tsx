@@ -4,7 +4,17 @@ import BinLogo from '../../assets/bin.png'
 import Image from 'next/image'
 import AgendaData from '../../agendas.json'
 
-export default function Modal({ user }:any) {
+
+
+interface User {
+  id: string;
+}
+
+interface ModalProps {
+  user: User;
+}
+
+export default function Modal({ user }: ModalProps) {
   const [modal, setModal] = useState<boolean>(false);
   const [inputOption, setInputOption] = useState<string>("");
   const [options, setOptions]= useState<string[]>([]);

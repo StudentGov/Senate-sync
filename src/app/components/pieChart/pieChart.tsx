@@ -11,7 +11,6 @@ interface AgendaProps {
       is_visible: boolean;
       is_open: boolean;
       created_at: string;
-      options: any
     };
 }
 
