@@ -3,7 +3,7 @@ import Image from "next/image";
 import styles from './navBar.module.css'
 import logo from '../../assets/image.png'
 import { useRouter } from "next/navigation";
-import SearchBar from "../SearchBar";
+
 
 export default function Navbar() {
     const router = useRouter();
