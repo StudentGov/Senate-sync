@@ -1,8 +1,8 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import styles from './addAgenda.module.css'
 import BinLogo from '../../assets/bin.png'
 import Image from 'next/image'
-import AgendaData from '../../agendas.json'
 
 
 

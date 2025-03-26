@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from 'react';
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import styles from './pieChart.module.css';

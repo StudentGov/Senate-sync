@@ -1,3 +1,4 @@
+'use client'; 
 import { useState, useEffect } from 'react';
 import ReactDOM from "react-dom";
 import styles from './individual.module.css'
@@ -20,15 +21,12 @@ export default function Individual({agenda_id, agenda_title}: Props){
     };
     // UseEffect to manage modal state safely on the client side
     useEffect(() => {
-        if (typeof window !== "undefined") { // Check if running on the client
-            if (modal) {
-                document.body.classList.add('active-modal');
-            } else {
-                document.body.classList.remove('active-modal');
-            }
+        if (modal) {
+            document.body.classList.add("active-modal");
+        } else {
+            document.body.classList.remove("active-modal");
         }
-
-    }, [modal]); // Re-run when modal state changes
+    }, [modal]);
     async function fetchVotes() {
         try {
           const response = await fetch('/api/get-individual-votes', {
@@ -48,9 +46,8 @@ export default function Individual({agenda_id, agenda_title}: Props){
       }
       
     return (
-<>
+        <>
             <button onClick={() => {toggleModal(); fetchVotes();}} className={styles.btnModal}>Individual Stats</button>
-
             {modal && ReactDOM.createPortal(
                 <div className={styles.modal}>
                     <div onClick={toggleModal} className={styles.overlay}></div>

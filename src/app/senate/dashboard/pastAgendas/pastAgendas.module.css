@@ -86,4 +86,7 @@
     .date{
         display: none;
     }
+    .rightLabels label {
+        margin-left: 10px;
+    }
 }

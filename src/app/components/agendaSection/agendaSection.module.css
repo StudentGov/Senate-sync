@@ -36,6 +36,11 @@
   border: 0.1px solid #48316F;
   border-radius: 7px;
 }
+.fillHeight{
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
 .date{ 
   margin-right:5%;
   width: 10vw;
