@@ -1,12 +1,13 @@
 "use client";
+
 import styles from './availability.module.css';
 import SideBar from '../../../components/attorneySideBar/AttorneySideBar';
 import { CollapsedProvider, useCollapsedContext } from '../../../components/attorneySideBar/attorneySideBarContext';
 
 import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+import dayGridPlugin from '@fullcalendar/daygrid';       // Month view
+import timeGridPlugin from '@fullcalendar/timegrid';     // Week/Day views
+import interactionPlugin from '@fullcalendar/interaction'; // Date select & interactions
 
 function AvailabilityContent() {
   const { collapsed, setCollapsed } = useCollapsedContext();
@@ -42,6 +43,17 @@ function AvailabilityContent() {
             select={handleDateSelect}
             editable={true}
             height="auto"
+            headerToolbar={{
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            }}
+            buttonText={{
+              today: 'Today',
+              month: 'Month',
+              week: 'Week',
+              day: 'Day'
+            }}
           />
         </div>
       </div>
