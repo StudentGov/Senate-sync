@@ -40,14 +40,14 @@ export default function CurrentAgendas(){
 
     useEffect(() => {
       const channel = pusherClient.subscribe('agenda-channel')
-      
-      channel.bind('new-agenda', (data: { message: string }) => {
+    
+      const handleNewAgenda = (data: { message: string }) => {
         console.log(data.message)
         fetchAgendas();
-      })
-  
+      };
+      channel.bind('new-agenda', handleNewAgenda)
       return () => {
-        pusherClient.unsubscribe('agenda-channel')
+        channel.unbind('new-agenda', handleNewAgenda)
       }
     }, [])
 

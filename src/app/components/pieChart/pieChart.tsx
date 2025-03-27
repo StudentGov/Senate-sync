@@ -27,20 +27,20 @@ export default function PieChartPopUp({agenda, isSpeaker}: AgendaProps) {
     const [modal, setModal] = useState<boolean>(false);
     const [sum, setSum] = useState<number>(0);
     const [voteData, setVoteData] = useState<DataItem[]>([]);
-    const [voteChanged, setVoteChanged] = useState<boolean>(false);
-
     useEffect(() => {
         const channel = pusherClient.subscribe('agenda-channel')
-        
-        channel.bind('vote-updated', (data: { message: string }) => {
-            fetchVotes();
-        })
-    
+      
+        const handleVoteUpdated = (data: { message: string }) => {
+          console.log(data.message)
+          fetchVotes();
+        };
+      
+        channel.bind('vote-updated', handleVoteUpdated)
+      
         return () => {
-          pusherClient.unsubscribe('agenda-channel')
+          channel.unbind('vote-updated', handleVoteUpdated)
         }
       }, [])
-
     const toggleModal = () => {
         setModal(!modal);
     };
@@ -82,7 +82,6 @@ export default function PieChartPopUp({agenda, isSpeaker}: AgendaProps) {
           const data = await response.json();
           console.log(`Fetched votes for ${agenda.title}:`, data);
           setVoteData(data.data)
-          setVoteChanged(prev => !prev)
           // You can return or use the data here
           return data;
       
@@ -122,7 +121,7 @@ export default function PieChartPopUp({agenda, isSpeaker}: AgendaProps) {
                             {...size}
                         />
                         <div className={styles.individual}>
-                            {agenda.is_visible || isSpeaker ? <Individual agenda_id={agenda.id} agenda_title={agenda.title} voteChanged={voteChanged}/>:<></>}
+                            {agenda.is_visible || isSpeaker ? <Individual agenda_id={agenda.id} agenda_title={agenda.title}/>:<></>}
                         </div>
                     </div>
                 </div>

@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       sql: "UPDATE Options SET vote_count = vote_count + 1 WHERE id = ?",
       args: [option_id],
     });
-    await pusher.trigger('agenda-channel', 'vote-updated', {message:"Someone voted"})
+    await pusher.trigger('agenda-channel', 'vote-updated', {message:"Someone Voted"})
 
     
     return NextResponse.json({ message: "Vote recorded successfully" });

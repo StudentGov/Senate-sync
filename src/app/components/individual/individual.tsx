@@ -2,12 +2,11 @@
 import { useState, useEffect } from 'react';
 import ReactDOM from "react-dom";
 import styles from './individual.module.css'
-
+import pusherClient from '@/app/lib/pusher';
 
 interface Props{
     agenda_id:number,
-    agenda_title:string,
-    voteChanged: boolean
+    agenda_title:string
 }
 interface VoteData{
     id: number,
@@ -15,13 +14,24 @@ interface VoteData{
     option: string
 }
 
-export default function Individual({agenda_id, agenda_title, voteChanged}: Props){
+export default function Individual({agenda_id, agenda_title}: Props){
     const [modal, setModal] = useState<boolean>(false);
     const [voteData, setVoteData] = useState<VoteData[]>([])
 
     useEffect(() => {
+        const channel = pusherClient.subscribe('agenda-channel')
+      
+        const handleVoteUpdated = (data: { message: string }) => {
+          console.log(data.message)
           fetchVotes();
-      }, [voteChanged])
+        };
+      
+        channel.bind('vote-updated', handleVoteUpdated)
+      
+        return () => {
+          channel.unbind('vote-updated', handleVoteUpdated)
+        }
+      }, [])
 
     const toggleModal = () => {
         setModal(!modal);
