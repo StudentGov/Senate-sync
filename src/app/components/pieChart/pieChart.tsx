@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import styles from './pieChart.module.css';
 import Individual from '../individual/individual';
+import pusherClient from '@/app/lib/pusher';
 
 
 interface AgendaProps {
@@ -26,6 +27,19 @@ export default function PieChartPopUp({agenda, isSpeaker}: AgendaProps) {
     const [modal, setModal] = useState<boolean>(false);
     const [sum, setSum] = useState<number>(0);
     const [voteData, setVoteData] = useState<DataItem[]>([]);
+    const [voteChanged, setVoteChanged] = useState<boolean>(false);
+
+    useEffect(() => {
+        const channel = pusherClient.subscribe('agenda-channel')
+        
+        channel.bind('vote-updated', (data: { message: string }) => {
+            fetchVotes();
+        })
+    
+        return () => {
+          pusherClient.unsubscribe('agenda-channel')
+        }
+      }, [])
 
     const toggleModal = () => {
         setModal(!modal);
@@ -68,6 +82,7 @@ export default function PieChartPopUp({agenda, isSpeaker}: AgendaProps) {
           const data = await response.json();
           console.log(`Fetched votes for ${agenda.title}:`, data);
           setVoteData(data.data)
+          setVoteChanged(prev => !prev)
           // You can return or use the data here
           return data;
       
@@ -107,7 +122,7 @@ export default function PieChartPopUp({agenda, isSpeaker}: AgendaProps) {
                             {...size}
                         />
                         <div className={styles.individual}>
-                            {agenda.is_visible || isSpeaker ? <Individual agenda_id={agenda.id} agenda_title={agenda.title}/>:<></>}
+                            {agenda.is_visible || isSpeaker ? <Individual agenda_id={agenda.id} agenda_title={agenda.title} voteChanged={voteChanged}/>:<></>}
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { turso } from '../../../db'
+import pusher from "@/pusher";
+
 export async function POST(req: Request) {
   try {
     const { voter_id, agenda_id, option_id, name } = await req.json();
@@ -40,6 +42,9 @@ export async function POST(req: Request) {
       sql: "UPDATE Options SET vote_count = vote_count + 1 WHERE id = ?",
       args: [option_id],
     });
+    await pusher.trigger('agenda-channel', 'vote-updated', {message:"Someone voted"})
+
+    
     return NextResponse.json({ message: "Vote recorded successfully" });
   } catch (error) {
     console.error("Error processing vote:", error);

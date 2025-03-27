@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react';
 import ReactDOM from "react-dom";
 import styles from './individual.module.css'
 
+
 interface Props{
     agenda_id:number,
-    agenda_title:string
+    agenda_title:string,
+    voteChanged: boolean
 }
 interface VoteData{
     id: number,
@@ -13,9 +15,14 @@ interface VoteData{
     option: string
 }
 
-export default function Individual({agenda_id, agenda_title}: Props){
+export default function Individual({agenda_id, agenda_title, voteChanged}: Props){
     const [modal, setModal] = useState<boolean>(false);
     const [voteData, setVoteData] = useState<VoteData[]>([])
+
+    useEffect(() => {
+          fetchVotes();
+      }, [voteChanged])
+
     const toggleModal = () => {
         setModal(!modal);
     };

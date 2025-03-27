@@ -5,6 +5,7 @@ import DropDownOptions from '../dropDown/dropDown';
 import PieChart from '../pieChart/pieChart'
 import Details from '../details/Details'
 
+
 interface Option {
   id: number;
   optionText: string;
