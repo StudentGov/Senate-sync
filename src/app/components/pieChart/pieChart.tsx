@@ -40,7 +40,7 @@ export default function PieChartPopUp({agenda, isSpeaker}: AgendaProps) {
         return () => {
           channel.unbind('vote-updated', handleVoteUpdated)
         }
-      }, [])
+      }, [agenda.id])
     const toggleModal = () => {
         setModal(!modal);
     };

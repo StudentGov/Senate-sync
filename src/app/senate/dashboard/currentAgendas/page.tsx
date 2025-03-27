@@ -7,7 +7,7 @@ import AgendaSection from '../../../components/agendaSection/agendaSection'
 import AddAgenda from '../../../components/addAgenda/addAgenda'
 import { useUser } from "@clerk/nextjs";
 import DropDownOptions from "@/app/components/dropDown/dropDown";
-import pusherClient from '../../../lib/pusher'
+// import pusherClient from "@/app/lib/pusher";
 
 interface Option {
     id: number;
@@ -39,17 +39,27 @@ export default function CurrentAgendas(){
     const [agendaData, setAgendaData] = useState<Agenda[]>([]);
 
     useEffect(() => {
-      const channel = pusherClient.subscribe('agenda-channel')
+      let channel: import('pusher-js').Channel; // ✅ correct type import
     
-      const handleNewAgenda = (data: { message: string }) => {
-        console.log(data.message)
-        fetchAgendas();
-      };
-      channel.bind('new-agenda', handleNewAgenda)
+      import('@/app/lib/pusher').then(({ default: pusherClient }) => {
+        channel = pusherClient.subscribe('agenda-channel');
+    
+        const handleNewAgenda = () => {
+          console.log("New agenda received");
+          fetchAgendas();
+        };
+    
+        channel.bind('new-agenda', handleNewAgenda);
+      });
+    
       return () => {
-        channel.unbind('new-agenda', handleNewAgenda)
-      }
-    }, [])
+        if (channel) {
+          channel.unbind_all();
+          channel.unsubscribe();
+        }
+      };
+    }, []);
+    
 
 
     useEffect(() => {
