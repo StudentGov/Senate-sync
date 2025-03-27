@@ -7,6 +7,7 @@ import AgendaSection from '../../../components/agendaSection/agendaSection'
 import AddAgenda from '../../../components/addAgenda/addAgenda'
 import { useUser } from "@clerk/nextjs";
 import DropDownOptions from "@/app/components/dropDown/dropDown";
+import pusherClient from '../../../lib/pusher'
 
 interface Option {
     id: number;
@@ -36,6 +37,20 @@ export default function CurrentAgendas(){
     const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
     const [selectedOption, setSelectedOption] = useState<Option>({id:1, optionText:"Date"});
     const [agendaData, setAgendaData] = useState<Agenda[]>([]);
+
+    useEffect(() => {
+      const channel = pusherClient.subscribe('agenda-channel')
+      
+      channel.bind('new-agenda', (data: { message: string }) => {
+        console.log(data.message)
+        fetchAgendas();
+      })
+  
+      return () => {
+        pusherClient.unsubscribe('agenda-channel')
+      }
+    }, [])
+
 
     useEffect(() => {
         if (isSignedIn && (user?.publicMetadata?.role === "senate_member" || user?.publicMetadata?.role === "super_admin")) {

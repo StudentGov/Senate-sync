@@ -1,5 +1,6 @@
 import { turso } from "../../../db";
 import { NextResponse } from "next/server";
+import pusher from "@/pusher";
 
 export async function POST(req: Request) {
   try {
@@ -27,6 +28,8 @@ export async function POST(req: Request) {
 
     // Ensure no undefined values in args
     await turso.batch(optionQueries);
+
+    await pusher.trigger('agenda-channel', 'new-agenda', {message:"New Agenda added"})
 
     return NextResponse.json({ message: "Agenda saved successfully" }, { status: 201 });
   } catch (error) {
