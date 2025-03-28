@@ -1,18 +1,34 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import styles from './addAgenda.module.css'
 import BinLogo from '../../assets/bin.png'
 import Image from 'next/image'
-import AgendaData from '../../agendas.json'
 
-export default function Modal() {
+
+
+interface User {
+  id: string;
+}
+
+interface ModalProps {
+  user: User;
+}
+
+export default function Modal({ user }: ModalProps) {
   const [modal, setModal] = useState<boolean>(false);
   const [inputOption, setInputOption] = useState<string>("");
   const [options, setOptions]= useState<string[]>([]);
   const [inputAgenda, setInputAgenda] = useState<string>("")
   const [message, setMessage] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
 
   const toggleModal = () => {
     setModal(!modal);
+    setInputAgenda('');
+    setOptions([]);
+    setInputOption('');
+    setDescription('');
+    setMessage('');
   };
 
   // UseEffect to manage modal state safely on the client side
@@ -25,7 +41,25 @@ export default function Modal() {
       }
     }
   }, [modal]); // Re-run when modal state changes
-
+  
+    async function addAgenda() {
+      const response = await fetch("/api/add-agenda", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          speaker_id: user.id,
+          title: inputAgenda,
+          options:options,
+          description:description
+        }),
+      });
+    
+      const data = await response.json();
+      console.log(data);
+    }
+  
   const handleSubmit = () => {
     if (!inputAgenda){
         setMessage("Agenda is missing")
@@ -34,9 +68,8 @@ export default function Modal() {
         setMessage("Options are missing")
     }
     else{
+      addAgenda();
       setMessage("");
-        const newAgenda = {id:(AgendaData.length).toString(), agenda:inputAgenda, visible:false, closed:false, options:options}
-        AgendaData.push(newAgenda)
       setInputAgenda('');
       setOptions([]);
       setInputOption('');
@@ -53,6 +86,7 @@ export default function Modal() {
   const handleDelete = (option: string) => {
     setOptions((prev) => prev.filter(item => item !== option))
   }
+  
 
   return (
     <>
@@ -67,7 +101,13 @@ export default function Modal() {
               <label htmlFor="inputField">Write Agenda</label>
                 <input value={inputAgenda} placeholder="Enter Agenda" onChange={(e) => setInputAgenda(e.target.value)} required />
               <label htmlFor="inputField">Add Option</label>
+              <div className={styles.addOptions}>
                 <input value={inputOption} placeholder="Enter Option" onChange={(e) => setInputOption(e.target.value)} onKeyDown={handleEnter}/>
+                <button onClick={() => {setOptions((prev) => [...prev, inputOption]); setInputOption("");}}>+</button>
+              </div>
+
+              <label htmlFor="description">Description:</label>
+                <textarea className={styles.description} name="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter your description here..."  />
             </div>
             <div className={styles.options}>
               <span>Options</span>
@@ -81,9 +121,6 @@ export default function Modal() {
                 ))}
               </div>
             </div>
-
-
-
             <div className={styles.push}>
               {message}
               <button onClick={handleSubmit}>Push Agenda</button>

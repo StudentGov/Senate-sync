@@ -1,22 +1,105 @@
 .homePage{
     display: flex;
-    justify-content: center;
+    /* justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100vh; */
     width: 100%;
     flex-direction: column;
 }
+.header{
+    height: 500px;
+    background-color: #48316F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.headerContent{
+    width: 1500px;
+}
+.info{
+    display: flex;
+    height: 100%;
+    padding: 96px 24px;
+    color: white;
+
+}
+.headerTitle{
+    display: flex;
+    align-items: center;
+}
+.img{
+    height: 80px;
+    width: 80px;
+    min-width: 80;
+    min-height: 80px;
+  }
+  
+.left{
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    justify-content: center;
+}
+.left button{
+    margin-top: 20px;
+}
+
+.right{
+    display: flex;
+    /* flex-direction: column; */
+    width: 670px;
+    margin-left: auto;
+    color: #2c2c54; /* Dark plum */
+    gap: 20px;
+}
+.right h2{
+    font-size: 40px;
+}
+.rightTop{
+    width: 100%;
+    border-radius: 10px;
+    background-color: #febf11;
+    padding: 32px;
+}
+.rightBottom{
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    background-color: #febf11;
+    padding: 32px;
+}
+.rightBottom button{
+    position: absolute;
+    background-color: #48316F;
+    color: white;
+    top: 75%;
+    left: 60%;
+}
+.why{
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.whyTitle{
+    font-size: 40px;
+    margin: 70px;
+    align-items: center;
+}
+.cards{
+    display: flex;
+    gap: 50px;
+}
+
 .navButton{
-    background-color: purple;
+    background-color: #febd11;
     border-radius: 5px;
     height: 50px;
     width: 100px;
-    color: white;
+    color: #2c2c54; /* Dark plum */
 }
-.profileSection{
-    position: absolute;
-    display: flex;
-    right: 80px;
-    top:40px;
-    z-index: 600;
+
+.footer{
+    height:300px;
+    background-color: #565458;
 }
