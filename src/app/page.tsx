@@ -45,13 +45,13 @@ export default function HomePage() {
                   Student Government is your voice on campus. We advocate for your needs, from academic policy to campus life improvements.
                 </p>
                 <p>
-                  Whether you're here to share your ideas or just learn more, we’re here to listen, support, and empower your journey.
+                  Whether you are here to share your ideas or just learn more, we are here to listen, support, and empower your journey.
                 </p>
               </div>
 
               <div className={styles.rightBottom}>
                 <h2>Senates</h2>
-                <p>Ready to vote? Check out what’s on the table and make your voice count where it matters.<br /> <br />Please click here to get started.</p>
+                <p>Ready to vote? Check out what is on the table and make your voice count where it matters.<br /> <br />Please click here to get started.</p>
                 <button className={styles.navButton} onClick={() => handleNavigation("/senate/dashboard/currentAgendas")}>Vote Now</button>
               </div>
             </div>
@@ -65,9 +65,9 @@ export default function HomePage() {
         </div>
 
         <div className={styles.cards}>
-          <Card title={"Students"} text={"Whether you're here to share your ideas or just learn more, we’re here to listen, support, and empower your journey. Schedule your appointment today!"} userRole={"student"}/>
-          <Card title={"Attorneys"} text={"Easily manage appointments, stay organized, and connect with students on your terms. \n When you're ready, just click the button to get started."}  userRole={'attorney'}/>
-          <Card title={"Senates"} text={"Ready to vote? Check out what’s on the table and make your voice count when it matters. \n Click the button to get started."} userRole={'senate'}/>
+          <Card title={"Students"} text={"Whether you are here to share your ideas or just learn more, we are here to listen, support, and empower your journey. Schedule your appointment today!"} userRole={"student"}/>
+          <Card title={"Attorneys"} text={"Easily manage appointments, stay organized, and connect with students on your terms. \n When you are ready, just click the button to get started."}  userRole={'attorney'}/>
+          <Card title={"Senates"} text={"Ready to vote? Check out what is on the table and make your voice count when it matters. \n Click the button to get started."} userRole={'senate'}/>
         </div>
       </div>
       {/* Footer */}
