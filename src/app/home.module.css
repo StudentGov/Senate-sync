@@ -1,8 +1,5 @@
 .homePage{
     display: flex;
-    /* justify-content: center;
-    align-items: center;
-    height: 100vh; */
     width: 100%;
     flex-direction: column;
 }
@@ -12,6 +9,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 .headerContent{
     width: 1500px;
@@ -21,7 +19,6 @@
     height: 100%;
     padding: 96px 24px;
     color: white;
-
 }
 .headerTitle{
     display: flex;
@@ -30,7 +27,7 @@
 .img{
     height: 80px;
     width: 80px;
-    min-width: 80;
+    min-width: 80px;
     min-height: 80px;
   }
   
@@ -46,9 +43,7 @@
 
 .right{
     display: flex;
-    /* flex-direction: column; */
     width: 670px;
-    margin-left: auto;
     color: #2c2c54; /* Dark plum */
     gap: 20px;
 }
@@ -60,6 +55,7 @@
     border-radius: 10px;
     background-color: #febf11;
     padding: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 .rightBottom{
     position: relative;
@@ -67,6 +63,7 @@
     border-radius: 10px;
     background-color: #febf11;
     padding: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 .rightBottom button{
     position: absolute;
@@ -102,4 +99,163 @@
 .footer{
     height:300px;
     background-color: #565458;
+}
+
+
+@media screen and (max-width: 1520px){
+    .info{
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap:20px
+    }
+    .header{
+        height: 700px
+    }
+    .cards{
+        /* flex-direction: column; */
+        gap:30px
+    }
+    .whyTitle{
+        margin: 50px;
+    }
+
+}
+@media screen and (max-width: 1230px){
+    .cards{
+        flex-direction: column;
+    }
+    .why{
+        height: 90vh;
+    }
+}
+@media screen and (max-width: 850px){
+    .header{
+        height: 80vh;
+    }
+    .headerContent{
+        width: 90%;
+    }
+    .left{
+        width: 100%;
+    }
+    .headerTitle h1{
+        font-size: 50px;
+    }
+    .right{
+        width: 600px;
+        height: 330px;
+        margin-top: 30px;
+    }
+    .right h2{
+        font-size: 35px;
+    }
+    .rightTop, .rightBottom{
+        padding-top: 20px;
+    }
+}
+@media screen and (max-width: 660px){
+    .header{
+        height: 90vh;
+    }
+    .why{
+        height: 95vh;
+        min-height: 950px;
+    }
+    .headerTitle h1{
+        font-size: 40px;
+    }
+    .left p, .right p{
+        font-size: 14px;
+    }
+    .right{
+        width: 500px;
+        height: 400px;
+        flex-direction: column;
+    }
+    .right h2{
+        font-size: 30px;
+    }
+
+    .rightBottom button{
+        width: 70px;
+        font-size: 15px;
+        top:65%;
+        left: 80%;
+    }
+}
+@media screen and (max-width: 560px){
+    .header{
+        height: 85vh;
+        min-height: 750px;;
+    }
+    .headerContent{
+        width: 90%;
+    }
+    .headerTitle h1{
+        font-size: 35px;
+    }
+
+    .info{
+        padding: 0;
+        padding-bottom: 50px;
+    }
+    .img{
+        height: 55px;
+        width: 55px;
+        min-width: 55px;
+        min-height: 55px;
+      }
+    .right{
+        width: 95%;
+        height: 300px;
+    }
+    .right h2{
+        font-size: 27px;
+    }
+    .rightTop, .rightBottom{
+        height: 200px;
+        padding: 12px;
+
+    }
+    .rightBottom button{
+        font-size: 12px;
+        height: 45px;
+        left:75%;
+    }
+    .whyTitle{
+        font-size: 32px;
+    }
+}
+@media screen and (max-width: 450px){
+    .why{
+        height: 100vh;
+    }
+    .headerTitle h1{
+        font-size: 30px;
+    }
+    .navButton{
+        width:70px;
+        font-size: 15px;
+    }
+    .rightBottom button{
+        left: 70%
+    }
+    .right{
+        height: 270px;
+    }
+    .right h2{
+        font-size: 25px;
+    }
+    .right p{
+        font-size: 12px;
+    }
+    .whyTitle{
+        font-size: 27px;
+    }
+}
+@media screen and (max-width: 380px){
+    .rightTop{
+        height: 120px;
+    }
 }

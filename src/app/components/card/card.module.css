@@ -24,7 +24,7 @@
     left: 85%;
     height: 60px;
     width: 60px;
-    min-width: 60;
+    min-width: 60px;
     min-height: 60px;
   }
   .navButton{
@@ -37,4 +37,67 @@
     width: 100px;
     color: #2c2c54; /* Dark plum */
 }
-  
+@media screen and (max-width: 1520px){
+  .card{
+    width: 380px
+  }
+  .img{
+    left:80%;
+  }
+}
+@media screen and (max-width: 1230px){
+  .card{
+    width: 580px;
+    height:200px;
+    padding-top: 25px;
+  }
+  .img{
+    left:85%;
+  }
+  .navButton{
+    left: 80%
+  }
+}
+@media screen and (max-width: 660px){
+  .card{
+    width: 500px;
+    height: 230px;
+  }
+  .navButton{
+    left:70%;
+  }
+}
+@media screen and (max-width: 560px){
+  .card{
+    width: 400px;
+    height: 230px;
+  }
+  .navButton{
+    left:70%;
+  }
+}
+@media screen and (max-width: 450px){
+  .card{
+    width: 350px;
+    height: 220px;
+  }
+  .img{
+    left:80%;
+    height: 50px;
+    width: 50px;
+    min-width: 50px;
+    min-height: 50px;
+  }
+  .cardTitle{
+    font-size: 27px;
+  }
+  .cardText{
+    font-size: 15px;
+  }
+  .navButton{
+    top: 78%;
+    width:80px;
+    font-size: 15px;
+    height: 40px;
+  }
+}

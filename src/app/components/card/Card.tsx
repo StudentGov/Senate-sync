@@ -28,7 +28,7 @@ export default function Card({title, text, path}:Props){
         
         <div className={styles.card}>
             <h2 className={styles.cardTitle}>{title}</h2>
-            <Image src={logo} alt="MNSU Logo" className={styles.img}/>
+              <Image src={logo} alt="MNSU Logo" className={styles.img}/>
             <p className={styles.cardText}>
                 {text.split('\n').map((line, index) => (<span key={index}>{line}<br/></span>))}
             </p>
