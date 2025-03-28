@@ -1,7 +1,9 @@
 "use client";
+
 import styles from './upcomingAppointments.module.css';
 import SideBar from '../../../components/attorneySideBar/AttorneySideBar';
 import { CollapsedProvider, useCollapsedContext } from '../../../components/attorneySideBar/attorneySideBarContext';
+import upcomingAppointments from '../../../upcomingAppointments.json'; // Adjust path as needed
 
 // Define a type for appointments
 interface Appointment {
@@ -12,12 +14,8 @@ interface Appointment {
   reason: string;
 }
 
-// Sample appointments with defined type
-const appointments: Appointment[] = [
-  { id: 1, student: "Hermon Metaferia", date: "March 25, 2025", time: "10:00 AM", reason: "Scholarship consultation" },
-  { id: 2, student: "Nahome Woinu", date: "March 26, 2025", time: "1:30 PM", reason: "Housing concern" },
-  { id: 3, student: "Kidus Girmay", date: "March 27, 2025", time: "9:00 AM", reason: "Legal documentation review" },
-];
+// Convert JSON to typed appointments (ensure type safety)
+const appointments: Appointment[] = upcomingAppointments as Appointment[];
 
 // Group appointments by date
 const groupByDate = (appointments: Appointment[]): Record<string, Appointment[]> => {
@@ -25,7 +23,7 @@ const groupByDate = (appointments: Appointment[]): Record<string, Appointment[]>
     acc[curr.date] = acc[curr.date] || [];
     acc[curr.date].push(curr);
     return acc;
-  }, {} as Record<string, Appointment[]>); // Explicitly define the return type
+  }, {} as Record<string, Appointment[]>);
 };
 
 function UpcomingAppointmentsContent() {

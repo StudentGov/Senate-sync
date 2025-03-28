@@ -18,8 +18,8 @@ export default function SideBar({collapsed, setCollapsed}: SideBarProps) {
         <div className={`${styles.x} ${collapsed ? 'hidden' : 'block'}`}>
           <Sidebar onClick={() => setCollapsed(!collapsed)}>
             <Menu>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/attorney/dashboard/availability')}> Availability </MenuItem>
                 <MenuItem className={styles.sideBarItem} onClick={() => router.push('/attorney/dashboard/upcomingAppointments')}> Upcoming Appointments </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/attorney/dashboard/availability')}> Availability </MenuItem>  
                 <MenuItem className={styles.sideBarItem} onClick={() => router.push('/attorney/dashboard/profile')}> Profile </MenuItem>
                 <MenuItem className={styles.sideBarItem} onClick={() => router.push('/attorney/dashboard/settings')}> Settings </MenuItem>
             </Menu>

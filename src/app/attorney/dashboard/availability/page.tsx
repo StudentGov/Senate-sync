@@ -1,31 +1,41 @@
 "use client";
 
+import { useMemo } from 'react';
 import styles from './availability.module.css';
 import SideBar from '../../../components/attorneySideBar/AttorneySideBar';
 import { CollapsedProvider, useCollapsedContext } from '../../../components/attorneySideBar/attorneySideBarContext';
+import availability from '../../../availability.json';
 
 import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';       // Month view
-import timeGridPlugin from '@fullcalendar/timegrid';     // Week/Day views
-import interactionPlugin from '@fullcalendar/interaction'; // Date select & interactions
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 
 function AvailabilityContent() {
   const { collapsed, setCollapsed } = useCollapsedContext();
 
-  const handleDateSelect = (selectInfo: any) => {
-    const title = prompt('Enter availability title (e.g. "Available")');
-    const calendarApi = selectInfo.view.calendar;
-    calendarApi.unselect();
+  // Convert JSON availability to FullCalendar events
+  const availabilityEvents = useMemo(() => {
+    const events: any[] = [];
 
-    if (title) {
-      calendarApi.addEvent({
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay
+    Object.entries(availability).forEach(([date, times]) => {
+      (times as string[]).forEach((timeRange) => {
+        const [startTime, endTime] = timeRange.split(' - ');
+
+        const start = new Date(`${date} ${startTime}`);
+        const end = new Date(`${date} ${endTime}`);
+
+        events.push({
+          title: 'Available',
+          start,
+          end,
+          allDay: false,
+        });
       });
-    }
-  };
+    });
+
+    return events;
+  }, []);
 
   return (
     <div className={styles.availabilityPage}>
@@ -38,21 +48,20 @@ function AvailabilityContent() {
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView="timeGridWeek"
-            selectable={true}
-            selectMirror={true}
-            select={handleDateSelect}
-            editable={true}
+            events={availabilityEvents}
+            selectable={false}
+            editable={false}
             height="auto"
             headerToolbar={{
               left: 'prev,next today',
               center: 'title',
-              right: 'dayGridMonth,timeGridWeek,timeGridDay'
+              right: 'dayGridMonth,timeGridWeek,timeGridDay',
             }}
             buttonText={{
               today: 'Today',
               month: 'Month',
               week: 'Week',
-              day: 'Day'
+              day: 'Day',
             }}
           />
         </div>
