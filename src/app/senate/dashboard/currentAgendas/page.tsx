@@ -9,7 +9,7 @@ import AddAgenda from '../../../components/addAgenda/addAgenda'
 import { useUser } from "@clerk/nextjs";
 import DropDownOptions from "@/app/components/dropDown/dropDown";
 import pusherClient from "@/app/lib/pusher";
-import SearchBar from '../../../components/SearchBar';  // Import SearchBar
+import SearchBar from '../../../components/searchBar/SearchBar';  // Import SearchBar
 
 interface Option {
     id: number;
@@ -45,6 +45,20 @@ export default function CurrentAgendas(){
     const handleSearch = (query: string) => {
       setSearchQuery(query.toLowerCase()); // Store search query in lowercase for case-insensitive search
     };
+    const filteredAndSortedAgendas: Agenda[] = agendaData
+      .filter(item =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .sort((a, b) => {
+        if (selectedOption.optionText === "Title") {
+          return a.title.localeCompare(b.title); // Sort alphabetically by title
+        } else if (selectedOption.optionText === "Date") {
+          const dateA = new Date(a.created_at);
+          const dateB = new Date(b.created_at);
+          return dateB.getTime() - dateA.getTime(); // Newest to oldest
+        }
+        return 0; // No sorting if 'N/A'
+    });
     useEffect(() => {
       const channel = pusherClient.subscribe('agenda-channel')
     
@@ -99,18 +113,6 @@ export default function CurrentAgendas(){
         }
       }
   
-      const sortedAgendaData: Agenda[] = [...agendaData].sort((a, b) => {
-        if (selectedOption.optionText === "Title") {
-          return a.title.localeCompare(b.title); // Sorting by Title alphabetically
-        } else if (selectedOption.optionText === "Date") {
-          const dateA = new Date(a.created_at); // Convert 'created_at' string to Date object
-          const dateB = new Date(b.created_at);
-      
-          // Sorting by Date (using getTime for comparison)
-          return dateB.getTime() - dateA.getTime(); // Sorting from newest to oldest
-        }
-        return 0; // No sorting if 'N/A'
-      });
       const userData: User = {
         id: user?.id || '', // Default to empty string if undefined
         firstName: user?.firstName || '', // Default to empty string if undefined
@@ -122,10 +124,10 @@ export default function CurrentAgendas(){
 
             <div className={styles.top}>
                 <h1>Current Agendas</h1>
-                {isSpeaker && user && <AddAgenda user={user} />}
-                <div className={styles.searchAddContainer}> // Default to empty string if undefined
+                <div className={styles.searchAddContainer}>
                   <SearchBar onSearch={handleSearch} />
-                </div> // Default to empty string if undefined
+                  {isSpeaker && user && <AddAgenda user={user} />}
+                </div>
             </div>
 
             <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
@@ -140,22 +142,17 @@ export default function CurrentAgendas(){
                             <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'}/>
                         </div>
                     </div>
-                {sortedAgendaData.map((item, index) => (
+              {filteredAndSortedAgendas.map((item, index) =>
                     item.is_open && 
                     (
                     <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} user={userData}/>
                     )
-                ))}
-                </div>
-            </div>
+              )}
 
+          </div>
         </div>
-
-        {/* Map through filtered and sorted agenda list */}
-        {filteredAndSortedAgendas.map((item, index) =>
-          item.closed && <AgendaSection key={index} agenda={item} page={'current'} />
-        )}
       </div>
-    </div>
+
+
   );
 }

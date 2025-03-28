@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./navBar/SearchBar.module.css";
+import styles from "./SearchBar.module.css";
 
 const SearchBar = ({ onSearch }: { onSearch: (query: string) => void }) => {
   const [query, setQuery] = useState("");

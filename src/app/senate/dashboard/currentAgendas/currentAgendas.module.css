@@ -37,13 +37,11 @@
     padding: 0px 30px;
     margin: 0 auto;
     width: 100%;
-
-
 }
 .searchAddContainer {
     display: flex;
     align-items: center;
-    gap: 10px; /* Adds space between SearchBar and AddAgenda button */
+    gap: 10px;
 }
 .labels{
     /* display: flex; */
