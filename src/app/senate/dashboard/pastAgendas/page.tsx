@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useEffect } from "react";
 import styles from './pastAgendas.module.css'
 import { useCollapsedContext } from '../../../components/sideBar/sideBarContext'
@@ -6,6 +7,7 @@ import SideBar from '../../../components/sideBar/SideBar'
 import AgendaSection from '../../../components/agendaSection/agendaSection'
 import { useUser } from "@clerk/nextjs";
 import DropDownOptions from '../../../components/dropDown/dropDown'
+import SearchBar from '../../../components/SearchBar'; // Import SearchBar
 
 interface Option {
     id: number;
@@ -33,7 +35,12 @@ export default function PastAgendas(){
     const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
     const [selectedOption, setSelectedOption] = useState<Option>({id:1, optionText:"Date"});
     const [agendaData, setAgendaData] = useState<Agenda[]>([]);
-
+    const [searchQuery, setSearchQuery] = useState(""); // State for search input
+            
+    // Function to handle search input
+    const handleSearch = (query: string) => {
+      setSearchQuery(query.toLowerCase()); // Store search query in lowercase for case-insensitive search
+    };
     useEffect(() => {
         if (isSignedIn && (user?.publicMetadata?.role === "senate_member" || user?.publicMetadata?.role === "super_admin")) {
             setIsMember(true);
@@ -94,6 +101,9 @@ export default function PastAgendas(){
         <div className={styles.pastAgendas}>
             <div className={styles.top}>
                 <h1>Past Agendas</h1>
+                   <div className={styles.searchAddContainer}>
+                      <SearchBar onSearch={handleSearch} />
+                    </div>
             </div>
 
             <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
@@ -114,7 +124,14 @@ export default function PastAgendas(){
                 ))}
                 </div>
             </div>
+
         </div>
 
-    )
+        {/* Map through filtered and sorted past agenda list */}
+        {filteredAndSortedAgendas.map((item, index) =>
+          !item.closed && <AgendaSection key={index} agenda={item} page={'past'} />
+        )}
+      </div>
+    </div>
+  );
 }

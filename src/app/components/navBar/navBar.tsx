@@ -6,6 +6,7 @@ import whiteLogo from '../../assets/whiteImage.png'
 import { useRouter,usePathname } from "next/navigation";
 import { useUser, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 
+
 export default function Navbar() {
     const router = useRouter();
     const pathname = usePathname()

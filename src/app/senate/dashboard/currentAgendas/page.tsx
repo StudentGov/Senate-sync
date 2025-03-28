@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useEffect } from "react";
 import styles from './currentAgendas.module.css'
 import { useCollapsedContext } from '../../../components/sideBar/sideBarContext'
@@ -8,6 +9,7 @@ import AddAgenda from '../../../components/addAgenda/addAgenda'
 import { useUser } from "@clerk/nextjs";
 import DropDownOptions from "@/app/components/dropDown/dropDown";
 import pusherClient from "@/app/lib/pusher";
+import SearchBar from '../../../components/SearchBar';  // Import SearchBar
 
 interface Option {
     id: number;
@@ -37,7 +39,12 @@ export default function CurrentAgendas(){
     const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
     const [selectedOption, setSelectedOption] = useState<Option>({id:1, optionText:"Date"});
     const [agendaData, setAgendaData] = useState<Agenda[]>([]);
+    const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
+       // Function to handle search input
+    const handleSearch = (query: string) => {
+      setSearchQuery(query.toLowerCase()); // Store search query in lowercase for case-insensitive search
+    };
     useEffect(() => {
       const channel = pusherClient.subscribe('agenda-channel')
     
@@ -112,9 +119,13 @@ export default function CurrentAgendas(){
       
     return (
         <div className={styles.currentAgendas}>
+
             <div className={styles.top}>
                 <h1>Current Agendas</h1>
                 {isSpeaker && user && <AddAgenda user={user} />}
+                <div className={styles.searchAddContainer}> // Default to empty string if undefined
+                  <SearchBar onSearch={handleSearch} />
+                </div> // Default to empty string if undefined
             </div>
 
             <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
@@ -137,7 +148,14 @@ export default function CurrentAgendas(){
                 ))}
                 </div>
             </div>
+
         </div>
 
-    )
+        {/* Map through filtered and sorted agenda list */}
+        {filteredAndSortedAgendas.map((item, index) =>
+          item.closed && <AgendaSection key={index} agenda={item} page={'current'} />
+        )}
+      </div>
+    </div>
+  );
 }
