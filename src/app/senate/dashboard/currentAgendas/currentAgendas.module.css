@@ -38,10 +38,19 @@
     margin: 0 auto;
     width: 100%;
 }
+
+.pageChange button{
+    all: unset;
+    font-size: 40px;
+    text-align: start;
+    border: 0;
+
+}
 .searchAddContainer {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-bottom: 10px;
 }
 .labels{
     /* display: flex; */
@@ -64,21 +73,6 @@
 }
 .rightLabels label {
     margin-left: -20px;
-}
-.sortButton {
-    padding: 8px 12px;
-    background-color: Purple; /* Maverick Purple */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    transition: background-color 0.2s ease-in-out;
-}
-
-.sortButton:hover {
-    background-color: #5a0072; /* Slightly lighter hover effect */
 }
 
 

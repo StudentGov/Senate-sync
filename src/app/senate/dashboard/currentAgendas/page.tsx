@@ -10,6 +10,7 @@ import { useUser } from "@clerk/nextjs";
 import DropDownOptions from "@/app/components/dropDown/dropDown";
 import pusherClient from "@/app/lib/pusher";
 import SearchBar from '../../../components/searchBar/SearchBar';  // Import SearchBar
+import { useRouter } from "next/navigation";
 
 interface Option {
     id: number;
@@ -39,9 +40,10 @@ export default function CurrentAgendas(){
     const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
     const [selectedOption, setSelectedOption] = useState<Option>({id:1, optionText:"Date"});
     const [agendaData, setAgendaData] = useState<Agenda[]>([]);
-    const [searchQuery, setSearchQuery] = useState(""); // State for search input
-
-       // Function to handle search input
+    const [searchQuery, setSearchQuery] = useState<string>(""); // State for search input
+    const [selectedPage, setSelectedPage] = useState<Option>({id:3, optionText:"currentAgendas"})
+    const router = useRouter();
+    // Function to handle search input
     const handleSearch = (query: string) => {
       setSearchQuery(query.toLowerCase()); // Store search query in lowercase for case-insensitive search
     };
@@ -85,6 +87,13 @@ export default function CurrentAgendas(){
         
     }, [isSignedIn, user]);
 
+
+    // Handle page change
+    useEffect(() => {
+      if (selectedPage.optionText === "Past Agendas") {
+        router.push(`/senate/dashboard/pastAgendas`);
+      }
+    }, [selectedPage])
     async function fetchAgendas() {
         try {
           // Create the body of the request with the 'is_open' parameter
@@ -120,39 +129,44 @@ export default function CurrentAgendas(){
       };
       
     return (
-        <div className={styles.currentAgendas}>
+      <div>
+        <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
+          <div className={styles.currentAgendas} onClick={() => setCollapsed(true)}>
 
-            <div className={styles.top}>
-                <h1>Current Agendas</h1>
-                <div className={styles.searchAddContainer}>
-                  <SearchBar onSearch={handleSearch} />
-                  {isSpeaker && user && <AddAgenda user={user} />}
-                </div>
+              <div className={styles.top}>
+                  {/* <h1>Current Agendas</h1> */}
+                  <div className={styles.pageChange}>
+                    <DropDownOptions options={[{id:0, optionText:"Past Agendas"}, {id:1, optionText:"Current Agendas"}]} setSelectedOption={setSelectedPage} text={'Current Agendas'}/>
+                  </div>
+                  
+                  <div className={styles.searchAddContainer}>
+                    <SearchBar onSearch={handleSearch} />
+                    {isSpeaker && user && <AddAgenda user={user} />}
+                  </div>
+              </div>
+
+
+              <div className={styles.sections}>
+                  <div className={styles.content}>
+                      <div className={styles.labels}>
+                          <label>Title</label>
+                          <label className={styles.date}>Date</label>
+                          <div className={styles.rightLabels}>
+                              {isMember && <label>Voted</label>}
+                              {isSpeaker && <label>Visible</label>}
+                              <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'}/>
+                          </div>
+                      </div>
+                {filteredAndSortedAgendas.map((item, index) =>
+                      item.is_open && 
+                      (
+                      <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} user={userData}/>
+                      )
+                )}
+
             </div>
-
-            <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
-            <div className={styles.sections}>
-                <div className={styles.content}>
-                    <div className={styles.labels}>
-                        <label>Title</label>
-                        <label className={styles.date}>Date</label>
-                        <div className={styles.rightLabels}>
-                            {isMember && <label>Voted</label>}
-                            {isSpeaker && <label>Visible</label>}
-                            <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'}/>
-                        </div>
-                    </div>
-              {filteredAndSortedAgendas.map((item, index) =>
-                    item.is_open && 
-                    (
-                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} user={userData}/>
-                    )
-              )}
-
           </div>
         </div>
       </div>
-
-
   );
 }

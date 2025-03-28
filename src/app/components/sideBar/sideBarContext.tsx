@@ -9,7 +9,7 @@ interface CollapsedContextType {
 
 const CollapsedContext = createContext<CollapsedContextType | undefined>(undefined);
 export const CollapsedProvider = ({ children }: { children: ReactNode }) => {
-  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [collapsed, setCollapsed] = useState<boolean>(true);
 
   return (
     <CollapsedContext.Provider value={{ collapsed, setCollapsed }}>

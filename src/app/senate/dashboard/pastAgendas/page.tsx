@@ -8,6 +8,7 @@ import AgendaSection from '../../../components/agendaSection/agendaSection'
 import { useUser } from "@clerk/nextjs";
 import DropDownOptions from '../../../components/dropDown/dropDown'
 import SearchBar from '../../../components/searchBar/SearchBar'; // Import SearchBar
+import { useRouter } from "next/navigation";
 
 interface Option {
     id: number;
@@ -36,7 +37,9 @@ export default function PastAgendas(){
     const [selectedOption, setSelectedOption] = useState<Option>({id:1, optionText:"Date"});
     const [agendaData, setAgendaData] = useState<Agenda[]>([]);
     const [searchQuery, setSearchQuery] = useState(""); // State for search input
-            
+    const [selectedPage, setSelectedPage] = useState<Option>({id:3, optionText:"pastAgendas"})
+    const router = useRouter();
+    
     // Function to handle search input
     const handleSearch = (query: string) => {
       setSearchQuery(query.toLowerCase()); // Store search query in lowercase for case-insensitive search
@@ -66,6 +69,14 @@ export default function PastAgendas(){
         fetchAgendas();
 
     }, [isSignedIn, user]);
+
+    // Handle page change
+    useEffect(() => {
+      if (selectedPage.optionText === "Current Agendas") {
+        router.push(`/senate/dashboard/currentAgendas`);
+      }
+    }, [selectedPage])
+
     async function fetchAgendas() {
         try {
           // Create the body of the request with the 'is_open' parameter
@@ -99,16 +110,20 @@ export default function PastAgendas(){
         firstName: user?.firstName || '', // Default to empty string if undefined
         lastName: user?.lastName || '', // Default to empty string if undefined
       };
+
     return (
-        <div className={styles.pastAgendas}>
+      <div>
+        <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
+        <div className={styles.pastAgendas} onClick={() => setCollapsed(true)}>
             <div className={styles.top}>
-                <h1>Past Agendas</h1>
-                   <div className={styles.searchAddContainer}>
-                      <SearchBar onSearch={handleSearch} />
-                    </div>
+                <div className={styles.pageChange}>
+                  <DropDownOptions options={[{id:0, optionText:"Current Agendas"}, {id:1, optionText:"Past Agendas"}]} setSelectedOption={setSelectedPage} text={'Past Agendas'}/>
+                </div>
+                <div className={styles.searchAddContainer}>
+                  <SearchBar onSearch={handleSearch} />
+                </div>
             </div>
 
-            <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
             <div className={styles.sections}>
                 <div className={styles.content}>
                     <div className={styles.labels}>
@@ -128,7 +143,7 @@ export default function PastAgendas(){
               )}
                 </div>
             </div>
-
         </div>
+      </div>
   );
 }
