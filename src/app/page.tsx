@@ -65,9 +65,9 @@ export default function HomePage() {
         </div>
 
         <div className={styles.cards}>
-          <Card title={"Students"} text={"Whether you are here to share your ideas or just learn more, we are here to listen, support, and empower your journey. Schedule your appointment today!"} userRole={"student"}/>
-          <Card title={"Attorneys"} text={"Easily manage appointments, stay organized, and connect with students on your terms. \n When you are ready, just click the button to get started."}  userRole={'attorney'}/>
-          <Card title={"Senates"} text={"Ready to vote? Check out what is on the table and make your voice count when it matters. \n Click the button to get started."} userRole={'senate'}/>
+          <Card title={"Students"} text={"Whether you are here to share your ideas or just learn more, we are here to listen, support, and empower your journey. Schedule your appointment today!"} path={"/student/schedule"}/>
+          <Card title={"Attorneys"} text={"Easily manage appointments, stay organized, and connect with students on your terms. \n When you are ready, just click the button to get started."}  path={"/attorney/dashboard"}/>
+          <Card title={"Senates"} text={"Ready to vote? Check out what is on the table and make your voice count when it matters. \n Click the button to get started."} path={"/senate/dashboard/curentAgendas"}/>
         </div>
       </div>
       {/* Footer */}

@@ -7,10 +7,10 @@ import logo from '../../assets/whiteLogo.png'
 interface Props{
     title: string,
     text: string,
-    userRole: string
+    path: string
 }
 
-export default function Card({title, text, userRole}:Props){
+export default function Card({title, text, path}:Props){
     const router = useRouter();
     const { user } = useUser(); // Get user info from Clerk
   
@@ -32,7 +32,8 @@ export default function Card({title, text, userRole}:Props){
             <p className={styles.cardText}>
                 {text.split('\n').map((line, index) => (<span key={index}>{line}<br/></span>))}
             </p>
-            <button className={styles.navButton} onClick={() => handleNavigation(`/${userRole}/dashboard/currentAgendas`)}>Get Started</button>
+
+            <button className={styles.navButton} onClick={() => handleNavigation(path)}>Get Started</button>
       </div>
     )
 }

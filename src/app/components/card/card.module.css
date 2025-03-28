@@ -20,8 +20,8 @@
   }
   .img{
     position: absolute;
-    top:30;
-    right:10;
+    top: 10%;
+    left: 85%;
     height: 60px;
     width: 60px;
     min-width: 60;
