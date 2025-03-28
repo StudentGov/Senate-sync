@@ -44,8 +44,9 @@ body.active-modal {
     min-width: 300px;
     z-index: 100;
     gap: 20;
+    width: 80vw;
     /* padding-top: 50 ; */
-    max-width: 80vw;
+    max-width: 800px;
     padding-bottom: 100;
 
 }

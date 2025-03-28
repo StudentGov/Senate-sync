@@ -24,6 +24,7 @@
   overflow: hidden; /* Ensure text doesn't overflow the container */
   text-overflow: ellipsis; /* Show ellipsis when the text overflows */
   white-space: nowrap; /* Prevent text wrapping */
+  color: black
 }
 /* Ensure the middle divider between sections has consistent appearance */
 .section:not(:last-child) {
@@ -60,7 +61,8 @@
   text-overflow: ellipsis; /* Show ellipsis when the text overflows */
   /* white-space: nowrap; Prevent text wrapping */
   max-width: 20vw;
-  margin-right: 15px
+  margin-right: 15px;
+  color: black
 }
 .buttons button {
   display: flex;
