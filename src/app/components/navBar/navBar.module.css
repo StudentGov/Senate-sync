@@ -19,12 +19,11 @@
   .purpleBg {
     background-color: #48316F;
     color: white;
-    height: 100px;
   }
   .img{
     margin-left: 10%;
     height: 100%;
-    width: auto;
+    width: 192;
   }
   .profileSection{
     margin-left: auto;

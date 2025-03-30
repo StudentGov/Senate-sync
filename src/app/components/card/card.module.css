@@ -37,7 +37,7 @@
     width: 100px;
     color: #2c2c54; /* Dark plum */
 }
-@media screen and (max-width: 1520px){
+@media screen and (max-width: 1530px){
   .card{
     width: 380px
   }
@@ -47,15 +47,48 @@
 }
 @media screen and (max-width: 1230px){
   .card{
-    width: 580px;
-    height:200px;
+    width: 320px;
+    height:300px;
     padding-top: 25px;
   }
   .img{
-    left:85%;
+    left:80%;
+    top: 3%
   }
   .navButton{
-    left: 80%
+    top: 80%;
+    left: 65%
+  }
+
+}
+@media screen and (max-width: 1050px){
+  .card{
+    width: 270px;
+    height:310px;
+    padding-top: 25px;
+  }
+  .img{
+    left:75%;
+    top: 3%
+  }
+  .navButton{
+    top: 80%;
+    left: 60%
+  }
+}
+@media screen and (max-width: 900px){
+  .card{
+    width: 500px;
+    height: 230px;
+        padding: 40px 20px;
+  }
+  .img{
+    left:85%;
+    top: 3%
+  }
+  .navButton{
+    top: 75%;
+    left: 77%
   }
 }
 @media screen and (max-width: 660px){
@@ -78,8 +111,8 @@
 }
 @media screen and (max-width: 450px){
   .card{
-    width: 350px;
-    height: 220px;
+    width: 320px;
+    height: 250px;
   }
   .img{
     left:80%;
@@ -99,5 +132,11 @@
     width:80px;
     font-size: 15px;
     height: 40px;
+  }
+}
+@media screen and (max-width: 380px){
+  .card{
+      width: 90%;
+      align-self: center;
   }
 }

@@ -39,20 +39,16 @@ export default function HomePage() {
             </div>
 
             <div className={styles.right}>
-              <div className={styles.rightTop}>
-                <h2>About us</h2>
-                <p className="mb-3">
-                  Student Government is your voice on campus. We advocate for your needs, from academic policy to campus life improvements.
-                </p>
-                <p>
-                  Whether you are here to share your ideas or just learn more, we are here to listen, support, and empower your journey.
-                </p>
-              </div>
-
-              <div className={styles.rightBottom}>
+              <div className={styles.rightBoxes}>
                 <h2>Senates</h2>
                 <p>Ready to vote? Check out what is on the table and make your voice count where it matters.<br /> <br />Please click here to get started.</p>
                 <button className={styles.navButton} onClick={() => handleNavigation("/senate/dashboard/currentAgendas")}>Vote Now</button>
+              </div>
+
+              <div className={styles.rightBoxes}>
+                <h2>Attorneys</h2>
+                <p>Easily manage appointments, stay organized, and connect with students on your terms.<br /> <br />Please click here to get started.</p>
+                <button className={styles.navButton} onClick={() => handleNavigation("/attorney/dashboard")}>Get Started</button>
               </div>
             </div>
           </div>

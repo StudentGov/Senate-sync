@@ -12,13 +12,13 @@
     width: 100%;
 }
 .headerContent{
-    width: 1500px;
+    width: 1500px; 
 }
 .info{
     display: flex;
-    height: 100%;
+    /* height: 100%; */
     padding: 96px 24px;
-    color: white;
+    color: white; 
 }
 .headerTitle{
     display: flex;
@@ -36,6 +36,7 @@
     flex-direction: column;
     width: 800px;
     justify-content: center;
+
 }
 .left button{
     margin-top: 20px;
@@ -46,37 +47,33 @@
     width: 670px;
     color: #2c2c54; /* Dark plum */
     gap: 20px;
+    height: 300px;
 }
 .right h2{
     font-size: 40px;
 }
-.rightTop{
-    width: 100%;
-    border-radius: 10px;
-    background-color: #febf11;
-    padding: 32px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-.rightBottom{
+
+.rightBoxes{
     position: relative;
-    width: 100%;
+    width: 50%;
+    height: 100%;
     border-radius: 10px;
     background-color: #febf11;
     padding: 32px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
-.rightBottom button{
+.rightBoxes button{
     position: absolute;
     background-color: #48316F;
     color: white;
-    top: 75%;
-    left: 60%;
+    top: 80%;
+    left: 65%;
 }
 .why{
-    height: 600px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 80px;
 }
 .whyTitle{
     font-size: 40px;
@@ -104,16 +101,33 @@
 
 @media screen and (max-width: 1520px){
     .info{
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap:20px
+        padding: 0;
+        gap: 10px
     }
-    .header{
-        height: 700px
+    .headerContent{
+        width: 1300px;
+    }
+
+    .left h1{
+        font-size: 68px;
+    }
+    .img{
+        height: 60px;
+        width: 60px;
+        min-width: 60px;
+        min-height: 60px;
+    }
+    .rightBoxes{
+        padding: 20px 15px 20px 20px;
+    }
+    .rightBoxes p{
+        font-size: 15px;
+    }
+    .rightBoxes button{
+        width: 80px;
+        font-size: 15px;
     }
     .cards{
-        /* flex-direction: column; */
         gap:30px
     }
     .whyTitle{
@@ -121,104 +135,176 @@
     }
 
 }
-@media screen and (max-width: 1230px){
-    .cards{
-        flex-direction: column;
+@media screen and (max-width: 1350px){
+    .headerContent{
+        width: 1100px;
+
     }
-    .why{
-        height: 90vh;
+    .left h1{
+        font-size: 57px;
+    }
+    .rightBoxes button{
+        width: 75px;
+        font-size: 13px;
     }
 }
-@media screen and (max-width: 850px){
+@media screen and (max-width: 1150px){
+    .header{
+        height: 700px
+    }
+    .info{
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 40px;
+    }
+    .left h1{
+        font-size: 70px;
+    }
+    .img{
+        height: 80px;
+        width: 80px;
+        min-width: 80px;
+        min-height: 80px;
+    }
+    .rightBoxes{
+        padding: 32px;
+    }
+    .rightBoxes p{
+        font-size: 17px;
+    }
+    .rightBoxes button{
+        width: 85px;
+        font-size: 16px;
+    }
+}
+@media screen and (max-width: 900px){
     .header{
         height: 80vh;
     }
-    .headerContent{
-        width: 90%;
+    .info{
+        width: 700px;
+        justify-self: center;
+        align-self: center;
     }
     .left{
         width: 100%;
     }
-    .headerTitle h1{
-        font-size: 50px;
+    .left h1{
+        font-size: 67px;
     }
     .right{
-        width: 600px;
-        height: 330px;
+        width: 650px;
         margin-top: 30px;
     }
     .right h2{
         font-size: 35px;
     }
-    .rightTop, .rightBottom{
+    .rightTop, .rightBoxes{
         padding-top: 20px;
     }
+    .cards{
+        flex-direction: column;
+    }
 }
-@media screen and (max-width: 660px){
-    .header{
+@media screen and (max-width: 750px){
+    .header {
         height: 90vh;
     }
+    .info{
+        width:550px;
+        gap: 20px;
+        margin-top: -80px;
+    }
+    .left h1{
+        font-size: 53px;
+    }
+    .img{
+        height: 50px;
+        width: 50px;
+        min-width: 50px;
+        min-height: 50px;
+    }
+    .right{
+        flex-direction: column;
+        align-items: center;
+    }
+    .right h2{
+        font-size: 32px;
+    }
+    .left p, .right p{
+        font-size: 15px;
+    }
+    .right{
+        width: 450px;
+    }
+    .rightBoxes{
+        width: 100%;
+    }
+    .rightBoxes button{
+        top: 70%;
+        left: 77%;
+    }
+  }
+
+@media screen and (max-width: 660px){
+
     .why{
-        height: 95vh;
         min-height: 950px;
     }
     .headerTitle h1{
-        font-size: 40px;
+        font-size: 49px;
+    }
+    .left{
+        width: 505px;
     }
     .left p, .right p{
         font-size: 14px;
-    }
-    .right{
-        width: 500px;
-        height: 400px;
-        flex-direction: column;
     }
     .right h2{
         font-size: 30px;
     }
 
-    .rightBottom button{
-        width: 70px;
-        font-size: 15px;
-        top:65%;
-        left: 80%;
-    }
 }
 @media screen and (max-width: 560px){
-    .header{
-        height: 85vh;
-        min-height: 750px;;
-    }
-    .headerContent{
-        width: 90%;
-    }
-    .headerTitle h1{
-        font-size: 35px;
-    }
 
     .info{
-        padding: 0;
-        padding-bottom: 50px;
+        width: 100%;
+    }
+    .headerContent{
+        width: 100vw;
+        
+    }
+    .left{
+        width: 450px;
+     }
+    .headerTitle h1{
+        font-size: 43px;
+    }
+    .left p, .rightBoxes p{
+        font-size: 13px;
     }
     .img{
-        height: 55px;
-        width: 55px;
-        min-width: 55px;
-        min-height: 55px;
+        height: 45px;
+        width: 45px;
+        min-width: 45px;
+        min-height: 45px;
       }
+    .navButton{
+        width: 80px;
+        font-size: 15px;
+        height: 45px;
+    }
     .right{
-        width: 95%;
-        height: 300px;
+        width: 380px;
     }
     .right h2{
         font-size: 27px;
     }
-    .rightTop, .rightBottom{
-        height: 200px;
-        padding: 12px;
-
+    .rightBoxes{
+        padding: 20px 15px 20px 25px;
     }
-    .rightBottom button{
+    .rightBoxes button{
         font-size: 12px;
         height: 45px;
         left:75%;
@@ -227,27 +313,39 @@
         font-size: 32px;
     }
 }
-@media screen and (max-width: 450px){
-    .why{
-        height: 100vh;
-    }
+@media screen and (max-width: 470px){
+    .left{
+        width: 370px;
+        /* background-color: red; */
+     }
+     .img{
+        height: 40px;
+        width: 40px;
+        min-width: 40px;
+        min-height: 40px;
+      }
     .headerTitle h1{
-        font-size: 30px;
+        font-size: 35px;
     }
     .navButton{
         width:70px;
         font-size: 15px;
     }
-    .rightBottom button{
-        left: 70%
+    .rightBoxes button{
+        top: 65%;
+        width: 70px;
+        left: 77%
     }
     .right{
-        height: 270px;
+        width: 350px;
     }
     .right h2{
-        font-size: 25px;
+        font-size: 23px;
     }
-    .right p{
+    .rightBoxes{
+        padding-top: 15px;
+    }
+    .left p, .right p{
         font-size: 12px;
     }
     .whyTitle{
@@ -255,7 +353,7 @@
     }
 }
 @media screen and (max-width: 380px){
-    .rightTop{
-        height: 120px;
+    .info, .left, .right{
+        width: 95%;
     }
 }
