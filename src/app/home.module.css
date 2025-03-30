@@ -4,7 +4,7 @@
     flex-direction: column;
 }
 .header{
-    height: 500px;
+    min-height: 500px;
     background-color: #48316F;
     display: flex;
     align-items: center;
@@ -138,7 +138,6 @@
 @media screen and (max-width: 1350px){
     .headerContent{
         width: 1100px;
-
     }
     .left h1{
         font-size: 57px;
@@ -150,7 +149,7 @@
 }
 @media screen and (max-width: 1150px){
     .header{
-        height: 700px
+        padding: 100px 0px;
     }
     .info{
         align-items: center;
@@ -179,9 +178,9 @@
     }
 }
 @media screen and (max-width: 900px){
-    .header{
+    /* .header{
         height: 80vh;
-    }
+    } */
     .info{
         width: 700px;
         justify-self: center;
@@ -209,7 +208,7 @@
 }
 @media screen and (max-width: 750px){
     .header {
-        height: 90vh;
+        height: 85vh;
     }
     .info{
         width:550px;
@@ -240,6 +239,7 @@
     }
     .rightBoxes{
         width: 100%;
+        /* height: auto; */
     }
     .rightBoxes button{
         top: 70%;
@@ -248,10 +248,6 @@
   }
 
 @media screen and (max-width: 660px){
-
-    .why{
-        min-height: 950px;
-    }
     .headerTitle h1{
         font-size: 49px;
     }
@@ -261,13 +257,15 @@
     .left p, .right p{
         font-size: 14px;
     }
+    .right{
+        width: 400px;
+    }
     .right h2{
         font-size: 30px;
     }
 
 }
 @media screen and (max-width: 560px){
-
     .info{
         width: 100%;
     }

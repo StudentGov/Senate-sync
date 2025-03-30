@@ -9,6 +9,7 @@ import { useUser } from "@clerk/nextjs";
 import DropDownOptions from '../../../components/dropDown/dropDown'
 import SearchBar from '../../../components/searchBar/SearchBar'; // Import SearchBar
 import { useRouter } from "next/navigation";
+import pusherClient from "@/app/lib/pusher";
 
 interface Option {
     id: number;
@@ -58,6 +59,18 @@ export default function PastAgendas(){
       }
       return 0; // No sorting if 'N/A'
   });
+  useEffect(() => {
+    const channel = pusherClient.subscribe('agenda-channel')
+  
+    const handleClosedAgenda = (data: { message: string }) => {
+      console.log(data.message)
+      fetchAgendas();
+    };
+    channel.bind('closed-agenda', handleClosedAgenda)
+    return () => {
+      channel.unbind('closed-agenda', handleClosedAgenda)
+    }
+  }, [])
     useEffect(() => {
         if (isSignedIn && (user?.publicMetadata?.role === "senate_member" || user?.publicMetadata?.role === "super_admin")) {
             setIsMember(true);
@@ -117,7 +130,7 @@ export default function PastAgendas(){
         <div className={styles.pastAgendas} onClick={() => setCollapsed(true)}>
             <div className={styles.top}>
                 <div className={styles.pageChange}>
-                  <DropDownOptions options={[{id:0, optionText:"Current Agendas"}, {id:1, optionText:"Past Agendas"}]} setSelectedOption={setSelectedPage} text={'Past Agendas'}/>
+                  <DropDownOptions options={[{id:0, optionText:"Past Agendas"}, {id:1, optionText:"Current Agendas"}]} setSelectedOption={setSelectedPage} text={'Past Agendas'}/>
                 </div>
                 <div className={styles.searchAddContainer}>
                   <SearchBar onSearch={handleSearch} />
@@ -136,7 +149,7 @@ export default function PastAgendas(){
                         </div>
                     </div>
               {filteredAndSortedAgendas.map((item, index) =>
-                    item.is_open && 
+                    !item.is_open && 
                     (
                     <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} user={userData}/>
                     )

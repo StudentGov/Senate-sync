@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { turso } from '../../../db'
+import pusher from "@/pusher";
 
 export async function POST(req: Request) {
   try {
@@ -10,13 +11,15 @@ export async function POST(req: Request) {
       sql: "UPDATE Agendas SET is_open = ? WHERE id = ?",
       args: [false, agenda_id],
     });
-
+    await pusher.trigger('agenda-channel', 'closed-agenda', {message:"Agenda closed"})
     // Check if the update was successful
     if (result.rowsAffected > 0) {
       return NextResponse.json({ message: "Closed Agenda successfully" });
     } else {
       return NextResponse.json({ error: "Agenda not found" }, { status: 404 });
     }
+
+
   } catch (error) {
     console.error("Error closing agenda:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

@@ -62,17 +62,31 @@ export default function CurrentAgendas(){
         return 0; // No sorting if 'N/A'
     });
     useEffect(() => {
-      const channel = pusherClient.subscribe('agenda-channel')
+      const channel = pusherClient.subscribe('agenda-channel');
     
       const handleNewAgenda = (data: { message: string }) => {
-        console.log(data.message)
+        console.log('New agenda:', data.message);
         fetchAgendas();
       };
-      channel.bind('new-agenda', handleNewAgenda)
+    
+      const handleClosedAgenda = (data: { message: string }) => {
+        console.log('Closed agenda:', data.message);
+        fetchAgendas();
+      };
+      const handleChangedVisibility = (data: { message: string }) => {
+        console.log('Changed visibility:', data.message);
+        fetchAgendas();
+      };
+      channel.bind('new-agenda', handleNewAgenda);
+      channel.bind('closed-agenda', handleClosedAgenda);
+      channel.bind('changed-visibility', handleChangedVisibility);
+    
       return () => {
-        channel.unbind('new-agenda', handleNewAgenda)
-      }
-    }, [])
+        channel.unbind('new-agenda', handleNewAgenda);
+        channel.unbind('closed-agenda', handleClosedAgenda);
+        channel.unbind('changed-visibility', handleChangedVisibility);
+      };
+    }, []);
 
 
     useEffect(() => {
@@ -136,7 +150,7 @@ export default function CurrentAgendas(){
               <div className={styles.top}>
                   {/* <h1>Current Agendas</h1> */}
                   <div className={styles.pageChange}>
-                    <DropDownOptions options={[{id:0, optionText:"Past Agendas"}, {id:1, optionText:"Current Agendas"}]} setSelectedOption={setSelectedPage} text={'Current Agendas'}/>
+                    <DropDownOptions options={[{id:0, optionText:"Current Agendas"}, {id:1, optionText:"Past Agendas"}]} setSelectedOption={setSelectedPage} text={'Current Agendas'}/>
                   </div>
                   
                   <div className={styles.searchAddContainer}>
