@@ -1,6 +1,8 @@
+'use client'; 
 import { useState, useEffect } from 'react';
 import ReactDOM from "react-dom";
 import styles from './individual.module.css'
+import pusherClient from '@/app/lib/pusher';
 
 interface Props{
     agenda_id:number,
@@ -15,20 +17,33 @@ interface VoteData{
 export default function Individual({agenda_id, agenda_title}: Props){
     const [modal, setModal] = useState<boolean>(false);
     const [voteData, setVoteData] = useState<VoteData[]>([])
+
+    useEffect(() => {
+        const channel = pusherClient.subscribe('agenda-channel')
+      
+        const handleVoteUpdated = (data: { message: string }) => {
+          console.log(data.message)
+          fetchVotes();
+        };
+      
+        channel.bind('vote-updated', handleVoteUpdated)
+      
+        return () => {
+          channel.unbind('vote-updated', handleVoteUpdated)
+        }
+      }, [])
+
     const toggleModal = () => {
         setModal(!modal);
     };
     // UseEffect to manage modal state safely on the client side
     useEffect(() => {
-        if (typeof window !== "undefined") { // Check if running on the client
-            if (modal) {
-                document.body.classList.add('active-modal');
-            } else {
-                document.body.classList.remove('active-modal');
-            }
+        if (modal) {
+            document.body.classList.add("active-modal");
+        } else {
+            document.body.classList.remove("active-modal");
         }
-
-    }, [modal]); // Re-run when modal state changes
+    }, [modal]);
     async function fetchVotes() {
         try {
           const response = await fetch('/api/get-individual-votes', {
@@ -48,9 +63,8 @@ export default function Individual({agenda_id, agenda_title}: Props){
       }
       
     return (
-<>
+        <>
             <button onClick={() => {toggleModal(); fetchVotes();}} className={styles.btnModal}>Individual Stats</button>
-
             {modal && ReactDOM.createPortal(
                 <div className={styles.modal}>
                     <div onClick={toggleModal} className={styles.overlay}></div>

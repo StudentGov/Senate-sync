@@ -1,6 +1,7 @@
 "use client";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Kanit  } from "next/font/google";
+
 import "./globals.css";
 import NavBar from "./components/navBar/navBar";
 
@@ -19,6 +20,12 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+const kanit = Kanit({
+  variable: '--font-kanit',
+  subsets: ['latin'],
+  weight: ['400', '500', '700'], // Customize weights if needed
+  display: 'swap',
+});
 
 export default function RootLayout({
   children,
@@ -30,7 +37,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} ${kanit.variable} antialiased`}
         >
           <header className="flex justify-end items-center p-4 gap-4 h-16">
             <SignedIn>

@@ -1,22 +1,358 @@
 .homePage{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     width: 100%;
     flex-direction: column;
 }
+.header{
+    min-height: 500px;
+    background-color: #48316F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.headerContent{
+    width: 1500px; 
+}
+.info{
+    display: flex;
+    /* height: 100%; */
+    padding: 96px 24px;
+    color: white; 
+}
+.headerTitle{
+    display: flex;
+    align-items: center;
+    line-height: 1.2;
+}
+.img{
+    height: 80px;
+    width: 80px;
+    min-width: 80px;
+    min-height: 80px;
+  }
+  
+.left{
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    justify-content: center;
+
+}
+.left button{
+    margin-top: 20px;
+}
+
+.right{
+    display: flex;
+    width: 670px;
+    color: #2c2c54; /* Dark plum */
+    gap: 20px;
+    height: 300px;
+}
+.right h2{
+    font-size: 40px;
+}
+
+.rightBoxes{
+    position: relative;
+    width: 50%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: #febf11;
+    padding: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.rightBoxes button{
+    position: absolute;
+    background-color: #48316F;
+    color: white;
+    top: 80%;
+    left: 65%;
+}
+.why{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 80px;
+}
+.whyTitle{
+    font-size: 40px;
+    margin: 70px;
+    align-items: center;
+}
+.cards{
+    display: flex;
+    gap: 50px;
+}
+
 .navButton{
-    background-color: purple;
+    background-color: #febd11;
     border-radius: 5px;
     height: 50px;
     width: 100px;
-    color: white;
+    color: #2c2c54; /* Dark plum */
 }
-.profileSection{
-    position: absolute;
-    display: flex;
-    right: 80px;
-    top:40px;
-    z-index: 600;
+
+.footer{
+    height:300px;
+    background-color: #565458;
+}
+
+
+@media screen and (max-width: 1520px){
+    .info{
+        padding: 0;
+        gap: 10px
+    }
+    .headerContent{
+        width: 1300px;
+    }
+
+    .left h1{
+        font-size: 68px;
+    }
+    .img{
+        height: 60px;
+        width: 60px;
+        min-width: 60px;
+        min-height: 60px;
+    }
+    .rightBoxes{
+        padding: 20px 15px 20px 20px;
+    }
+    .rightBoxes p{
+        font-size: 15px;
+    }
+    .rightBoxes button{
+        width: 80px;
+        font-size: 15px;
+    }
+    .cards{
+        gap:30px
+    }
+    .whyTitle{
+        margin: 50px;
+    }
+
+}
+@media screen and (max-width: 1350px){
+    .headerContent{
+        width: 1100px;
+    }
+    .left h1{
+        font-size: 57px;
+    }
+    .rightBoxes button{
+        width: 75px;
+        font-size: 13px;
+    }
+}
+@media screen and (max-width: 1150px){
+    .header{
+        padding: 100px 0px;
+    }
+    .info{
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 40px;
+    }
+    .left h1{
+        font-size: 70px;
+    }
+    .img{
+        height: 80px;
+        width: 80px;
+        min-width: 80px;
+        min-height: 80px;
+    }
+    .rightBoxes{
+        padding: 32px;
+    }
+    .rightBoxes p{
+        font-size: 17px;
+    }
+    .rightBoxes button{
+        width: 85px;
+        font-size: 16px;
+    }
+}
+@media screen and (max-width: 900px){
+    /* .header{
+        height: 80vh;
+    } */
+    .info{
+        width: 700px;
+        justify-self: center;
+        align-self: center;
+    }
+    .left{
+        width: 100%;
+    }
+    .left h1{
+        font-size: 67px;
+    }
+    .right{
+        width: 650px;
+        margin-top: 30px;
+    }
+    .right h2{
+        font-size: 35px;
+    }
+    .rightTop, .rightBoxes{
+        padding-top: 20px;
+    }
+    .cards{
+        flex-direction: column;
+    }
+}
+@media screen and (max-width: 750px){
+    .header {
+        height: 85vh;
+    }
+    .info{
+        width:550px;
+        gap: 20px;
+        margin-top: -80px;
+    }
+    .left h1{
+        font-size: 53px;
+    }
+    .img{
+        height: 50px;
+        width: 50px;
+        min-width: 50px;
+        min-height: 50px;
+    }
+    .right{
+        flex-direction: column;
+        align-items: center;
+    }
+    .right h2{
+        font-size: 32px;
+    }
+    .left p, .right p{
+        font-size: 15px;
+    }
+    .right{
+        width: 450px;
+    }
+    .rightBoxes{
+        width: 100%;
+        /* height: auto; */
+    }
+    .rightBoxes button{
+        top: 70%;
+        left: 77%;
+    }
+  }
+
+@media screen and (max-width: 660px){
+    .headerTitle h1{
+        font-size: 49px;
+    }
+    .left{
+        width: 505px;
+    }
+    .left p, .right p{
+        font-size: 14px;
+    }
+    .right{
+        width: 400px;
+    }
+    .right h2{
+        font-size: 30px;
+    }
+
+}
+@media screen and (max-width: 560px){
+    .info{
+        width: 100%;
+    }
+    .headerContent{
+        width: 100vw;
+        
+    }
+    .left{
+        width: 450px;
+     }
+    .headerTitle h1{
+        font-size: 43px;
+    }
+    .left p, .rightBoxes p{
+        font-size: 13px;
+    }
+    .img{
+        height: 45px;
+        width: 45px;
+        min-width: 45px;
+        min-height: 45px;
+      }
+    .navButton{
+        width: 80px;
+        font-size: 15px;
+        height: 45px;
+    }
+    .right{
+        width: 380px;
+    }
+    .right h2{
+        font-size: 27px;
+    }
+    .rightBoxes{
+        padding: 20px 15px 20px 25px;
+    }
+    .rightBoxes button{
+        font-size: 12px;
+        height: 45px;
+        left:75%;
+    }
+    .whyTitle{
+        font-size: 32px;
+    }
+}
+@media screen and (max-width: 470px){
+    .left{
+        width: 370px;
+        /* background-color: red; */
+     }
+     .img{
+        height: 40px;
+        width: 40px;
+        min-width: 40px;
+        min-height: 40px;
+      }
+    .headerTitle h1{
+        font-size: 35px;
+    }
+    .navButton{
+        width:70px;
+        font-size: 15px;
+    }
+    .rightBoxes button{
+        top: 65%;
+        width: 70px;
+        left: 77%
+    }
+    .right{
+        width: 350px;
+    }
+    .right h2{
+        font-size: 23px;
+    }
+    .rightBoxes{
+        padding-top: 15px;
+    }
+    .left p, .right p{
+        font-size: 12px;
+    }
+    .whyTitle{
+        font-size: 27px;
+    }
+}
+@media screen and (max-width: 380px){
+    .info, .left, .right{
+        width: 95%;
+    }
 }

@@ -1,19 +1,42 @@
 .navBar {
     position: absolute;
+    display: flex;
+    align-items: center;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100px; /* Set your desired height */
+    height: 72px;
     display: flex;
     align-items: center;
-    background-color: #48316F; /* Optional */
     padding: 0 20px; /* Optional */
     z-index: 500
   }
+  .whiteBg {
+    background-color: white;
+    color: black;
+  }
   
+  .purpleBg {
+    background-color: #48316F;
+    color: white;
+  }
   .img{
     margin-left: 10%;
     height: 100%;
     width: auto;
   }
+  .profileSection{
+    margin-left: auto;
+    display: flex;
+    right: 80px;
+    top:40px;
+    z-index: 600;
+}
+.loginBtn{
+  background-color: #febd11;
+  border-radius: 5px;
+  height: 50px;
+  width: 100px;
+  color: #2c2c54; /* Dark plum */
+}
   

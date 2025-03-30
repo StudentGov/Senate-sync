@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useEffect } from "react";
 import styles from './currentAgendas.module.css'
 import { useCollapsedContext } from '../../../components/sideBar/sideBarContext'
@@ -7,6 +8,11 @@ import AgendaSection from '../../../components/agendaSection/agendaSection'
 import AddAgenda from '../../../components/addAgenda/addAgenda'
 import { useUser } from "@clerk/nextjs";
 import DropDownOptions from "@/app/components/dropDown/dropDown";
+import pusherClient from "@/app/lib/pusher";
+import SearchBar from '../../../components/searchBar/SearchBar';  // Import SearchBar
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import arrow from '../../../assets/arrow.png'
 
 interface Option {
     id: number;
@@ -36,6 +42,54 @@ export default function CurrentAgendas(){
     const [isSpeaker, setIsSpeaker] = useState<boolean>(false);
     const [selectedOption, setSelectedOption] = useState<Option>({id:1, optionText:"Date"});
     const [agendaData, setAgendaData] = useState<Agenda[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>(""); // State for search input
+    const [selectedPage, setSelectedPage] = useState<Option>({id:3, optionText:"currentAgendas"})
+    const router = useRouter();
+    // Function to handle search input
+    const handleSearch = (query: string) => {
+      setSearchQuery(query.toLowerCase()); // Store search query in lowercase for case-insensitive search
+    };
+    const filteredAndSortedAgendas: Agenda[] = agendaData
+      .filter(item =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .sort((a, b) => {
+        if (selectedOption.optionText === "Title") {
+          return a.title.localeCompare(b.title); // Sort alphabetically by title
+        } else if (selectedOption.optionText === "Date") {
+          const dateA = new Date(a.created_at);
+          const dateB = new Date(b.created_at);
+          return dateB.getTime() - dateA.getTime(); // Newest to oldest
+        }
+        return 0; // No sorting if 'N/A'
+    });
+    useEffect(() => {
+      const channel = pusherClient.subscribe('agenda-channel');
+    
+      const handleNewAgenda = (data: { message: string }) => {
+        console.log('New agenda:', data.message);
+        fetchAgendas();
+      };
+    
+      const handleClosedAgenda = (data: { message: string }) => {
+        console.log('Closed agenda:', data.message);
+        fetchAgendas();
+      };
+      const handleChangedVisibility = (data: { message: string }) => {
+        console.log('Changed visibility:', data.message);
+        fetchAgendas();
+      };
+      channel.bind('new-agenda', handleNewAgenda);
+      channel.bind('closed-agenda', handleClosedAgenda);
+      channel.bind('changed-visibility', handleChangedVisibility);
+    
+      return () => {
+        channel.unbind('new-agenda', handleNewAgenda);
+        channel.unbind('closed-agenda', handleClosedAgenda);
+        channel.unbind('changed-visibility', handleChangedVisibility);
+      };
+    }, []);
+
 
     useEffect(() => {
         if (isSignedIn && (user?.publicMetadata?.role === "senate_member" || user?.publicMetadata?.role === "super_admin")) {
@@ -49,6 +103,13 @@ export default function CurrentAgendas(){
         
     }, [isSignedIn, user]);
 
+
+    // Handle page change
+    useEffect(() => {
+      if (selectedPage.optionText === "Past Agendas") {
+        router.push(`/senate/dashboard/pastAgendas`);
+      }
+    }, [selectedPage])
     async function fetchAgendas() {
         try {
           // Create the body of the request with the 'is_open' parameter
@@ -77,18 +138,6 @@ export default function CurrentAgendas(){
         }
       }
   
-      const sortedAgendaData: Agenda[] = [...agendaData].sort((a, b) => {
-        if (selectedOption.optionText === "Title") {
-          return a.title.localeCompare(b.title); // Sorting by Title alphabetically
-        } else if (selectedOption.optionText === "Date") {
-          const dateA = new Date(a.created_at); // Convert 'created_at' string to Date object
-          const dateB = new Date(b.created_at);
-      
-          // Sorting by Date (using getTime for comparison)
-          return dateB.getTime() - dateA.getTime(); // Sorting from newest to oldest
-        }
-        return 0; // No sorting if 'N/A'
-      });
       const userData: User = {
         id: user?.id || '', // Default to empty string if undefined
         firstName: user?.firstName || '', // Default to empty string if undefined
@@ -96,33 +145,44 @@ export default function CurrentAgendas(){
       };
       
     return (
-        <div className={styles.currentAgendas}>
-            <div className={styles.top}>
-                <h1>Current Agendas</h1>
-                {isSpeaker && user && <AddAgenda user={user} />}
-            </div>
+      <div>
+        <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
+          <div className={styles.currentAgendas} onClick={() => setCollapsed(true)}>
 
-            <SideBar collapsed={collapsed} setCollapsed={setCollapsed}/>
-            <div className={styles.sections}>
-                <div className={styles.content}>
-                    <div className={styles.labels}>
-                        <label>Title</label>
-                        <div className={styles.rightLabels}>
-                            <label className={styles.date}>Date</label>
-                            {isMember && <label>Voted</label>}
-                            {isSpeaker && <label>Visible</label>}
-                        </div>
-                        <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'}/>
-                    </div>
-                {sortedAgendaData.map((item, index) => (
-                    item.is_open && 
-                    (
-                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} user={userData}/>
-                    )
-                ))}
-                </div>
+              <div className={styles.top}>
+                  <div className={styles.pageChange}>
+                    <Image src={arrow} alt="MNSU Logo" className={styles.img}/>
+                    <DropDownOptions options={[{id:0, optionText:"Current Agendas"}, {id:1, optionText:"Past Agendas"}]} setSelectedOption={setSelectedPage} text={'Current Agendas'}/>
+                  </div>
+                  
+                  <div className={styles.searchAddContainer}>
+                    <SearchBar onSearch={handleSearch} />
+                    {isSpeaker && user && <AddAgenda user={user} />}
+                  </div>
+              </div>
+
+
+              <div className={styles.sections}>
+                  <div className={styles.content}>
+                      <div className={styles.labels}>
+                          <label>Title</label>
+                          <label className={styles.date}>Date</label>
+                          <div className={styles.rightLabels}>
+                              {isMember && <label>Voted</label>}
+                              {isSpeaker && <label>Visible</label>}
+                              <DropDownOptions options={[{id:0, optionText:"Title"}, {id:1, optionText:"Date"}]} setSelectedOption={setSelectedOption} text={'Sort'}/>
+                          </div>
+                      </div>
+                {filteredAndSortedAgendas.map((item, index) =>
+                      item.is_open && 
+                      (
+                      <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} user={userData}/>
+                      )
+                )}
+
             </div>
+          </div>
         </div>
-
-    )
+      </div>
+  );
 }

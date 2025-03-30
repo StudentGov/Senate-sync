@@ -47,9 +47,9 @@ body.active-modal {
     gap: 20;
     /* padding-top: 50 ; */
     max-width: 800px;
-    padding-bottom: 100;
+    padding-bottom: 70px;
     height: 60vh;
-
+    
 }
 
 .closeModal {
@@ -66,33 +66,6 @@ body.active-modal {
     z-index: 200;
 }
 
-.title{
-    position: absolute;
-    top: 5%;
-    left: 10%;
-    font-size: 30px;
-    font-weight: bolder;
-    color: black;
-}
-
-
-.sections{
-    display: flex;
-    flex-direction: column; 
-    border-radius: 10px;
-    margin: 0px auto;
-    height: 100%;
-    width: 100%;
-    padding-bottom: 10px;
-}
-.content {
-    position: relative;
-    top: 20%;
-    overflow-y: auto;  /* Make this section scrollable */
-    flex-grow: 1;  /* Allow the content to take as much space as needed but not exceed the viewport */
-    scrollbar-width:none;
-    
-}
 .section {
     display: flex;
     justify-content: space-between;
@@ -113,23 +86,73 @@ body.active-modal {
     margin-bottom: 5px;
     border-radius: 5px;
   }
-  .section h2{
+.section h2{
     flex-grow: 1; /* Allow the span to take up remaining space */
     overflow: hidden; /* Ensure text doesn't overflow the container */
     text-overflow: ellipsis; /* Show ellipsis when the text overflows */
     white-space: nowrap; /* Prevent text wrapping */
-  }
-  /* Ensure the middle divider between sections has consistent appearance */
-  .section:not(:last-child) {
+}
+/* Ensure the middle divider between sections has consistent appearance */
+.section:not(:last-child) {
     border-bottom: none;  /* Only add bottom border if it's not the last section */
-  }
-  
-  
-  .section:hover{
+}
+
+.section:hover{
     color: #48316F;
     border: 0.1px solid #48316F;
     border-radius: 7px;
-  }
+}
 .option{
     text-align: right;
+}
+.detailsContainer {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 30px auto;
+    height: 100%
+}
+
+.title {
+    font-size: 30px;
+    font-weight: bolder;
+    color: black;
+}
+
+.infoSection {
+    margin-bottom: 20px;
+    margin-top: 30px;
+    margin-left: 5%;
+}
+
+.infoRow {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: black
+}
+
+.bold {
+    font-weight:600;
+}
+.descriptionSection {
+    margin-top: 20px;
+    margin-left: 5%;
+    color: black
+}
+
+.descriptionSection p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+}
+
+@media screen and (max-width: 600px) {
+    .title{
+        font-size: 25px;
+    }
+    .descriptionSection, .infoSection{
+        margin-left: 0;
+    }
 }

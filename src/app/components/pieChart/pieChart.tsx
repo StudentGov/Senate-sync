@@ -1,7 +1,9 @@
+"use client";
 import { useState, useEffect } from 'react';
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import styles from './pieChart.module.css';
 import Individual from '../individual/individual';
+import pusherClient from '@/app/lib/pusher';
 
 
 interface AgendaProps {
@@ -25,7 +27,20 @@ export default function PieChartPopUp({agenda, isSpeaker}: AgendaProps) {
     const [modal, setModal] = useState<boolean>(false);
     const [sum, setSum] = useState<number>(0);
     const [voteData, setVoteData] = useState<DataItem[]>([]);
-
+    useEffect(() => {
+        const channel = pusherClient.subscribe('agenda-channel')
+      
+        const handleVoteUpdated = (data: { message: string }) => {
+          console.log(data.message)
+          fetchVotes();
+        };
+      
+        channel.bind('vote-updated', handleVoteUpdated)
+      
+        return () => {
+          channel.unbind('vote-updated', handleVoteUpdated)
+        }
+      }, [agenda.id])
     const toggleModal = () => {
         setModal(!modal);
     };

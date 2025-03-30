@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { turso } from '../../../db'
+import pusher from "@/pusher";
 
 export async function POST(req: Request) {
   try {
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
       sql: "UPDATE Agendas SET is_visible = ? WHERE id = ?",
       args: [is_visible, agenda_id],
     });
-
+    await pusher.trigger('agenda-channel', 'changed-visibility', {message:"Changed visibility"})
     // Check if the update was successful
     if (result.rowsAffected > 0) {
       return NextResponse.json({ message: "Visibility updated successfully" });

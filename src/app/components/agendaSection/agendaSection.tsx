@@ -3,6 +3,8 @@ import styles from './agendaSection.module.css';
 import Switch from '@mui/material/Switch';
 import DropDownOptions from '../dropDown/dropDown';
 import PieChart from '../pieChart/pieChart'
+import Details from '../details/Details'
+
 
 interface Option {
   id: number;
@@ -21,7 +23,8 @@ interface AgendaProps {
     is_visible: boolean;
     is_open: boolean;
     created_at: string;
-    options: Option[]
+    options: Option[];
+    description: string
   };
   page:string;
   isMember:boolean;
@@ -33,6 +36,8 @@ interface AgendaProps {
 export default function AgendaSection({ agenda, page, isMember, isSpeaker, user }: AgendaProps){
   const [visible, setVisible] = useState<boolean>(agenda.is_visible)
   const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: "N/A"} );
+  const [userChangedVote, setUserChangedVote] = useState<boolean>(false);
+  const [showDetails, setShowDetails] = useState<boolean>(false);
   // Toggle the visibility
   async function handleToggle() {
     // Toggle the visibility
@@ -63,6 +68,9 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
       console.error(`Error updating visibility for "${agenda.title}":`, error);
     }
   }
+  const toggleDetails = () => {
+    setShowDetails(!showDetails);
+  };
 
   async function handleClose(){
     // Call API to update visibility in the database
@@ -120,6 +128,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
         alert("Please select an option");
         return;
       }
+      setUserChangedVote(false);
 
       try {
         const response = await fetch("/api/update-user-vote", {
@@ -145,16 +154,20 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
       }
     }
 
-    // Only call the API if selectedOption has a valid optionText
-    if (selectedOption && selectedOption.optionText !== "N/A" && selectedOption.id !== null && selectedOption.id > -1) {
+    // Only call the API if user changed vote 
+    if (userChangedVote){
       handleVoteSubmit();
     }
 
   }, [selectedOption, user.id, agenda.id]); // Re-run when selectedOption changes
   return (
     <div className={styles.section}>
-      <h2>{agenda.title}</h2>
-      <h3 className={styles.date}>{agenda.created_at}</h3>
+      <div className={styles.fillHeight} onClick={toggleDetails}>
+        <h2>{agenda.title}</h2>
+      </div>
+      <div className={styles.fillHeight} onClick={toggleDetails}>
+        <h3 className={styles.date}>{new Date(agenda.created_at).toISOString().split("T")[0]}</h3>
+      </div>
         <div className={styles.buttons}>
           {isMember && <small>{selectedOption.optionText}</small>}
           {isSpeaker && <Switch checked={visible} onChange={handleToggle} className={styles.toggle}/>}
@@ -162,11 +175,12 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
             <>
               {isSpeaker && <button onClick={handleClose}>Close</button>}
               <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
-              {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'}/>}
+              {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'} setUserChangedVote={setUserChangedVote}/>}
             </>
           ):<PieChart agenda={agenda} isSpeaker={isSpeaker}/>
           }
-        </div>    
+        </div>   
+          <Details agenda={agenda} showDetails={showDetails} setShowDetails={setShowDetails} selectedVote={selectedOption.optionText}/>
       </div>
   );
 };

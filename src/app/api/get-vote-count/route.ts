@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { turso } from '../../../db';
 
+
 export async function POST(req: Request) {
   try {
     const { agenda_id } = await req.json(); // Extract agenda_id from the request body

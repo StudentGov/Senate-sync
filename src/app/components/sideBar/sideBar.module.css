@@ -1,7 +1,7 @@
 .sideBar{
     position: absolute; /* Positions over right component */
     left: 0;
-    top:100px;
+    top:72px;
     background-color: #EEEEEE; 
     z-index: 100;
 }
