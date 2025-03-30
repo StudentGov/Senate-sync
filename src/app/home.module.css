@@ -23,6 +23,7 @@
 .headerTitle{
     display: flex;
     align-items: center;
+    line-height: 1.2;
 }
 .img{
     height: 80px;

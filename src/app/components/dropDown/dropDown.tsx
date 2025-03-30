@@ -24,7 +24,7 @@ export default function DropDownOptions({ options, setSelectedOption, text, setU
       <MenuButton>{text}</MenuButton>
       <Menu slots={{ listbox: Listbox }}>
         {options.map((item: Option, index: number) => (
-          <MenuItem key={index} onClick={() => {setSelectedOption(item); if (setUserChangedVote) setUserChangedVote(true)}}>{item.optionText}</MenuItem>
+          <MenuItem key={index} onClick={() => {setSelectedOption(item); if (setUserChangedVote) setUserChangedVote(true)}} >{item.optionText}</MenuItem>
         ))}
       </Menu>
     </Dropdown>

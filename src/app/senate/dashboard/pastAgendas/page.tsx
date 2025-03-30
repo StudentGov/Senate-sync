@@ -10,6 +10,8 @@ import DropDownOptions from '../../../components/dropDown/dropDown'
 import SearchBar from '../../../components/searchBar/SearchBar'; // Import SearchBar
 import { useRouter } from "next/navigation";
 import pusherClient from "@/app/lib/pusher";
+import Image from "next/image";
+import arrow from '../../../assets/arrow.png'
 
 interface Option {
     id: number;
@@ -130,6 +132,7 @@ export default function PastAgendas(){
         <div className={styles.pastAgendas} onClick={() => setCollapsed(true)}>
             <div className={styles.top}>
                 <div className={styles.pageChange}>
+                  <Image src={arrow} alt="MNSU Logo" className={styles.img}/>
                   <DropDownOptions options={[{id:0, optionText:"Past Agendas"}, {id:1, optionText:"Current Agendas"}]} setSelectedOption={setSelectedPage} text={'Past Agendas'}/>
                 </div>
                 <div className={styles.searchAddContainer}>
