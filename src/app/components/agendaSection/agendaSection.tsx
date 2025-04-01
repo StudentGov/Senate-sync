@@ -173,11 +173,16 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
           {isSpeaker && <Switch checked={visible} onChange={handleToggle} className={styles.toggle}/>}
           {page==='current'?(
             <>
+              <div className={styles.viewVoting}>
+                <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
+              </div>
               {isSpeaker && <button onClick={handleClose}>Close</button>}
-              <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
               {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'} setUserChangedVote={setUserChangedVote}/>}
+
             </>
-          ):<PieChart agenda={agenda} isSpeaker={isSpeaker}/>
+          ):<div className={styles.viewVoting}>
+              <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
+            </div>
           }
         </div>   
           <Details agenda={agenda} showDetails={showDetails} setShowDetails={setShowDetails} selectedVote={selectedOption.optionText}/>
