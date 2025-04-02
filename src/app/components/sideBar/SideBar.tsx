@@ -17,7 +17,7 @@ export default function SideBar({collapsed, setCollapsed}: SideBarProps) {
   const router = useRouter();
   const { user, isSignedIn } = useUser();
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false);
-  const { openUserProfile } = useClerk();
+  const { openUserProfile, signOut } = useClerk();
 
   useEffect(() => {
     if (isSignedIn && user?.publicMetadata?.role === "super_admin") {
@@ -39,7 +39,7 @@ export default function SideBar({collapsed, setCollapsed}: SideBarProps) {
                 <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/dashboard/currentAgendas')}> Current Agendas </MenuItem>
                 <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/dashboard/pastAgendas')}> Past Agendas </MenuItem>
                 <MenuItem className={styles.sideBarItem} onClick={() => handleProfileClick()}> Profile </MenuItem>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/dashboard/settings')}> Settings </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => signOut()}> Sign Out </MenuItem>
                 {isSuperAdmin && (<MenuItem className={styles.sideBarItem} onClick={() => router.push('/admin/dashboard')}> Admin Dashboard </MenuItem>)}
             </Menu>
           </Sidebar>
