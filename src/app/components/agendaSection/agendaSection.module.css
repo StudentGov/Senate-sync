@@ -62,7 +62,7 @@
   /* white-space: nowrap; Prevent text wrapping */
   max-width: 20vw;
   margin-right: 15px;
-  color: black
+  color: black;
 }
 .buttons button {
   display: flex;
@@ -79,6 +79,9 @@
 .toggle{
   position: relative; /* Keeps it within the normal document flow */
 
+}
+.viewVoting{
+  margin-left: auto;
 }
 @media screen and (max-width:600px){
   .date{

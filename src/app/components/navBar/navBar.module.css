@@ -11,21 +11,29 @@
     padding: 0 20px; /* Optional */
     z-index: 500
   }
-  .whiteBg {
+.whiteBg {
     background-color: white;
     color: black;
-  }
-  
-  .purpleBg {
+}
+
+.purpleBg {
     background-color: #48316F;
     color: white;
-  }
-  .img{
-    margin-left: 10%;
+}
+.img{
     height: 100%;
     width: auto;
-  }
-  .profileSection{
+    cursor: pointer;
+}
+.homeIcon{
+  width: 30px;
+  height: 30px;
+  margin-left: 10vw;
+  margin-top: 12px;
+  fill: currentColor;
+  cursor: pointer;
+}
+.profileSection{
     margin-left: auto;
     display: flex;
     right: 80px;
@@ -39,4 +47,23 @@
   width: 100px;
   color: #2c2c54; /* Dark plum */
 }
+@media screen and (max-width:800px) {
+  .homeIcon{
+    margin-left: 5vw;
+  }
+  .img{
+    height: 90%;
+  }
+}
+@media screen and (max-width:600px) {
+  .homeIcon{
+    margin-left: 0;
+    width: 25px;
+    height: 25px;
+  }
+  .img{
+    height: 80%;
+  }
+}
+  
   

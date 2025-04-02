@@ -154,7 +154,7 @@ export default function PastAgendas(){
               {filteredAndSortedAgendas.map((item, index) =>
                     !item.is_open && 
                     (
-                    <AgendaSection key={index} agenda={item} page={'current'} isMember={isMember} isSpeaker={isSpeaker} user={userData}/>
+                    <AgendaSection key={index} agenda={item} page={'past'} isMember={isMember} isSpeaker={isSpeaker} user={userData}/>
                     )
               )}
                 </div>

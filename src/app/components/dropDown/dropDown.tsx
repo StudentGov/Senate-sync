@@ -117,10 +117,6 @@ const MenuButton = styled(BaseMenuButton)(
   color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 
-  &:hover {
-    background: ${theme.palette.mode === 'dark' ? grey[800] : grey[50]};
-    border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
-  }
 
   &:active {
     background: ${theme.palette.mode === 'dark' ? grey[700] : grey[100]};

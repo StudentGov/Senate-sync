@@ -355,4 +355,8 @@
     .info, .left, .right{
         width: 95%;
     }
+    .header{
+        height: 100vh;
+        padding-top: 100px;
+    }
 }
