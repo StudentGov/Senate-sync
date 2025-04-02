@@ -1,11 +1,11 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
 import styles from './upcomingAppointments.module.css';
 import SideBar from '../../../components/attorneySideBar/AttorneySideBar';
 import { CollapsedProvider, useCollapsedContext } from '../../../components/attorneySideBar/attorneySideBarContext';
-import upcomingAppointments from '../../../upcomingAppointments.json'; // Adjust path as needed
+import upcomingAppointments from '../../../upcomingAppointments.json';
 
-// Define a type for appointments
 interface Appointment {
   id: number;
   student: string;
@@ -14,10 +14,8 @@ interface Appointment {
   reason: string;
 }
 
-// Convert JSON to typed appointments (ensure type safety)
 const appointments: Appointment[] = upcomingAppointments as Appointment[];
 
-// Group appointments by date
 const groupByDate = (appointments: Appointment[]): Record<string, Appointment[]> => {
   return appointments.reduce((acc, curr) => {
     acc[curr.date] = acc[curr.date] || [];
@@ -28,13 +26,30 @@ const groupByDate = (appointments: Appointment[]): Record<string, Appointment[]>
 
 function UpcomingAppointmentsContent() {
   const { collapsed, setCollapsed } = useCollapsedContext();
+  const router = useRouter();
+  const userRole = "super_admin"; // Replace this with real role
+
   const groupedAppointments = groupByDate(appointments);
 
   return (
     <div className={styles.appointmentsPage}>
-      <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
+      {userRole === "super_admin" && (
+        <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
+      )}
       <div className={styles.mainContent}>
-        <h1>Upcoming Appointments</h1>
+        <div className={styles.headerContainer}>
+          <h1>Upcoming Appointments</h1>
+          {userRole === "super_admin" && (
+            <div className={styles.navButtons}>
+              <button onClick={() => router.push('/attorney/dashboard/upcomingAppointments')}>
+                Upcoming Appointments
+              </button>
+              <button onClick={() => router.push('/attorney/dashboard/availability')}>
+                Availability
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className={styles.appointmentGroups}>
           {Object.entries(groupedAppointments).map(([date, appts]) => (
