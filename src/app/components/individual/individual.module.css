@@ -1,0 +1,135 @@
+body.active-modal {
+    overflow-y: hidden;
+}
+
+.btnModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    font-size: 10px;
+    width:70px;
+    background-color: purple;
+    color:white;
+    border-radius: 5px;
+}
+
+.modal, .overlay {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    z-index: 20;
+}
+
+.overlay {
+    background: rgba(49,49,49,0.8);
+    display: flex;
+}
+.modalContent {
+    position: absolute;
+    display: flex;
+    /* flex-direction: column; */
+    grid-template-columns: 1fr 1fr;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1.4;
+    background: #ffffff;
+    padding: 14px 28px;
+    border-radius: 3px;
+    width: 80vw;
+    min-width: 300px;
+    z-index: 100;
+    gap: 20;
+    /* padding-top: 50 ; */
+    max-width: 800px;
+    padding-bottom: 100;
+    height: 60vh;
+
+}
+
+.closeModal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 7px;
+    height: 30px;
+    font-size: 10px;
+    width:70px;
+    background-color: purple;
+    color:white;
+    border-radius: 5px;
+    z-index: 200;
+}
+
+.title{
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    font-size: 30px;
+    font-weight: bolder;
+    color: black;
+}
+
+
+.sections{
+    display: flex;
+    flex-direction: column; 
+    border-radius: 10px;
+    margin: 0px auto;
+    height: 100%;
+    width: 100%;
+    padding-bottom: 10px;
+}
+.content {
+    position: relative;
+    top: 20%;
+    overflow-y: auto;  /* Make this section scrollable */
+    flex-grow: 1;  /* Allow the content to take as much space as needed but not exceed the viewport */
+    scrollbar-width:none;
+    
+}
+.section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Vertically aligns items */
+    border-top: 1px solid #ece6e6; /* Divider at the top */
+    border-bottom: 1px solid #ece6e6; /* Divider at the top */
+    background: #f0f0f0;
+    color: #000000;
+    padding: 5px 20px;
+    transition: transform 0.6s ease;
+    font-size: 15x;
+    font-weight: lighter;
+    letter-spacing: 0.005em;
+    word-spacing: 0.05em;
+    cursor: default;
+    height: 50px;
+    box-sizing: border-box; /* Ensures the padding and border are included in the element's size */
+    margin-bottom: 5px;
+    border-radius: 5px;
+  }
+  .section h2{
+    flex-grow: 1; /* Allow the span to take up remaining space */
+    overflow: hidden; /* Ensure text doesn't overflow the container */
+    text-overflow: ellipsis; /* Show ellipsis when the text overflows */
+    white-space: nowrap; /* Prevent text wrapping */
+  }
+  /* Ensure the middle divider between sections has consistent appearance */
+  .section:not(:last-child) {
+    border-bottom: none;  /* Only add bottom border if it's not the last section */
+  }
+  
+  
+  .section:hover{
+    color: #48316F;
+    border: 0.1px solid #48316F;
+    border-radius: 7px;
+  }
+.option{
+    text-align: right;
+}

@@ -5,20 +5,26 @@ import { MenuButton as BaseMenuButton } from '@mui/base/MenuButton';
 import { MenuItem as BaseMenuItem, menuItemClasses } from '@mui/base/MenuItem';
 import { styled } from '@mui/system';
 
+interface Option {
+  id: number;
+  optionText: string;
+}
 interface DropDownOptionsProps {
-  options: string[];
-  setSelectedOption: (options: string) => void;
+  options: Option[];
+  setSelectedOption: (option: Option) => void;
+  text:string;
+  setUserChangedVote?: ((vote: boolean) => void) | null;
 }
 
-export default function DropDownOptions({ options, setSelectedOption }:DropDownOptionsProps) {
+export default function DropDownOptions({ options, setSelectedOption, text, setUserChangedVote }:DropDownOptionsProps) {
 
 
   return (
     <Dropdown>
-      <MenuButton>Vote</MenuButton>
+      <MenuButton>{text}</MenuButton>
       <Menu slots={{ listbox: Listbox }}>
-        {options.map((item, index) => (
-          <MenuItem key={index} onClick={() => setSelectedOption(item)}>{item}</MenuItem>
+        {options.map((item: Option, index: number) => (
+          <MenuItem key={index} onClick={() => {setSelectedOption(item); if (setUserChangedVote) setUserChangedVote(true)}} >{item.optionText}</MenuItem>
         ))}
       </Menu>
     </Dropdown>
@@ -111,10 +117,6 @@ const MenuButton = styled(BaseMenuButton)(
   color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 
-  &:hover {
-    background: ${theme.palette.mode === 'dark' ? grey[800] : grey[50]};
-    border-color: ${theme.palette.mode === 'dark' ? grey[600] : grey[300]};
-  }
 
   &:active {
     background: ${theme.palette.mode === 'dark' ? grey[700] : grey[100]};

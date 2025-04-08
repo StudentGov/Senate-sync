@@ -1,0 +1,142 @@
+.card {
+    position: relative;
+    width: 470px;
+    height: 250px;
+    padding: 40px 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.219);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .cardTitle {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  
+  .cardText {
+    color: #555;
+    font-size: 1rem;
+  }
+  .img{
+    position: absolute;
+    top: 10%;
+    left: 85%;
+    height: 60px;
+    width: 60px;
+    min-width: 60px;
+    min-height: 60px;
+  }
+  .navButton{
+    position: absolute;
+    top: 70%;
+    left: 70%;
+    background-color: #febd11;
+    border-radius: 5px;
+    height: 50px;
+    width: 100px;
+    color: #2c2c54; /* Dark plum */
+}
+@media screen and (max-width: 1530px){
+  .card{
+    width: 380px
+  }
+  .img{
+    left:80%;
+  }
+}
+@media screen and (max-width: 1230px){
+  .card{
+    width: 320px;
+    height:300px;
+    padding-top: 25px;
+  }
+  .img{
+    left:80%;
+    top: 3%
+  }
+  .navButton{
+    top: 80%;
+    left: 65%
+  }
+
+}
+@media screen and (max-width: 1050px){
+  .card{
+    width: 270px;
+    height:310px;
+    padding-top: 25px;
+  }
+  .img{
+    left:75%;
+    top: 3%
+  }
+  .navButton{
+    top: 80%;
+    left: 60%
+  }
+}
+@media screen and (max-width: 900px){
+  .card{
+    width: 500px;
+    height: 230px;
+        padding: 40px 20px;
+  }
+  .img{
+    left:85%;
+    top: 3%
+  }
+  .navButton{
+    top: 75%;
+    left: 77%
+  }
+}
+@media screen and (max-width: 660px){
+  .card{
+    width: 500px;
+    height: 230px;
+  }
+  .navButton{
+    left:70%;
+  }
+}
+@media screen and (max-width: 560px){
+  .card{
+    width: 400px;
+    height: 230px;
+  }
+  .navButton{
+    left:70%;
+  }
+}
+@media screen and (max-width: 450px){
+  .card{
+    width: 320px;
+    height: 250px;
+  }
+  .img{
+    left:80%;
+    height: 50px;
+    width: 50px;
+    min-width: 50px;
+    min-height: 50px;
+  }
+  .cardTitle{
+    font-size: 27px;
+  }
+  .cardText{
+    font-size: 15px;
+  }
+  .navButton{
+    top: 78%;
+    width:80px;
+    font-size: 15px;
+    height: 40px;
+  }
+}
+@media screen and (max-width: 380px){
+  .card{
+      width: 90%;
+      align-self: center;
+  }
+}
