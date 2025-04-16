@@ -24,7 +24,6 @@ function AvailabilityContent() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [startTime, setStartTime] = useState("08:00 AM");
   const [endTime, setEndTime] = useState("05:00 PM");
-  const [currentView, setCurrentView] = useState("timeGridWeek");
   const [isAllDay, setIsAllDay] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -142,7 +141,6 @@ function AvailabilityContent() {
               week: 'Week',
               day: 'Day',
             }}
-            viewDidMount={(arg) => setCurrentView(arg.view.type)}
           />
         </div>
 

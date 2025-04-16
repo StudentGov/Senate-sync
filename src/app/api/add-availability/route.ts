@@ -1,12 +1,12 @@
 import { NextResponse, NextRequest } from "next/server";
 import { turso } from "../../../db";
-import { auth } from "@clerk/nextjs/server";
+
 
 export async function POST(req: NextRequest) {
   try {
     const { attorney_id, attorney_name, date, start_time, end_time } = await req.json();
 
-    const result = await turso.execute({
+    await turso.execute({
         sql: `
           INSERT INTO Availability (
             attorney_id, 
