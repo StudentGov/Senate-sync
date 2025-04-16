@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import styles from './upcomingAppointments.module.css';
 import SideBar from '../../../components/attorneySideBar/AttorneySideBar';
 import { CollapsedProvider, useCollapsedContext } from '../../../components/attorneySideBar/attorneySideBarContext';
@@ -27,28 +27,23 @@ const groupByDate = (appointments: Appointment[]): Record<string, Appointment[]>
 function UpcomingAppointmentsContent() {
   const { collapsed, setCollapsed } = useCollapsedContext();
   const router = useRouter();
-  const userRole = "super_admin"; // Replace this with real role
+  const pathname = usePathname();
 
   const groupedAppointments = groupByDate(appointments);
 
   return (
     <div className={styles.appointmentsPage}>
-      {userRole === "super_admin" && (
-        <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
-      )}
+      <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
       <div className={styles.mainContent}>
         <div className={styles.headerContainer}>
           <h1>Upcoming Appointments</h1>
-          {userRole === "super_admin" && (
-            <div className={styles.navButtons}>
-              <button onClick={() => router.push('/attorney/dashboard/upcomingAppointments')}>
-                Upcoming Appointments
-              </button>
+          <div className={styles.navButtons}>
+            {pathname !== "/attorney/dashboard/availability" && (
               <button onClick={() => router.push('/attorney/dashboard/availability')}>
                 Availability
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <div className={styles.appointmentGroups}>
