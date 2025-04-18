@@ -35,7 +35,7 @@ interface AgendaProps {
 
 export default function AgendaSection({ agenda, page, isMember, isSpeaker, user }: AgendaProps){
   const [visible, setVisible] = useState<boolean>(agenda.is_visible)
-  const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: "N/A"} );
+  const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: ""} );
   const [userChangedVote, setUserChangedVote] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   // Toggle the visibility
@@ -173,12 +173,11 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
           {isSpeaker && <Switch checked={visible} onChange={handleToggle} className={styles.toggle}/>}
           {page==='current'?(
             <>
+              {isSpeaker && <button onClick={handleClose}>Close</button>}
+              {isMember && selectedOption.optionText=="N/A" && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'} setUserChangedVote={setUserChangedVote}/>}
               <div className={styles.viewVoting}>
                 <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
               </div>
-              {isSpeaker && <button onClick={handleClose}>Close</button>}
-              {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'} setUserChangedVote={setUserChangedVote}/>}
-
             </>
           ):<div className={styles.viewVoting}>
               <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
@@ -189,4 +188,3 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
       </div>
   );
 };
-
