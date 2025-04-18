@@ -6,7 +6,6 @@ import { MenuItem as BaseMenuItem, menuItemClasses } from '@mui/base/MenuItem';
 import { styled } from '@mui/system';
 import Confirmation from '../confirmation/Confirmation';
 
-
 interface Option {
   id: number;
   optionText: string;
