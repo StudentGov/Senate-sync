@@ -49,7 +49,7 @@ export default function DropDownOptions({ options, setSelectedOption, text, setU
           ))}
         </Menu>
       </Dropdown>
-      {showConfirmation && <Confirmation showConfirmation={showConfirmation} setShowConfirmation={setShowConfirmation} setConfirmationOption={setConfirmationOption} vote={tempVote.optionText}/>}
+      {showConfirmation && <Confirmation showConfirmation={showConfirmation} setShowConfirmation={setShowConfirmation} setConfirmationOption={setConfirmationOption} question={`Are you sure you want to vote for "${tempVote.optionText}"?`}/>}
     </>
   );
 }
