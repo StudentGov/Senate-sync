@@ -1,5 +1,5 @@
 'use client'; 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import styles from './confirmation.module.css'
 
 interface ConfirmationProps {
@@ -33,7 +33,7 @@ export default function Confirmation({showConfirmation, setShowConfirmation, set
                         <div className={styles.confirmationContainer}>
                             <div>
                                 <h1 style={{color:"black"}}>{question}</h1>
-                                <p style={{color:"red"}}>CAUTION!. THIS ACTION CAN'T BE UNDONE!</p>
+                                <p style={{color: "red"}}>{`CAUTION! THIS ACTION CAN'T BE UNDONE!`}</p>
                             </div>
                             <div className={styles.buttons}>
                                 <button onClick={toggleConfirmation} style={{backgroundColor:"red"}}>Cancel</button>
