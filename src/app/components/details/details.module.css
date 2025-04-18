@@ -125,13 +125,21 @@ body.active-modal {
     margin-bottom: 20px;
     margin-top: 30px;
     margin-left: 5%;
+    margin-right: 5%; /* Add this to prevent overflow on the right */
+    max-width: 90%;   /* Optional: ensures it never stretches too wide */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
 }
 
 .infoRow {
     font-size: 16px;
     margin-bottom: 20px;
-    color: black
+    color: black;
+    word-break: break-word; /* Add this to break long words/URLs */
+    white-space: normal;    /* Ensure long lines wrap instead of overflowing */
 }
+
 
 .bold {
     font-weight:600;
