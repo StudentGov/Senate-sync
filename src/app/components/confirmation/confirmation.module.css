@@ -1,0 +1,76 @@
+body.active-modal {
+    overflow-y: hidden;
+}
+
+.btnModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    font-size: 10px;
+    width:70px;
+    background-color: purple;
+    color:white;
+    border-radius: 5px;
+}
+
+.modal, .overlay {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    z-index: 20;
+}
+
+.overlay {
+    background: rgba(49,49,49,0.8);
+    display: flex;
+}
+.modalContent {
+    position: absolute;
+    display: flex;
+    grid-template-columns: 1fr 1fr;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1.4;
+    background: #ffffff;
+    padding: 14px 28px;
+    border-radius: 3px;
+    width: 80vw;
+    min-width: 300px;
+    z-index: 100;
+    gap: 20;
+    max-width: 400px;
+    padding-bottom: 70px;
+    height: 60vh;
+    max-height: 350px;
+    
+}
+.confirmationContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.buttons{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+.buttons button{
+    width: 100px;
+    height: 70px;
+}
+
+@media screen and (max-width: 600px) {
+    .title{
+        font-size: 25px;
+    }
+    .confirmationSection{
+        margin-left: 0;
+    }
+}
