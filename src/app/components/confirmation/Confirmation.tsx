@@ -1,5 +1,5 @@
 'use client'; 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './confirmation.module.css'
 
 interface ConfirmationProps {
