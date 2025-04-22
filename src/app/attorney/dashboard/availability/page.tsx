@@ -1,99 +1,137 @@
-// Paste this full updated code in your `availability/page.tsx` file
-
 "use client";
 
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { useRouter } from 'next/navigation';
-import styles from './availability.module.css';
-import SideBar from '../../../components/attorneySideBar/AttorneySideBar';
-import { CollapsedProvider, useCollapsedContext } from '../../../components/attorneySideBar/attorneySideBarContext';
-import availability from '../../../availability.json';
+import { useRouter } from "next/navigation";
+import styles from "./availability.module.css";
+import SideBar from "../../../components/attorneySideBar/AttorneySideBar";
+import { CollapsedProvider, useCollapsedContext } from "../../../components/attorneySideBar/attorneySideBarContext";
 
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import { EventInput, DateSelectArg } from '@fullcalendar/core';
+import interactionPlugin from '@fullcalendar/interaction';
+
 
 function AvailabilityContent() {
   const { collapsed, setCollapsed } = useCollapsedContext();
-  const router = useRouter();
   const { user } = useUser();
+  const router = useRouter();
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [startTime, setStartTime] = useState("08:00 AM");
   const [endTime, setEndTime] = useState("05:00 PM");
   const [isAllDay, setIsAllDay] = useState(false);
+  const [availabilityEvents, setAvailabilityEvents] = useState<EventInput[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const availabilityEvents = useMemo(() => {
-    const events: EventInput[] = [];
-    Object.entries(availability).forEach(([date, times]) => {
-      (times as string[]).forEach((timeRange) => {
-        const [startTime, endTime] = timeRange.split(' - ');
-        const start = new Date(`${date} ${startTime}`);
-        const end = new Date(`${date} ${endTime}`);
-        events.push({ title: 'Available', start, end, allDay: false });
-      });
-    });
-    return events;
+  // Fetch events from DB on page load
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      try {
+        const res = await fetch("/api/get-availability");
+        const data = await res.json();
+        console.log(data)
+        if (Array.isArray(data)) {
+          const parsed: EventInput[] = [];
+          data.forEach((slot) => {
+            const start = new Date(`${slot.start}`);
+            const end = new Date(`${slot.end}`);
+            let current = new Date(start);
+            while (current < end) {
+              const next = new Date(current.getTime() + 30 * 60000); // 30 min
+              parsed.push({
+                title: "Available",
+                start: new Date(current),
+                end: new Date(next),
+                allDay: false,
+              });
+              current = next;
+        
+          }
+        });
+        setAvailabilityEvents(parsed);
+        }
+      } catch (err) {
+        console.error("Failed to fetch availability:", err);
+      }
+    };
+
+    fetchAvailability();
   }, []);
 
-  const timeSlots = Array.from({ length: 36 }, (_, i) => {
-    const hour = 6 + Math.floor(i / 2);
-    const minutes = i % 2 === 0 ? "00" : "30";
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour > 12 ? hour - 12 : hour;
-    return `${displayHour.toString().padStart(2, '0')}:${minutes} ${ampm}`;
-  });
-
-  // ✅ Works for all views (week/day/month)
+  // Handle time chunk selection in any view
   const handleSelect = (info: DateSelectArg) => {
     const clickedDate = info.startStr.split("T")[0];
-    const localStart = info.start.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
-    const localEnd = info.end.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
+    const localStart = info.start.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+    const localEnd = info.end.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
 
     setStartTime(localStart);
     setEndTime(localEnd);
     setSelectedDate(clickedDate);
   };
 
+  // Add availability to DB and show in calendar
   const handleAddAvailability = async () => {
-    if (!selectedDate || !startTime || !endTime) return;
-  
-    const availabilityData = {
-      attorney_id: user?.id, // from Clerk
-      attorney_name: user?.fullName || "Unknown",
+    if (!selectedDate || !startTime || !endTime || !user) return;
+
+    const payload = {
+      attorney_id: user.id,
+      attorney_name: user.fullName || "Unknown",
       date: selectedDate,
       start_time: startTime,
       end_time: endTime,
     };
-  
+
     try {
       const res = await fetch("/api/add-availability", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(availabilityData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-  
+
       if (res.ok) {
-        console.log("✅ Availability saved successfully");
+        // Add to calendar without reload
+        const start = new Date(`${selectedDate} ${startTime}`);
+        const end = new Date(`${selectedDate} ${endTime}`);
+
+        const newEvents: EventInput[] = [];
+
+        // Split into 30-minute sessions
+        let temp = new Date(start);
+        while (temp < end) {
+          const slotEnd = new Date(temp.getTime() + 30 * 60000);
+          newEvents.push({
+            title: "Available",
+            start: new Date(temp),
+            end: new Date(slotEnd),
+            allDay: false,
+          });
+          temp = slotEnd;
+        }
+
+        setAvailabilityEvents((prev) => [...prev, ...newEvents]);
       } else {
-        console.error("❌ Failed to save availability");
+        console.error("❌ Failed to add availability");
       }
     } catch (err) {
-      console.error("⚠️ Error adding availability:", err);
+      console.error("⚠️ Error:", err);
     }
-  
-    // Clear modal for new entry
+
     setSelectedDate(null);
     setIsAllDay(false);
   };
-  
 
+  // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -105,6 +143,15 @@ function AvailabilityContent() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Generate dropdown 30-minute time chunks
+  const timeSlots = Array.from({ length: 36 }, (_, i) => {
+    const hour = 6 + Math.floor(i / 2);
+    const minutes = i % 2 === 0 ? "00" : "30";
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const displayHour = hour > 12 ? hour - 12 : hour;
+    return `${displayHour.toString().padStart(2, "0")}:${minutes} ${ampm}`;
+  });
+
   return (
     <div className={styles.availabilityPage}>
       <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
@@ -112,9 +159,7 @@ function AvailabilityContent() {
         <div className={styles.headerContainer}>
           <h1>Attorney Availability</h1>
           <div className={styles.navButtons}>
-            <button onClick={() => router.push('/attorney/dashboard/upcomingAppointments')}>
-              Upcoming Appointments
-            </button>
+            <button onClick={() => router.push("/attorney/dashboard/upcomingAppointments")}>Upcoming Appointments</button>
           </div>
         </div>
 
@@ -125,21 +170,21 @@ function AvailabilityContent() {
             events={availabilityEvents}
             editable={false}
             selectable={true}
+            select={handleSelect}
             allDaySlot={true}
             slotMinTime="06:00:00"
             slotMaxTime="24:00:00"
-            select={handleSelect}
             height="auto"
             headerToolbar={{
-              left: 'prev,next today',
-              center: 'title',
-              right: 'dayGridMonth,timeGridWeek,timeGridDay',
+              left: "prev,next today",
+              center: "title",
+              right: "dayGridMonth,timeGridWeek,timeGridDay",
             }}
             buttonText={{
-              today: 'Today',
-              month: 'Month',
-              week: 'Week',
-              day: 'Day',
+              today: "Today",
+              month: "Month",
+              week: "Week",
+              day: "Day",
             }}
           />
         </div>
@@ -147,7 +192,6 @@ function AvailabilityContent() {
         {selectedDate && (
           <div ref={dropdownRef} className={styles.dropdownContainer}>
             <h4>Select availability for {selectedDate}</h4>
-
             <div className={styles.timeRow}>
               <label>
                 <input
@@ -167,21 +211,13 @@ function AvailabilityContent() {
             </div>
 
             <div className={styles.timeRow}>
-              <select
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                disabled={isAllDay}
-              >
+              <select value={startTime} onChange={(e) => setStartTime(e.target.value)} disabled={isAllDay}>
                 {timeSlots.map((slot) => (
                   <option key={slot}>{slot}</option>
                 ))}
               </select>
               <span>to</span>
-              <select
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                disabled={isAllDay}
-              >
+              <select value={endTime} onChange={(e) => setEndTime(e.target.value)} disabled={isAllDay}>
                 {timeSlots.map((slot) => (
                   <option key={slot}>{slot}</option>
                 ))}

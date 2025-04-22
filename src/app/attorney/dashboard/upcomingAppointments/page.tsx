@@ -1,33 +1,57 @@
 "use client";
 
-import { useRouter, usePathname } from 'next/navigation';
-import styles from './upcomingAppointments.module.css';
-import SideBar from '../../../components/attorneySideBar/AttorneySideBar';
-import { CollapsedProvider, useCollapsedContext } from '../../../components/attorneySideBar/attorneySideBarContext';
-import upcomingAppointments from '../../../upcomingAppointments.json';
+import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import styles from "./upcomingAppointments.module.css";
+import SideBar from "../../../components/attorneySideBar/AttorneySideBar";
+import { CollapsedProvider, useCollapsedContext } from "../../../components/attorneySideBar/attorneySideBarContext";
 
 interface Appointment {
   id: number;
   student: string;
   date: string;
-  time: string;
-  reason: string;
+  start_time: string;
+  end_time: string;
+  reason?: string;
 }
-
-const appointments: Appointment[] = upcomingAppointments as Appointment[];
-
-const groupByDate = (appointments: Appointment[]): Record<string, Appointment[]> => {
-  return appointments.reduce((acc, curr) => {
-    acc[curr.date] = acc[curr.date] || [];
-    acc[curr.date].push(curr);
-    return acc;
-  }, {} as Record<string, Appointment[]>);
-};
 
 function UpcomingAppointmentsContent() {
   const { collapsed, setCollapsed } = useCollapsedContext();
   const router = useRouter();
   const pathname = usePathname();
+
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const res = await fetch("/api/get-booked-appointments");
+        const data = await res.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          setAppointments(data);
+        } else {
+          setAppointments([]);
+        }
+      } catch (err) {
+        console.error("Error fetching appointments:", err);
+        setAppointments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
+  const groupByDate = (appointments: Appointment[]): Record<string, Appointment[]> => {
+    return appointments.reduce((acc, curr) => {
+      acc[curr.date] = acc[curr.date] || [];
+      acc[curr.date].push(curr);
+      return acc;
+    }, {} as Record<string, Appointment[]>);
+  };
 
   const groupedAppointments = groupByDate(appointments);
 
@@ -39,31 +63,39 @@ function UpcomingAppointmentsContent() {
           <h1>Upcoming Appointments</h1>
           <div className={styles.navButtons}>
             {pathname !== "/attorney/dashboard/availability" && (
-              <button onClick={() => router.push('/attorney/dashboard/availability')}>
+              <button onClick={() => router.push("/attorney/dashboard/availability")}>
                 Availability
               </button>
             )}
           </div>
         </div>
 
-        <div className={styles.appointmentGroups}>
-          {Object.entries(groupedAppointments).map(([date, appts]) => (
-            <div key={date} className={styles.appointmentGroup}>
-              <h2 className={styles.dateHeader}>{date}</h2>
-              <ul className={styles.appointmentList}>
-                {appts.map((appt) => (
-                  <li key={appt.id} className={styles.appointmentItem}>
-                    <div className={styles.topRow}>
-                      <span className={styles.name}>{appt.student}</span>
-                      <span className={styles.time}>{appt.time}</span>
-                    </div>
-                    <p className={styles.reason}>{appt.reason}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <p>Loading appointments...</p>
+        ) : appointments.length === 0 ? (
+          <p className={styles.noAppointments}>No upcoming appointments.</p>
+        ) : (
+          <div className={styles.appointmentGroups}>
+            {Object.entries(groupedAppointments).map(([date, appts]) => (
+              <div key={date} className={styles.appointmentGroup}>
+                <h2 className={styles.dateHeader}>{date}</h2>
+                <ul className={styles.appointmentList}>
+                  {appts.map((appt) => (
+                    <li key={appt.id} className={styles.appointmentItem}>
+                      <div className={styles.topRow}>
+                        <span className={styles.name}>{appt.student}</span>
+                        <span className={styles.time}>
+                          {appt.start_time} - {appt.end_time}
+                        </span>
+                      </div>
+                      {appt.reason && <p className={styles.reason}>{appt.reason}</p>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
