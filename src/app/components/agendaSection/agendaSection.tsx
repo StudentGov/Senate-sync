@@ -4,6 +4,7 @@ import Switch from '@mui/material/Switch';
 import DropDownOptions from '../dropDown/dropDown';
 import PieChart from '../pieChart/pieChart'
 import Details from '../details/Details'
+import Confirmation from '../confirmation/Confirmation';
 
 
 interface Option {
@@ -35,9 +36,11 @@ interface AgendaProps {
 
 export default function AgendaSection({ agenda, page, isMember, isSpeaker, user }: AgendaProps){
   const [visible, setVisible] = useState<boolean>(agenda.is_visible)
-  const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: "N/A"} );
+  const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: ""} );
   const [userChangedVote, setUserChangedVote] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+  const [confirmationOption, setConfirmationOption] = useState<string>("");
   // Toggle the visibility
   async function handleToggle() {
     // Toggle the visibility
@@ -71,30 +74,35 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
   const toggleDetails = () => {
     setShowDetails(!showDetails);
   };
-
+  useEffect(() => {
+    if (confirmationOption === "confirm") {
+      handleClose();
+  }
+  }, [confirmationOption])
   async function handleClose(){
     // Call API to update visibility in the database
-    try {
-      const response = await fetch("/api/handle-close", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          agenda_id: agenda.id
-        }),
-      });
+      try {
+        const response = await fetch("/api/handle-close", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            agenda_id: agenda.id
+          }),
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (response.ok) {
-        console.log(`Agenda "${agenda.title}" closed successfully:`, data.message);
-      } else {
-        console.error(`Failed to close agenda "${agenda.title}":`, data.error);
+        if (response.ok) {
+          console.log(`Agenda "${agenda.title}" closed successfully:`, data.message);
+        } else {
+          console.error(`Failed to close agenda "${agenda.title}":`, data.error);
+        }
+      } catch (error) {
+        console.error(`Error closing agenda "${agenda.title}":`, error);
       }
-    } catch (error) {
-      console.error(`Error closing agenda "${agenda.title}":`, error);
-    }
+    
   }
   // Fetch the user's vote when the component mounts or when user or agenda changes
   useEffect(() => {
@@ -173,12 +181,11 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
           {isSpeaker && <Switch checked={visible} onChange={handleToggle} className={styles.toggle}/>}
           {page==='current'?(
             <>
+              {isSpeaker && <button onClick={() => setShowConfirmation(true)}>Close</button>}
+              {isMember && selectedOption.optionText=="N/A" && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'} setUserChangedVote={setUserChangedVote}/>}
               <div className={styles.viewVoting}>
                 <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
               </div>
-              {isSpeaker && <button onClick={handleClose}>Close</button>}
-              {isMember && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'} setUserChangedVote={setUserChangedVote}/>}
-
             </>
           ):<div className={styles.viewVoting}>
               <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
@@ -186,7 +193,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
           }
         </div>   
           <Details agenda={agenda} showDetails={showDetails} setShowDetails={setShowDetails} selectedVote={selectedOption.optionText}/>
+            {showConfirmation && <Confirmation showConfirmation={showConfirmation} setShowConfirmation={setShowConfirmation} setConfirmationOption={setConfirmationOption} question={`Are you sure you want to close the Agenda?`}/>}
       </div>
   );
 };
-

@@ -39,9 +39,12 @@ export default function Details({agenda, showDetails, setShowDetails, selectedVo
                     <div className={styles.modalContent}>
                         <button className={styles.closeModal} onClick={toggleDetails}>back</button>
                         <div className={styles.detailsContainer}>
-                            <h2 className={styles.title}>{agenda.title}</h2>
+                            <h2 className={styles.title}>Details</h2>
                             <hr/>
                             <div className={styles.infoSection}>
+                                <div className={styles.infoRow}>
+                                    <span className={styles.bold}>Title: </span> {agenda.title}
+                                </div>
                                 <div className={styles.infoRow}>
                                     <span className={styles.bold}>Your vote: </span> {selectedVote}
                                 </div>
@@ -67,4 +70,3 @@ export default function Details({agenda, showDetails, setShowDetails, selectedVo
         </>
     )
 }
-
