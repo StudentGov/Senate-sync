@@ -24,7 +24,7 @@ export default function SchedulingPage(){
     
     return (
         <div className={styles.schedulingPage}>
-            <Calendar selectedTime={selectedTime} selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
+            <Calendar selectedTime={selectedTime} selectedDate={selectedDate} setSelectedDate={setSelectedDate}setSelectedTime={setSelectedTime} />
             <TimeSlots slots={selectedDate? ScheduleData[selectedDate] :[]} selectedTime={selectedTime} setSelectedTime={setSelectedTime}/>
             
         </div>
