@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import styles from "./availability.module.css";
@@ -24,6 +24,7 @@ function AvailabilityContent() {
   const [endTime, setEndTime] = useState("05:00 PM");
   const [isAllDay, setIsAllDay] = useState(false);
   const [availabilityEvents, setAvailabilityEvents] = useState<EventInput[]>([]);
+  const [deletingEvent, setDeletingEvent] = useState<EventInput | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Fetch events from DB on page load
@@ -80,6 +81,16 @@ function AvailabilityContent() {
     setSelectedDate(clickedDate);
   };
 
+  const handleEventClick = (info: any) => {
+    setDeletingEvent({
+      title: info.event.title,
+      start: info.event.start!,
+      end: info.event.end!,
+      allDay: info.event.allDay,
+    });
+  };
+  
+
   // Add availability to DB and show in calendar
   const handleAddAvailability = async () => {
     if (!selectedDate || !startTime || !endTime || !user) return;
@@ -131,6 +142,36 @@ function AvailabilityContent() {
     setIsAllDay(false);
   };
 
+  const confirmDelete = async () => {
+    if (!deletingEvent || !user) return;
+  
+    try {
+      const res = await fetch("/api/delete-availability", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          attorney_id: user.id,
+          start: deletingEvent.start,
+          end: deletingEvent.end,
+        }),
+      });
+  
+      if (res.ok) {
+        setAvailabilityEvents(prev => 
+          prev.filter(e =>
+            e.start?.toString() !== deletingEvent.start?.toString() ||
+            e.end?.toString() !== deletingEvent.end?.toString()
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Failed to delete:", err);
+    }
+  
+    setDeletingEvent(null);
+  };
+  
+
   // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -162,6 +203,29 @@ function AvailabilityContent() {
             <button onClick={() => router.push("/attorney/dashboard/upcomingAppointments")}>Upcoming Appointments</button>
           </div>
         </div>
+        {deletingEvent && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <h3>Delete Availability</h3>
+              <p>Are you sure you want to delete this time slot?</p>
+              <p>
+                <strong>
+                  {new Date(deletingEvent.start as string).toLocaleTimeString()} -{" "}
+                  {new Date(deletingEvent.end as string).toLocaleTimeString()}
+                </strong>
+              </p>
+              <div className={styles.modalButtons}>
+                <button onClick={confirmDelete} className={styles.deleteButton}>
+                  Yes, Delete
+                </button>
+                <button onClick={() => setDeletingEvent(null)} className={styles.cancelButton}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
 
         <div className={styles.calendarWrapper}>
           <FullCalendar
@@ -186,6 +250,7 @@ function AvailabilityContent() {
               week: "Week",
               day: "Day",
             }}
+            eventClick={handleEventClick}
           />
         </div>
 

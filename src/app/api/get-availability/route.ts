@@ -1,27 +1,50 @@
 import { NextResponse } from "next/server";
 import { turso } from "@/db";
+import { auth } from "@clerk/nextjs/server";
 
 export async function GET() {
   try {
-    const result = await turso.execute("SELECT * FROM Availability");
+    const { userId } = await auth();
 
-    const sessions: any[] = [];
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const result = await turso.execute({
+      sql: "SELECT * FROM Availability WHERE attorney_id = ?",
+      args: [userId],
+    });
+
+    const sessions: {
+      title: string;
+      start: string;
+      end: string;
+      allDay: boolean;
+    }[] = [];
+
+    const seen = new Set<string>();
 
     for (const row of result.rows) {
       const { date, start_time, end_time } = row;
-
       const start = new Date(`${date} ${start_time}`);
       const end = new Date(`${date} ${end_time}`);
 
-      while (start < end) {
-        const next = new Date(start.getTime() + 30 * 60000); // 30 min
-        sessions.push({
-          title: "Available",
-          start: start.toISOString(),
-          end: next.toISOString(),
-          allDay: false,
-        });
-        start.setTime(next.getTime());
+      let current = new Date(start);
+      while (current < end) {
+        const next = new Date(current.getTime() + 30 * 60000);
+        const sessionKey = `${current.toISOString()}-${next.toISOString()}`;
+
+        if (!seen.has(sessionKey)) {
+          sessions.push({
+            title: "Available",
+            start: current.toISOString(),
+            end: next.toISOString(),
+            allDay: false,
+          });
+          seen.add(sessionKey);
+        }
+
+        current = next;
       }
     }
 

@@ -4,12 +4,15 @@ import { turso } from "../../../db";
 // Helper to convert "08:00 AM" => Date object
 function parseTime(dateStr: string, timeStr: string): Date {
   const [time, modifier] = timeStr.split(" ");
-  let [hours, minutes] = time.split(":").map(Number);
+  const [rawHours, minutes] = time.split(":").map(Number);
+  let hours = rawHours;
 
   if (modifier === "PM" && hours !== 12) hours += 12;
   if (modifier === "AM" && hours === 12) hours = 0;
 
-  return new Date(`${dateStr}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`);
+  return new Date(
+    `${dateStr}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`
+  );
 }
 
 // Helper to format Date => "hh:mm AM/PM"
@@ -31,7 +34,11 @@ export async function POST(req: NextRequest) {
     const insertQueries = [];
 
     // Loop through every 30-minute interval
-    for (let slotStart = new Date(start); slotStart < end; slotStart.setMinutes(slotStart.getMinutes() + 30)) {
+    for (
+      let slotStart = new Date(start);
+      slotStart < end;
+      slotStart.setMinutes(slotStart.getMinutes() + 30)
+    ) {
       const slotEnd = new Date(slotStart);
       slotEnd.setMinutes(slotEnd.getMinutes() + 30);
 
@@ -58,10 +65,15 @@ export async function POST(req: NextRequest) {
 
     await turso.batch(insertQueries);
 
-    return NextResponse.json({ message: "✅ Availability added successfully in 30-minute chunks." }, { status: 201 });
-
+    return NextResponse.json(
+      { message: "✅ Availability added successfully in 30-minute chunks." },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("❌ Error adding availability:", error);
-    return NextResponse.json({ message: "Failed to add availability", error }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to add availability", error },
+      { status: 500 }
+    );
   }
 }
