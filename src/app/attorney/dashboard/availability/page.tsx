@@ -11,6 +11,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { EventInput, DateSelectArg } from '@fullcalendar/core';
+import { EventClickArg } from "@fullcalendar/core";
 import interactionPlugin from '@fullcalendar/interaction';
 
 
@@ -81,7 +82,7 @@ function AvailabilityContent() {
     setSelectedDate(clickedDate);
   };
 
-  const handleEventClick = (info: any) => {
+  const handleEventClick = (info: EventClickArg) => {
     setDeletingEvent({
       title: info.event.title,
       start: info.event.start!,
