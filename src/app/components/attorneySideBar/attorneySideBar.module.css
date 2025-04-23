@@ -1,7 +1,7 @@
 .sideBar{
     position: absolute; /* Positions over right component */
     left: 0;
-    top:100px;
+    top: 72px;
     background-color: #EEEEEE; 
     z-index: 100;
 }
@@ -17,5 +17,5 @@
     height: 30px;
 }
 .x{
-    height: calc(100vh - 140px);
+    height: calc(100vh - 120px);
 }
