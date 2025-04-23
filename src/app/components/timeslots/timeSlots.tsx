@@ -13,12 +13,19 @@ const TimeSlots = ({ slots,selectedTime, setSelectedTime }: Props) => {
   
   // Handle the selection of a time slot
   const handleSelect = (slot: string) => {
-    setSelectedTime(slot);  // Update the selected time
+    // If the clicked slot is already selected, unselect it
+    if (selectedTime === slot) {
+      setSelectedTime(null);
+    } else {
+      setSelectedTime(slot);
+    }
   };
+  
 
   return (
     <div className={style.timeslots}>
-      {`Selected time: ${selectedTime}`}
+  {selectedTime && <div>{`Selected time: ${selectedTime}`}</div>}
+
       {slots ?
         slots.map((slot, index) => (
           <button
