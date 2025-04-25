@@ -2,17 +2,28 @@ import { clerkClient } from "@clerk/clerk-sdk-node";
 import { NextResponse } from "next/server";
 
 /**
- * GET API to fetch a list of all users from Clerk.
- * This API retrieves user details including id, first name, last name, email, and role.
- * Intended for use in the Admin Dashboard to display user data.
+ * GET API to fetch a list of all users from Clerk with pagination support.
+ * Fetches all users in batches of 100 (Clerk's max limit).
  */
 export async function GET() {
   try {
-    // Fetch all users from Clerk
-    const users = await clerkClient.users.getUserList();
+    const allUsers = [];
+    let offset = 0;
+    const limit = 100;
 
-    // Map user data for frontend display
-    const userList = users.data.map((user) => ({
+    while (true) {
+      const response = await clerkClient.users.getUserList({ limit, offset });
+      allUsers.push(...response.data);
+
+      if (response.data.length < limit) {
+        break; // No more users to fetch
+      }
+
+      offset += limit;
+    }
+
+    // Format the user data for the frontend
+    const userList = allUsers.map((user) => ({
       id: user.id,
       firstName: user.firstName || "N/A",
       lastName: user.lastName || "N/A",
@@ -20,10 +31,8 @@ export async function GET() {
       role: user.publicMetadata?.role || "No role",
     }));
 
-    // Return the formatted user list as JSON response
     return NextResponse.json(userList);
   } catch (error) {
-    // Error handling for failed user fetch operation
     console.error("Error fetching users:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }

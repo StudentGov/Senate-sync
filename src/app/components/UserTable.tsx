@@ -14,15 +14,37 @@ interface UserTableProps {
 }
 
 /**
- * UserTable displays a list of users in a table format with the ability to change roles.
- * The RoleDropdown component allows role changes, except for super_admin users.
+ * UserTable displays a list of users in a table format with the ability to change roles
+ * and delete users. Super_admins are excluded from the list.
  */
 export default function UserTable({ users }: UserTableProps) {
-  /**
-   * Filter out super_admin users
-   * This prevents accidental role changes for super_admins to maintain system integrity.
-   */
+  // Exclude super_admins from role changes and deletion
   const filteredUsers = users.filter(user => user.role !== "super_admin");
+
+  const handleDelete = async (userId: string) => {
+    const confirmed = confirm("Are you sure you want to delete this user?");
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch("/api/delete-user", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (res.ok) {
+        alert("User deleted successfully.");
+        window.location.reload(); // Or use router.refresh() if using Next App Router
+      } else {
+        alert("Failed to delete user.");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("An error occurred while deleting the user.");
+    }
+  };
 
   return (
     <div className={styles.tableContainer}>
@@ -44,7 +66,22 @@ export default function UserTable({ users }: UserTableProps) {
               <td>{user.email}</td>
               <td>{user.role}</td>
               <td>
-                <RoleDropdown userId={user.id} currentRole={user.role} />
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <RoleDropdown userId={user.id} currentRole={user.role} />
+                  <button
+                    onClick={() => handleDelete(user.id)}
+                    style={{
+                      backgroundColor: "#e74c3c",
+                      color: "#fff",
+                      border: "none",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
