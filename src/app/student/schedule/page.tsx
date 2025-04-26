@@ -1,32 +1,13 @@
-'use client';
-import React, { useState } from 'react'
-import styles from './schedule.module.css'
-import Calendar from '../../components/schedulingCalendar/schedulingCalendar'
-import TimeSlots from '../../components/timeslots/timeSlots';
-import Data from '../../db.json'
+import SchedulingPage from '../../components/scheduling-page'
 
-// Importing dayjs for date manipulation
-import dayjs /*, { Dayjs }*/ from 'dayjs';
-// Commented out Dayjs type because it's currently unused, but it may be needed later
-
-// Define the shape of Data
-interface DataType {
-  [key: string]: string[]; // The keys are dates (strings) and the values are arrays of strings (time slots)
-}
-
-// Explicitly type the imported Data object
-const ScheduleData: DataType = Data;
-
-export default function SchedulingPage(){
-    const [selectedDate, setSelectedDate] = useState<string | null>(dayjs().format("YYYY-MM-DD")); // Initialize to today's date
-    const [selectedTime, setSelectedTime] = useState<string | null>(null);
-    
-    
-    return (
-        <div className={styles.schedulingPage}>
-            <Calendar selectedTime={selectedTime} selectedDate={selectedDate} setSelectedDate={setSelectedDate}setSelectedTime={setSelectedTime} />
-            <TimeSlots slots={selectedDate? ScheduleData[selectedDate] :[]} selectedTime={selectedTime} setSelectedTime={setSelectedTime}/>
-            
-        </div>
-    )
+export default function Home() {
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+      <div className="container mx-auto px-4 py-12">
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-center">Schedule an Appointment</h1>
+        <p className="text-muted-foreground text-center mb-8">Select a date and time that works for you</p>
+        <SchedulingPage />
+      </div>
+    </main>
+  )
 }
