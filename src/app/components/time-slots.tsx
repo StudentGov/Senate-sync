@@ -66,20 +66,20 @@ export default function TimeSlots({ date, selectedSlot, onSelectSlot }: TimeSlot
   const afternoonSlots = availableSlots.filter((slot) => slot.includes("PM") && Number.parseInt(slot.split(":")[0]) < 5)
   const eveningSlots = availableSlots.filter((slot) => slot.includes("PM") && Number.parseInt(slot.split(":")[0]) >= 5)
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-      },
-    },
-  }
+  // const container = {
+  //   hidden: { opacity: 0 },
+  //   show: {
+  //     opacity: 1,
+  //     transition: {
+  //       staggerChildren: 0.05,
+  //     },
+  //   },
+  // }
 
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
-  }
+  // const item = {
+  //   hidden: { opacity: 0, y: 20 },
+  //   show: { opacity: 1, y: 0 },
+  // }
 
   const renderTimeGroup = (title: string, slots: string[]) => {
     if (slots.length === 0) return null
