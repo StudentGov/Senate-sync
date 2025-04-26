@@ -6,6 +6,7 @@ import Image from "next/image";
 import logo from '../app/assets/purpleLogo.png'
 import Card from "./components/card/Card";
 import Navbar from "./components/navBar/navBar";
+import Footer from './components/footer'
 
 export default function HomePage() {
   const router = useRouter();
@@ -67,16 +68,7 @@ export default function HomePage() {
         </div>
       </div>
       {/* Footer */}
-      <div className={styles.footer}>
-      </div>
-      {/* Navigation Buttons */}
-      {/* <div>
-        <button className={styles.navButton} onClick={() => router.push("/student/schedule")}> Schedule</button>
-        <button className={styles.navButton} onClick={() => handleNavigation("/attorney/dashboard")}> Attorney</button>
-        <button className={styles.navButton} onClick={() => handleNavigation("/senate/dashboard")}> Senate</button>
-      </div> */}
-
-
+      <Footer />
 
     </div>
   );
