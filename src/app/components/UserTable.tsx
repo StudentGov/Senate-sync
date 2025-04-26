@@ -1,4 +1,9 @@
+'use client';
+
+import { useState, useMemo } from "react";
 import styles from "../admin/dashboard/admin.module.css";
+import SearchBar from "./searchBar/SearchBar";
+import DropDownOptions from "./dropDown/dropDown";
 import RoleDropdown from "./RoleDropdown";
 
 interface User {
@@ -13,13 +18,24 @@ interface UserTableProps {
   users: User[];
 }
 
-/**
- * UserTable displays a list of users in a table format with the ability to change roles
- * and delete users. Super_admins are excluded from the list.
- */
 export default function UserTable({ users }: UserTableProps) {
-  // Exclude super_admins from role changes and deletion
-  const filteredUsers = users.filter(user => user.role !== "super_admin");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("Name");
+
+  const filteredUsers = useMemo(() => {
+    const filtered = users.filter(user =>
+      (`${user.firstName} ${user.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       user.email.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+
+    if (sortOption === "Name") {
+      filtered.sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`));
+    } else if (sortOption === "Email") {
+      filtered.sort((a, b) => a.email.localeCompare(b.email));
+    }
+
+    return filtered;
+  }, [users, searchQuery, sortOption]);
 
   const handleDelete = async (userId: string) => {
     const confirmed = confirm("Are you sure you want to delete this user?");
@@ -28,15 +44,13 @@ export default function UserTable({ users }: UserTableProps) {
     try {
       const res = await fetch("/api/delete-user", {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),
       });
 
       if (res.ok) {
         alert("User deleted successfully.");
-        window.location.reload(); // Or use router.refresh() if using Next App Router
+        location.reload();
       } else {
         alert("Failed to delete user.");
       }
@@ -47,46 +61,51 @@ export default function UserTable({ users }: UserTableProps) {
   };
 
   return (
-    <div className={styles.tableContainer}>
-      <table>
-        <thead>
-          <tr>
-            <th>User ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredUsers.map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{`${user.firstName} ${user.lastName}`}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-              <td>
-                <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <RoleDropdown userId={user.id} currentRole={user.role} />
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    style={{
-                      backgroundColor: "#e74c3c",
-                      color: "#fff",
-                      border: "none",
-                      padding: "4px 8px",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className={styles.mainContainer}>
+      <div className={styles.topBar}>
+
+        <div className={styles.searchSortContainer}>
+          <SearchBar onSearch={(query) => setSearchQuery(query)} />
+          <DropDownOptions
+            options={[{ id: 0, optionText: "Name" }, { id: 1, optionText: "Email" }]}
+            setSelectedOption={(option) => setSortOption(option.optionText)}
+            text="Sort"
+          />
+        </div>
+      </div>
+
+      <div className={styles.labelsRow}>
+        <label>Name</label>
+        <div className={styles.rightLabels}>
+          <label>Role</label>
+          <label>Actions</label>
+        </div>
+      </div>
+
+      <div className={styles.scrollArea}>
+        {filteredUsers.map((user) => (
+          <div key={user.id} className={styles.userRow}>
+            <div className={styles.userInfo}>
+              <div className={styles.name}>{user.firstName} {user.lastName}</div>
+              <div className={styles.email}>{user.email}</div>
+            </div>
+            <div className={styles.userActions}>
+              <div className={styles.role}>
+                {user.role}
+              </div>
+              <div className={styles.actions}>
+                <RoleDropdown userId={user.id} currentRole={user.role} />
+                <button
+                  onClick={() => handleDelete(user.id)}
+                  className={styles.deleteButton}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
