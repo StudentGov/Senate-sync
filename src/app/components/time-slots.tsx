@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { Button } from "../components/ui/button"
 import { format } from "date-fns"
 import { Loader2 } from "lucide-react"
-import { motion } from "framer-motion"
 import availableSlotsData from "../time-data/available-slots.json"
 
 interface TimeSlotsProps {
@@ -88,14 +87,9 @@ export default function TimeSlots({ date, selectedSlot, onSelectSlot }: TimeSlot
     return (
       <div className="mb-4">
         <h3 className="text-sm font-medium text-muted-foreground mb-2">{title}</h3>
-        <motion.div
-          className="grid grid-cols-3 sm:grid-cols-4 gap-2"
-          variants={container}
-          initial="hidden"
-          animate="show"
-        >
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
           {slots.map((slot) => (
-            <motion.div key={slot} variants={item}>
+            <div key={slot}>
               <Button
                 variant={selectedSlot === slot ? "default" : "outline"}
                 className="w-full justify-center hover:border-primary/50 transition-all"
@@ -103,9 +97,9 @@ export default function TimeSlots({ date, selectedSlot, onSelectSlot }: TimeSlot
               >
                 {slot}
               </Button>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     )
   }

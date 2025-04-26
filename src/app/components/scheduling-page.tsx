@@ -8,7 +8,7 @@ import { CalendarIcon, Clock, ArrowRight } from "lucide-react"
 import TimeSlots from "../components/time-slots"
 import BookingModal from "../components/booking-modal"
 import { format } from "date-fns"
-import { motion, AnimatePresence } from "framer-motion"
+// import { motion, AnimatePresence } from "framer-motion"
 
 export default function SchedulingPage() {
   const [date, setDate] = useState<Date | undefined>(undefined)
@@ -92,8 +92,8 @@ export default function SchedulingPage() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 rounded-xl">
-        <Card className="overflow-hidden border-none shadow-lg bg-white rounded-xl" >
+      <div className="grid md:grid-cols-2 gap-6">
+        <Card className="overflow-hidden border-none shadow-lg">
           <CardContent className="p-0">
             <div className="bg-primary p-4 text-primary-foreground">
               <h2 className="text-xl font-semibold">Select a Date</h2>
@@ -105,50 +105,38 @@ export default function SchedulingPage() {
           </CardContent>
         </Card>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={date ? "time-slots" : "empty-state"}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Card className="h-full border-none shadow-lg rounded-xl">
-              <CardContent className="p-0 h-full bg-white rounded-xl overflow-hidden">
-                {/* Top Header */}
-                <div className="bg-primary p-4 text-primary-foreground rounded-t-xl">
-                  <h2 className="text-xl font-semibold">Available Times</h2>
-                  <p className="text-sm opacity-90">
-                    {date ? `For ${format(date, "MMMM d, yyyy")}` : "Select a date first"}
-                  </p>
-                </div>
-
-                {/* Main Content */}
-                <div className="p-4 h-[calc(100%-5rem)] flex flex-col rounded-b-xl">
-                  {date ? (
-                    <>
-                      <TimeSlots date={date} selectedSlot={selectedSlot} onSelectSlot={handleSlotSelect} />
-                      <div className="mt-auto pt-4">
-                        <Button onClick={handleNext} disabled={!selectedSlot} className="w-full group">
-                          Continue
-                          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                        </Button>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <div className="text-center text-muted-foreground">
-                        <CalendarIcon className="mx-auto h-12 w-12 mb-2 opacity-20" />
-                        <p>Please select a date to view available time slots</p>
-                      </div>
+        <div>
+          <Card className="h-full border-none shadow-lg">
+            <CardContent className="p-0 h-full">
+              <div className="bg-primary p-4 text-primary-foreground">
+                <h2 className="text-xl font-semibold">Available Times</h2>
+                <p className="text-sm opacity-90">
+                  {date ? `For ${format(date, "MMMM d, yyyy")}` : "Select a date first"}
+                </p>
+              </div>
+              <div className="p-4 h-[calc(100%-5rem)] flex flex-col">
+                {date ? (
+                  <>
+                    <TimeSlots date={date} selectedSlot={selectedSlot} onSelectSlot={handleSlotSelect} />
+                    <div className="mt-auto pt-4">
+                      <Button onClick={handleNext} disabled={!selectedSlot} className="w-full group">
+                        Continue
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </Button>
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-          </motion.div>
-        </AnimatePresence>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center text-muted-foreground">
+                      <CalendarIcon className="mx-auto h-12 w-12 mb-2 opacity-20" />
+                      <p>Please select a date to view available time slots</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       <BookingModal

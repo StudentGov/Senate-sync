@@ -10,7 +10,7 @@ import { Label } from "../components/ui/label"
 import { Textarea } from "../components/ui/textarea"
 import { format } from "date-fns"
 import { CalendarIcon, Clock, Info, Loader2 } from "lucide-react"
-import { motion } from "framer-motion"
+
 
 interface BookingModalProps {
   isOpen: boolean
@@ -104,13 +104,11 @@ export default function BookingModal({ isOpen, onClose, onSubmit, date, timeSlot
 
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid gap-5 py-2">
-            <motion.div
-              className="grid gap-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
+            <div
+              className="grid gap-2 opacity-0 animate-fadeIn"
+              style={{ animationDelay: "100ms", animationFillMode: "forwards" }}
             >
-              <Label htmlFor="starId" className="text-sm font-medium">
+              <Label htmlFor="starId" className="text-sm font-medium ">
                 Star ID
               </Label>
               <Input
@@ -130,13 +128,11 @@ export default function BookingModal({ isOpen, onClose, onSubmit, date, timeSlot
                   <Info className="h-3 w-3 mr-1" /> {errors.starId}
                 </p>
               )}
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="grid gap-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+            <div
+              className="grid gap-2 opacity-0 animate-fadeIn"
+              style={{ animationDelay: "200ms", animationFillMode: "forwards" }}
             >
               <Label htmlFor="techId" className="text-sm font-medium">
                 Tech ID
@@ -158,13 +154,11 @@ export default function BookingModal({ isOpen, onClose, onSubmit, date, timeSlot
                   <Info className="h-3 w-3 mr-1" /> {errors.techId}
                 </p>
               )}
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="grid gap-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+            <div
+              className="grid gap-2 opacity-0 animate-fadeIn"
+              style={{ animationDelay: "300ms", animationFillMode: "forwards" }}
             >
               <Label htmlFor="description" className="text-sm font-medium">
                 Description
@@ -187,7 +181,7 @@ export default function BookingModal({ isOpen, onClose, onSubmit, date, timeSlot
                   <Info className="h-3 w-3 mr-1" /> {errors.description}
                 </p>
               )}
-            </motion.div>
+            </div>
           </div>
 
           <DialogFooter className="mt-6 gap-2 sm:gap-0">
