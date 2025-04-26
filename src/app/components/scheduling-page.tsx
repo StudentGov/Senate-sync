@@ -92,8 +92,8 @@ export default function SchedulingPage() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <Card className="overflow-hidden border-none shadow-lg">
+      <div className="grid md:grid-cols-2 gap-6 rounded-xl">
+        <Card className="overflow-hidden border-none shadow-lg bg-white rounded-xl" >
           <CardContent className="p-0">
             <div className="bg-primary p-4 text-primary-foreground">
               <h2 className="text-xl font-semibold">Select a Date</h2>
@@ -113,15 +113,18 @@ export default function SchedulingPage() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <Card className="h-full border-none shadow-lg">
-              <CardContent className="p-0 h-full">
-                <div className="bg-primary p-4 text-primary-foreground">
+            <Card className="h-full border-none shadow-lg rounded-xl">
+              <CardContent className="p-0 h-full bg-white rounded-xl overflow-hidden">
+                {/* Top Header */}
+                <div className="bg-primary p-4 text-primary-foreground rounded-t-xl">
                   <h2 className="text-xl font-semibold">Available Times</h2>
                   <p className="text-sm opacity-90">
                     {date ? `For ${format(date, "MMMM d, yyyy")}` : "Select a date first"}
                   </p>
                 </div>
-                <div className="p-4 h-[calc(100%-5rem)] flex flex-col">
+
+                {/* Main Content */}
+                <div className="p-4 h-[calc(100%-5rem)] flex flex-col rounded-b-xl">
                   {date ? (
                     <>
                       <TimeSlots date={date} selectedSlot={selectedSlot} onSelectSlot={handleSlotSelect} />
@@ -143,6 +146,7 @@ export default function SchedulingPage() {
                 </div>
               </CardContent>
             </Card>
+
           </motion.div>
         </AnimatePresence>
       </div>
