@@ -1,114 +1,88 @@
-import { useEffect, useState } from 'react';
-import styles from './agendaSection.module.css';
-import Switch from '@mui/material/Switch';
-import PieChart from '../pieChart/pieChart'
-import Details from '../details/Details'
-import Confirmation from '../confirmation/Confirmation';
-import VoteModal from '../vote-modal';
-import { Button } from '../../components/ui/button'
+"use client";
 
+import { useEffect, useState } from "react";
+import { Card } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
+import { Switch } from "../../components/ui/switch";
+import VoteModal from "../../components/vote-modal";
+import PieChart from "../../components/pieChart/pieChart";
+import Details from "../../components/details/Details";
+import Confirmation from "../../components/confirmation/Confirmation";
 
 interface Option {
   id: number;
   optionText: string;
 }
+
 interface User {
   id: string;
-  firstName: string,
-  lastName: string
+  firstName: string;
+  lastName: string;
 }
 
 interface AgendaProps {
   agenda: {
-    id:number,
+    id: number;
     title: string;
     is_visible: boolean;
     is_open: boolean;
     created_at: string;
     options: Option[];
-    description: string
+    description: string;
   };
-  page:string;
-  isMember:boolean;
-  isSpeaker:boolean;
-  user: User
+  page: string;
+  isMember: boolean;
+  isSpeaker: boolean;
+  user: User;
 }
 
-
-export default function AgendaSection({ agenda, page, isMember, isSpeaker, user }: AgendaProps){
-  const [visible, setVisible] = useState<boolean>(agenda.is_visible)
-  const [selectedOption, setSelectedOption] = useState<Option>( {id:-1, optionText: ""} );
+export default function AgendaSection({ agenda, page, isMember, isSpeaker, user }: AgendaProps) {
+  const [visible, setVisible] = useState<boolean>(agenda.is_visible);
+  const [selectedOption, setSelectedOption] = useState<Option>({ id: -1, optionText: "" });
   const [userChangedVote, setUserChangedVote] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [confirmationOption, setConfirmationOption] = useState<string>("");
-
   const [voteModalOpen, setVoteModalOpen] = useState(false);
 
-  // Toggle the visibility
+  const toggleDetails = () => setShowDetails((prev) => !prev);
+
   async function handleToggle() {
-    // Toggle the visibility
     const newVisibility = !visible;
     setVisible(newVisibility);
-
-    // Call API to update visibility in the database
     try {
-      const response = await fetch("/api/update-agenda-visibility", {
+      await fetch("/api/update-agenda-visibility", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           agenda_id: agenda.id,
           is_visible: newVisibility,
         }),
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log(`Visibility for "${agenda.title}" updated successfully`);
-      } else {
-        console.error(`Failed to update visibility for "${agenda.title}":`, data.error);
-      }
     } catch (error) {
-      console.error(`Error updating visibility for "${agenda.title}":`, error);
+      console.error("Error updating visibility:", error);
     }
   }
-  const toggleDetails = () => {
-    setShowDetails(!showDetails);
-  };
+
+  async function handleClose() {
+    try {
+      await fetch("/api/handle-close", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agenda_id: agenda.id }),
+      });
+    } catch (error) {
+      console.error("Error closing agenda:", error);
+    }
+  }
+
   useEffect(() => {
     if (confirmationOption === "confirm") {
       handleClose();
-  }
-  }, [confirmationOption])
-  async function handleClose(){
-    // Call API to update visibility in the database
-      try {
-        const response = await fetch("/api/handle-close", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            agenda_id: agenda.id
-          }),
-        });
+    }
+  }, [confirmationOption]);
 
-        const data = await response.json();
-
-        if (response.ok) {
-          console.log(`Agenda "${agenda.title}" closed successfully:`, data.message);
-        } else {
-          console.error(`Failed to close agenda "${agenda.title}":`, data.error);
-        }
-      } catch (error) {
-        console.error(`Error closing agenda "${agenda.title}":`, error);
-      }
-    
-  }
-  // Fetch the user's vote when the component mounts or when user or agenda changes
   useEffect(() => {
     async function getUserVote() {
       try {
@@ -117,9 +91,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ voter_id: user.id, agenda_id: agenda.id }),
         });
-
         const data = await response.json();
-        // If the user hasn't voted, set default "N/A", else set the option data
         if (data.optionText === "N/A" || !data.optionText) {
           setSelectedOption({ id: -1, optionText: "N/A" });
         } else {
@@ -129,21 +101,15 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
         console.error("Failed to fetch user vote:", error);
       }
     }
-
     getUserVote();
-  }, [user.id, agenda.id]); // Re-fetch when voterId or agendaId changes
+  }, [user.id, agenda.id]);
 
-  // Handle vote submission (called every time selectedOption changes)
   useEffect(() => {
     async function handleVoteSubmit() {
-      if (!selectedOption || selectedOption.optionText === "N/A") {
-        alert("Please select an option");
-        return;
-      }
+      if (!selectedOption || selectedOption.optionText === "N/A") return;
       setUserChangedVote(false);
-
       try {
-        const response = await fetch("/api/update-user-vote", {
+        await fetch("/api/update-user-vote", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -153,68 +119,139 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
             option_id: selectedOption.id,
           }),
         });
-
-        const data = await response.json();
-        if (response.ok) {
-          console.log(`Success adding/updating vote: for "${agenda.title}"`);
-        } else {
-          console.log("Error:", data.error);
-        }
       } catch (error) {
-        console.error(`Error submitting vote for "${agenda.title}":`, error);
-        alert("Error submitting vote");
+        console.error("Error submitting vote:", error);
       }
     }
-
-    // Only call the API if user changed vote 
-    if (userChangedVote){
+    if (userChangedVote) {
       handleVoteSubmit();
     }
+  }, [selectedOption, user.id, agenda.id]);
 
-  }, [selectedOption, user.id, agenda.id]); // Re-run when selectedOption changes
   return (
-    <div className={styles.section}>
-      <div className={styles.fillHeight} onClick={toggleDetails}>
-        <h2>{agenda.title}</h2>
-      </div>
-      <div className={styles.fillHeight} onClick={toggleDetails}>
-        <h3 className={styles.date}>{new Date(agenda.created_at).toISOString().split("T")[0]}</h3>
-      </div>
-        <div className={styles.buttons}>
-          {isMember && <small>{selectedOption.optionText}</small>}
-          {isSpeaker && <Switch checked={visible} onChange={handleToggle} className={styles.toggle}/>}
-          {page==='current'?(
-            <>
-              {isSpeaker && <button onClick={() => setShowConfirmation(true)}>Close</button>}
-              {isMember && selectedOption.optionText=="N/A" && <Button
-              variant="default"
+    <>
+      <Card
+        className={`p-4 hover:shadow-md transition-shadow ${
+          agenda.is_open ? "" : "opacity-70"
+        } cursor-pointer`}
+      >
+        <div className="grid grid-cols-12 gap-4 items-center">
+          {/* Left Half - full height clickable */}
+          <div
+            className="col-span-12 sm:col-span-5 flex items-center h-full w-full"
+            onClick={toggleDetails}
+          >
+            <h3 className="font-medium truncate w-full">{agenda.title}</h3>
+          </div>
+
+
+          {/* Date */}
+          <div className="col-span-6 sm:col-span-3 text-gray-600">
+            {new Date(agenda.created_at).toISOString().split("T")[0]}
+          </div>
+
+          {/* Visibility Toggle */}
+          {isSpeaker && (
+            <div className="col-span-6 sm:col-span-2 flex justify-end sm:justify-center">
+              <Switch
+                checked={visible}
+                onCheckedChange={handleToggle}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          )}
+
+          {/* Badge for Past */}
+          {page === "past" && !isSpeaker && (
+            <div className="col-span-6 sm:col-span-2 flex justify-end sm:justify-center">
+              <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
+                Closed
+              </Badge>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="col-span-12 sm:col-span-2 flex flex-wrap gap-2 mt-2 sm:mt-0 justify-end sm:justify-center">
+            {isMember && agenda.is_open && selectedOption.optionText === "N/A" && (
+              <Button
+                variant="default"
+                size="sm"
+                className="bg-purple-600 hover:bg-purple-700"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setVoteModalOpen(true);
+                }}
+              >
+                Vote
+              </Button>
+            )}
+            {isSpeaker && agenda.is_open && (
+              <Button
+                variant="default"
+                size="sm"
+                className="bg-purple-600 hover:bg-purple-700"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowConfirmation(true);
+                }}
+              >
+                Close
+              </Button>
+            )}
+            <Button
+              variant="outline"
               size="sm"
-              className="bg-purple-600 hover:bg-purple-700"
-              onClick={() => {
-                setVoteModalOpen(true)
+              className="border-purple-200 text-purple-700 hover:bg-purple-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleDetails();
               }}
             >
-              Vote
-            </Button>}
-            <VoteModal
-              isOpen={voteModalOpen}
-              onClose={() => setVoteModalOpen(false)}
-              options={agenda.options}
-              selectedOption={selectedOption}
-              setSelectedOption={setSelectedOption}
-              setUserChangedVote={setUserChangedVote}
+              View {isMember ? "Details" : "Voting"}
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      {/* Modals */}
+      {voteModalOpen && (
+        <VoteModal
+          isOpen={voteModalOpen}
+          onClose={() => setVoteModalOpen(false)}
+          options={agenda.options}
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
+          setUserChangedVote={setUserChangedVote}
+        />
+      )}
+
+      {showDetails && (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center"
+          onClick={() => setShowDetails(false)}
+        >
+          <div
+            className="bg-white p-6 rounded-lg max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Details
+              agenda={agenda}
+              showDetails={showDetails}
+              setShowDetails={setShowDetails}
+              selectedVote={selectedOption.optionText}
             />
-              <div className={styles.viewVoting}>
-                <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
-              </div>
-            </>
-          ):<div className={styles.viewVoting}>
-              <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
-            </div>
-          }
-        </div>   
-          <Details agenda={agenda} showDetails={showDetails} setShowDetails={setShowDetails} selectedVote={selectedOption.optionText}/>
-            {showConfirmation && <Confirmation showConfirmation={showConfirmation} setShowConfirmation={setShowConfirmation} setConfirmationOption={setConfirmationOption} question={`Are you sure you want to close the Agenda?`}/>}
-      </div>
+          </div>
+        </div>
+      )}
+
+      {showConfirmation && (
+        <Confirmation
+          showConfirmation={showConfirmation}
+          setShowConfirmation={setShowConfirmation}
+          setConfirmationOption={setConfirmationOption}
+          question="Are you sure you want to close the Agenda?"
+        />
+      )}
+    </>
   );
-};
+}

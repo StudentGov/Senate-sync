@@ -45,7 +45,7 @@ export default function CurrentAgendas() {
   const [isSpeaker, setIsSpeaker] = useState(false);
   const [agendaData, setAgendaData] = useState<Agenda[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [sortField, setSortField] = useState<"date" | "title">("date");
   const [addAgendaModalOpen, setAddAgendaModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -138,6 +138,8 @@ export default function CurrentAgendas() {
         body: JSON.stringify({ is_open: agendaType === "current" }),
       });
       if (!response.ok) throw new Error('Failed to fetch agendas');
+      setSortField("date");
+      setSortDirection("desc");
       const data = await response.json();
       setAgendaData(data.agendas);
     } catch (error) {
@@ -180,83 +182,98 @@ export default function CurrentAgendas() {
         </div>
 
         {/* Filter and Sort Section */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
-          {/* Filter dropdown */}
-          <div className="flex items-center gap-2">
+        <div className="flex justify-between items-center mb-4">
+        
+        {/* Left side: Filter button and selected filter */}
+        <div className="flex items-center gap-2">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="flex items-center gap-1">
-                  <Filter className="h-4 w-4" />
-                  Filter Dates
+                <Filter className="h-4 w-4" />
+                Filter Dates
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
                 <DropdownMenuItem onClick={() => setDateFilter("all")}>All Time</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setDateFilter("7days")}>Past 7 Days</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setDateFilter("1month")}>Past Month</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setDateFilter("3months")}>Past 3 Months</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setDateFilter("6months")}>Past 6 Months</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setDateFilter("1year")}>Past Year</DropdownMenuItem>
-              </DropdownMenuContent>
+            </DropdownMenuContent>
             </DropdownMenu>
 
+            {/* Selected filter badge */}
             {dateFilter !== "all" && (
-              <span className="px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-800">
-                {dateFilter === "7days" && "Past 7 Days"}
-                {dateFilter === "1month" && "Past Month"}
-                {dateFilter === "3months" && "Past 3 Months"}
-                {dateFilter === "6months" && "Past 6 Months"}
-                {dateFilter === "1year" && "Past Year"}
-              </span>
-            )}
-          </div>
+                <span className="px-2 py-1 rounded-full text-xs sm:text-sm bg-purple-100 text-purple-800 whitespace-nowrap">
+                    {dateFilter === "7days" && "Past 7 Days"}
+                    {dateFilter === "1month" && "Past Month"}
+                    {dateFilter === "3months" && "Past 3 Months"}
+                    {dateFilter === "6months" && "Past 6 Months"}
+                    {dateFilter === "1year" && "Past Year"}
+                </span>
+                )}
 
-          {/* Sort dropdown */}
-          <DropdownMenu>
+        </div>
+
+        {/* Right side: Sort button */}
+        <div className="flex items-center gap-2">
+            <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
+                <Button variant="outline" size="sm" className="flex items-center gap-1">
                 Sort by {sortField === "date" ? "Date" : "Title"}
                 {sortDirection === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-              </Button>
+                </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
+                <DropdownMenuItem
                 onClick={() => {
-                  if (sortField === "date") {
+                    if (sortField === "date") {
                     setSortDirection(prev => (prev === "asc" ? "desc" : "asc"));
-                  } else {
+                    } else {
                     setSortField("date");
-                    setSortDirection("asc"); // reset to asc when switching fields
-                  }
+                    setSortDirection("asc");
+                    }
                 }}
-              >
+                >
                 <Calendar className="h-4 w-4 mr-2" /> Date
-              </DropdownMenuItem>
+                </DropdownMenuItem>
 
-              <DropdownMenuItem
+                <DropdownMenuItem
                 onClick={() => {
-                  if (sortField === "title") {
+                    if (sortField === "title") {
                     setSortDirection(prev => (prev === "asc" ? "desc" : "asc"));
-                  } else {
+                    } else {
                     setSortField("title");
-                    setSortDirection("asc"); // reset to asc when switching fields
-                  }
+                    setSortDirection("asc");
+                    }
                 }}
-              >
+                >
                 <FileText className="h-4 w-4 mr-2" /> Title
-              </DropdownMenuItem>
-
+                </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+            </DropdownMenu>
         </div>
 
+        </div>
         {/* Labels Section */}
         <div className="grid grid-cols-12 gap-4 px-4 py-2 bg-gray-100 rounded-lg font-medium text-sm mb-4">
-          <div className="col-span-6 sm:col-span-5">Title</div>
-          <div className="col-span-6 sm:col-span-3">Date</div>
-          <div className="hidden sm:block sm:col-span-2 text-center">Visible</div>
-          <div className="hidden sm:block sm:col-span-2 text-center">Actions</div>
+        <div className="col-span-6 sm:col-span-5">Title</div>
+        <div className="col-span-6 sm:col-span-3">Date</div>
+
+        {isSpeaker && (
+            <div className="hidden sm:block sm:col-span-2 text-center">Visible</div>
+        )}
+
+        {agendaType === "past" && !isSpeaker && (
+            <div className="hidden sm:block sm:col-span-2 text-center">Result</div>
+        )}
+
+        <div className="hidden sm:block sm:col-span-2 text-center">Actions</div>
         </div>
+
+
+
 
         {/* Agenda List */}
         <div className="space-y-4">
