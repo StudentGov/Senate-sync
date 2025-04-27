@@ -59,7 +59,7 @@ export default function CurrentAgendas() {
     if (dateFilter === "all") return true;
     const createdDate = new Date(agenda.created_at);
     const now = new Date();
-    let compareDate = new Date();
+    const compareDate = new Date();
 
     switch (dateFilter) {
       case "7days":
