@@ -66,14 +66,18 @@ body.active-modal {
     z-index: 200;
 }
 
-.title{
+.title {
     position: absolute;
     top: 5%;
     left: 10%;
     font-size: 30px;
     font-weight: bolder;
     color: black;
-}
+    max-width: 80%; /* <-- control width so it can wrap */
+    white-space: normal; /* <-- allow wrapping */
+    word-break: break-word; /* <-- break long words if needed */
+  }
+  
 
 .individual{
     position: absolute;

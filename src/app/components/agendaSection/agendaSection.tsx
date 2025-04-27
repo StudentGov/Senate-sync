@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { Switch } from "../../components/ui/switch";
 import VoteModal from "../../components/vote-modal";
@@ -130,28 +129,23 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
 
   return (
     <>
-      <Card
-        className={`p-4 hover:shadow-md transition-shadow ${
-          agenda.is_open ? "" : "opacity-70"
-        } cursor-pointer`}
-      >
+      <Card className="hover:shadow-md transition-shadow cursor-pointer p-4">
         <div className="grid grid-cols-12 gap-4 items-center">
-          {/* Left Half - full height clickable */}
+          {/* Title Section */}
           <div
             className="col-span-12 sm:col-span-5 flex items-center h-full w-full"
             onClick={toggleDetails}
           >
-            <h3 className="font-medium truncate w-full">{agenda.title}</h3>
+            <h3 className="font-medium truncate w-full text-gray-800">{agenda.title}</h3>
           </div>
 
-
-          {/* Date */}
+          {/* Date Section */}
           <div className="col-span-6 sm:col-span-3 text-gray-600">
             {new Date(agenda.created_at).toISOString().split("T")[0]}
           </div>
 
-          {/* Visibility Toggle */}
-          {isSpeaker && (
+          {/* Your Vote or Visibility */}
+          {isSpeaker && page !== "past" ? (
             <div className="col-span-6 sm:col-span-2 flex justify-end sm:justify-center">
               <Switch
                 checked={visible}
@@ -159,19 +153,14 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
                 onClick={(e) => e.stopPropagation()}
               />
             </div>
-          )}
-
-          {/* Badge for Past */}
-          {page === "past" && !isSpeaker && (
-            <div className="col-span-6 sm:col-span-2 flex justify-end sm:justify-center">
-              <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
-                Closed
-              </Badge>
+          ) : (
+            <div className="col-span-6 sm:col-span-2 flex justify-end sm:justify-center text-gray-700 font-semibold">
+              {selectedOption.optionText === "N/A" ? "No Vote" : selectedOption.optionText}
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="col-span-12 sm:col-span-2 flex flex-wrap gap-2 mt-2 sm:mt-0 justify-end sm:justify-center">
+          {/* Actions Section */}
+          <div className="col-span-12 sm:col-span-2 flex flex-wrap gap-2 justify-end sm:justify-center mt-2 sm:mt-0">
             {isMember && agenda.is_open && selectedOption.optionText === "N/A" && (
               <Button
                 variant="default"
@@ -198,17 +187,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
                 Close
               </Button>
             )}
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-purple-200 text-purple-700 hover:bg-purple-50"
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleDetails();
-              }}
-            >
-              View {isMember ? "Details" : "Voting"}
-            </Button>
+            <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
           </div>
         </div>
       </Card>

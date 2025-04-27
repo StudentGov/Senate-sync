@@ -96,7 +96,7 @@ export default function PieChartPopUp({agenda, isSpeaker}: AgendaProps) {
 
     return (
         <>
-            <button onClick={() => {toggleModal(); fetchVotes()}} className={styles.btnModal}>View Voting</button>
+            <button onClick={() => {toggleModal(); fetchVotes()}}   className="border border-purple-200 text-purple-700 hover:bg-purple-50 rounded-md px-4 py-2 text-sm font-medium transition-colors"            >View Voting</button>
 
             {modal && (
                 <div className={styles.modal}>

@@ -261,16 +261,15 @@ export default function CurrentAgendas() {
         <div className="col-span-6 sm:col-span-5">Title</div>
         <div className="col-span-6 sm:col-span-3">Date</div>
 
-        {isSpeaker && (
+        {isSpeaker ? (
             <div className="hidden sm:block sm:col-span-2 text-center">Visible</div>
+        ) : (
+            <div className="hidden sm:block sm:col-span-2 text-center">Your Vote</div>
         )}
-
-        {agendaType === "past" && !isSpeaker && (
-            <div className="hidden sm:block sm:col-span-2 text-center">Result</div>
-        )}
-
+            
         <div className="hidden sm:block sm:col-span-2 text-center">Actions</div>
         </div>
+
 
 
 
