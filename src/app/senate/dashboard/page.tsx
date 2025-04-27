@@ -48,7 +48,6 @@ export default function CurrentAgendas() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [sortField, setSortField] = useState<"date" | "title">("date");
   const [addAgendaModalOpen, setAddAgendaModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [dateFilter, setDateFilter] = useState("7days"); // NEW
 
   const handleSearch = (query: string) => {
@@ -131,7 +130,6 @@ export default function CurrentAgendas() {
 
   async function fetchAgendas() {
     try {
-      setIsLoading(true);
       const response = await fetch('/api/get-agendas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -144,9 +142,7 @@ export default function CurrentAgendas() {
       setAgendaData(data.agendas);
     } catch (error) {
       console.error('Error fetching agendas:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    } 
   }
 
   const userData: User = {
@@ -259,7 +255,7 @@ export default function CurrentAgendas() {
         {/* Labels Section */}
         <div className="grid grid-cols-12 gap-4 px-4 py-2 bg-gray-100 rounded-lg font-medium text-sm mb-4">
         <div className="col-span-6 sm:col-span-5">Title</div>
-        <div className="col-span-6 sm:col-span-3">Date</div>
+        <div className="hidden sm:block col-span-6 sm:col-span-3">Date</div>
 
         {isSpeaker ? (
             <div className="hidden sm:block sm:col-span-2 text-center">Visible</div>
@@ -267,7 +263,7 @@ export default function CurrentAgendas() {
             <div className="hidden sm:block sm:col-span-2 text-center">Your Vote</div>
         )}
             
-        <div className="hidden sm:block sm:col-span-2 text-center">Actions</div>
+        <div className="sm:col-span-2 text-center">Actions</div>
         </div>
 
 
@@ -276,9 +272,7 @@ export default function CurrentAgendas() {
 
         {/* Agenda List */}
         <div className="space-y-4">
-          {isLoading ? (
-            <div className="text-center py-8 text-gray-500">Loading agendas...</div>
-          ) : filteredAndSortedAgendas.length > 0 ? (
+          {filteredAndSortedAgendas.length > 0 ? (
             filteredAndSortedAgendas.map((item, index) => (
               <AgendaSection
                 key={index}
