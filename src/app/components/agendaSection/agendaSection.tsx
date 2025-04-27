@@ -184,7 +184,7 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
         <Button
           variant="default"
           size="sm"
-          className="bg-purple-600 hover:bg-purple-700"
+          className="bg-red-600 hover:bg-red-800"
           onClick={(e) => {
             e.stopPropagation();
             setShowConfirmation(true);

@@ -212,7 +212,7 @@ export default function Individual({ agenda_id, agenda_title }: Props) {
   
             {/* MODAL CONTENT */}
             <div
-              className="relative bg-white rounded-lg shadow-xl w-[700px] max-w-[90vw] max-h-[90vh] flex flex-col overflow-hidden"
+              className="relative bg-white rounded-lg shadow-xl w-[700px] max-w-[90vw] max-h-[80vh] flex flex-col overflow-hidden"
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
