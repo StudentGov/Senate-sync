@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
+import { Plus } from 'lucide-react'
 import styles from './currentAgendas.module.css'
 import { useCollapsedContext } from '../../../components/sideBar/sideBarContext'
 import SideBar from '../../../components/sideBar/SideBar'
@@ -13,6 +14,7 @@ import SearchBar from '../../../components/searchBar/SearchBar';  // Import Sear
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import arrow from '../../../assets/arrow.png'
+import { Button } from "../../../components/ui/button"
 
 interface Option {
     id: number;
@@ -44,6 +46,7 @@ export default function CurrentAgendas(){
     const [agendaData, setAgendaData] = useState<Agenda[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>(""); // State for search input
     const [selectedPage, setSelectedPage] = useState<Option>({id:3, optionText:"currentAgendas"})
+    const [addAgendaModalOpen, setAddAgendaModalOpen] = useState(false)
     const router = useRouter();
     // Function to handle search input
     const handleSearch = (query: string) => {
@@ -157,11 +160,15 @@ export default function CurrentAgendas(){
                   
                   <div className={styles.searchAddContainer}>
                     <SearchBar onSearch={handleSearch} />
-                    {isSpeaker && user && <AddAgenda user={user} />}
+                    {isSpeaker && user && 
+                    <Button onClick={() => setAddAgendaModalOpen(true)} className="bg-purple-600 hover:bg-purple-700">
+                      <Plus className="h-4 w-4 mr-1" /> Add Agenda
+                    </Button>
+                    }
                   </div>
               </div>
 
-
+              {user && <AddAgenda user={user} isOpen={addAgendaModalOpen} onClose={() => setAddAgendaModalOpen(false)}/>}
               <div className={styles.sections}>
                   <div className={styles.content}>
                       <div className={styles.labels}>

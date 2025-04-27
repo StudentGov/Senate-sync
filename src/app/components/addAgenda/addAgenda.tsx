@@ -1,135 +1,173 @@
+
 "use client";
-import React, { useState, useEffect } from "react";
-import styles from './addAgenda.module.css'
-import BinLogo from '../../assets/bin.png'
-import Image from 'next/image'
 
-
+import { useState} from "react";
+import { X, Plus, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../../components/ui/dialog";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Textarea } from "../../components/ui/textarea";
+import { Label } from "../../components/ui/label";
 
 interface User {
   id: string;
 }
 
-interface ModalProps {
+interface AddAgendaModalProps {
   user: User;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export default function Modal({ user }: ModalProps) {
-  const [modal, setModal] = useState<boolean>(false);
-  const [inputOption, setInputOption] = useState<string>("");
-  const [options, setOptions]= useState<string[]>([]);
-  const [inputAgenda, setInputAgenda] = useState<string>("")
-  const [message, setMessage] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+export default function AddAgendaModal({ user, isOpen, onClose }: AddAgendaModalProps) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [options, setOptions] = useState<string[]>([]);
+  const [newOption, setNewOption] = useState("");
+  const [message, setMessage] = useState("");
 
-  const toggleModal = () => {
-    setModal(!modal);
-    setInputAgenda('');
-    setOptions([]);
-    setInputOption('');
-    setDescription('');
-    setMessage('');
+  const handleAddOption = () => {
+    if (newOption.trim() !== "") {
+      setOptions((prev) => [...prev, newOption.trim()]);
+      setNewOption("");
+    }
   };
 
-  // UseEffect to manage modal state safely on the client side
-  useEffect(() => {
-    if (typeof window !== "undefined") { // Check if running on the client
-      if (modal) {
-        document.body.classList.add('active-modal');
-      } else {
-        document.body.classList.remove('active-modal');
-      }
-    }
-  }, [modal]); // Re-run when modal state changes
-  
-    async function addAgenda() {
+  const handleRemoveOption = (index: number) => {
+    setOptions((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  async function addAgenda() {
+    try {
       const response = await fetch("/api/add-agenda", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           speaker_id: user.id,
-          title: inputAgenda,
-          options:options,
-          description:description
+          title: title.trim(),
+          options: options,
+          description: description.trim(),
         }),
       });
-    
+
       const data = await response.json();
       console.log(data);
+    } catch (error) {
+      console.error("Error adding agenda:", error);
     }
-  
+  }
+
   const handleSubmit = () => {
-    if (!inputAgenda){
-        setMessage("Agenda is missing")
-    }
-    else if (options.length === 0){
-        setMessage("Options are missing")
-    }
-    else{
+    if (!title.trim()) {
+      setMessage("Agenda is missing");
+    } else if (options.length === 0) {
+      setMessage("Options are missing");
+    } else {
       addAgenda();
-      setMessage("");
-      setInputAgenda('');
-      setOptions([]);
-      setInputOption('');
       setMessage("Added agenda successfully");
+      setTitle("");
+      setDescription("");
+      setOptions([]);
+      setNewOption("");
     }
-  }
-  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && inputOption){
-      e.preventDefault(); // Prevents any default behavior like form submission
-      setOptions((prev) => [...prev, inputOption]); // Add new option
-      setInputOption(""); // Clear input field
-    }
-  }
-  const handleDelete = (option: string) => {
-    setOptions((prev) => prev.filter(item => item !== option))
-  }
-  
+  };
 
   return (
-    <>
-      <button onClick={toggleModal} className={styles.btnModal}>Add Agenda</button>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="w-[90vw] max-w-lg max-h-[90vh] overflow-y-auto rounded-lg">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold">Write Agenda</DialogTitle>
+          <Button variant="ghost" size="icon" className="absolute right-4 top-4" onClick={onClose}>
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
+        </DialogHeader>
 
-      {modal && (
-        <div className={styles.modal}>
-          <div onClick={toggleModal} className={styles.overlay}></div>
-          <div className={styles.modalContent}>
-            <button className={styles.closeModal} onClick={toggleModal}>CLOSE</button>
-            <div className={styles.inputs}>
-              <label htmlFor="inputField">Write Agenda</label>
-                <input value={inputAgenda} placeholder="Enter Agenda" onChange={(e) => setInputAgenda(e.target.value)} required />
-              <label htmlFor="inputField">Add Option</label>
-              <div className={styles.addOptions}>
-                <input value={inputOption} placeholder="Enter Option" onChange={(e) => setInputOption(e.target.value)} onKeyDown={handleEnter}/>
-                <button onClick={() => {setOptions((prev) => [...prev, inputOption]); setInputOption("");}}>+</button>
-              </div>
+        <div className="grid gap-6 py-4">
+          {/* Title */}
+          <div className="grid gap-2">
+            <Label htmlFor="title">Title</Label>
+            <Input
+              id="title"
+              placeholder="Enter Agenda"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
 
-              <label htmlFor="description">Description:</label>
-                <textarea className={styles.description} name="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter your description here..."  />
+          {/* Options */}
+          <div className="grid gap-2">
+            <Label>Options</Label>
+            <div className="bg-gray-200 p-4 rounded-md">
+              {options.map((option, index) => (
+                <div key={index} className="flex items-center justify-between mb-2 last:mb-0">
+                  <span className="text-sm">{option}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 text-red-500 hover:text-red-600"
+                    onClick={() => handleRemoveOption(index)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
             </div>
-            <div className={styles.options}>
-              <span>Options</span>
-              <div className={styles.content}>
-                {options.map((option, index) => (
-                  <div key={index} className={styles.option}>
-                    <span>{option}</span>
-                                <Image src={BinLogo} alt='X' onClick={() => handleDelete(option)} className={styles.delete}/>
-                  </div>
-                            
-                ))}
-              </div>
-            </div>
-            <div className={styles.push}>
-              {message}
-              <button onClick={handleSubmit}>Push Agenda</button>
-            </div>
+          </div>
 
+          {/* Add Option */}
+          <div className="grid gap-2">
+            <Label htmlFor="add-option">Add Option</Label>
+            <div className="flex gap-2">
+              <Input
+                id="add-option"
+                placeholder="Enter Option"
+                value={newOption}
+                onChange={(e) => setNewOption(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && newOption.trim() !== "") {
+                    e.preventDefault();
+                    handleAddOption();
+                  }
+                }}
+                className="flex-1"
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleAddOption}
+                disabled={newOption.trim() === ""}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="grid gap-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              placeholder="Enter your description here..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="min-h-[120px]"
+            />
           </div>
         </div>
-      )}
-      
-    </>
+
+        {/* Footer */}
+        <DialogFooter className="sm:justify-center gap-2">
+          <div className="text-center text-sm text-green-700">{message}</div>
+          <Button
+            className="bg-purple-600 hover:bg-purple-700"
+            onClick={handleSubmit}
+            disabled={title.trim() === ""}
+          >
+            Push Agenda
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
