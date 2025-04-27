@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import styles from './agendaSection.module.css';
 import Switch from '@mui/material/Switch';
-import DropDownOptions from '../dropDown/dropDown';
 import PieChart from '../pieChart/pieChart'
 import Details from '../details/Details'
 import Confirmation from '../confirmation/Confirmation';
+import VoteModal from '../vote-modal';
+import { Button } from '../../components/ui/button'
 
 
 interface Option {
@@ -41,6 +42,9 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [confirmationOption, setConfirmationOption] = useState<string>("");
+
+  const [voteModalOpen, setVoteModalOpen] = useState(false);
+
   // Toggle the visibility
   async function handleToggle() {
     // Toggle the visibility
@@ -182,7 +186,24 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
           {page==='current'?(
             <>
               {isSpeaker && <button onClick={() => setShowConfirmation(true)}>Close</button>}
-              {isMember && selectedOption.optionText=="N/A" && <DropDownOptions options={agenda.options} setSelectedOption={setSelectedOption} text={'Vote'} setUserChangedVote={setUserChangedVote}/>}
+              {isMember && selectedOption.optionText=="N/A" && <Button
+              variant="default"
+              size="sm"
+              className="bg-purple-600 hover:bg-purple-700"
+              onClick={() => {
+                setVoteModalOpen(true)
+              }}
+            >
+              Vote
+            </Button>}
+            <VoteModal
+              isOpen={voteModalOpen}
+              onClose={() => setVoteModalOpen(false)}
+              options={agenda.options}
+              selectedOption={selectedOption}
+              setSelectedOption={setSelectedOption}
+              setUserChangedVote={setUserChangedVote}
+            />
               <div className={styles.viewVoting}>
                 <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
               </div>
