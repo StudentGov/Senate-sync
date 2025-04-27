@@ -37,9 +37,8 @@ export default function Details({ agenda, showDetails, setShowDetails, selectedV
 
   return (
     <Dialog open={showDetails} onOpenChange={toggleDetails}>
-      <DialogContent className="w-[90vw] max-w-lg max-h-[90vh] overflow-y-auto rounded-lg">
-
-        <DialogHeader>
+      <DialogContent className="w-[90vw] max-w-lg p-0 max-h-[90vh] overflow-y-auto rounded-lg">
+        <DialogHeader className="bg-purple-800 text-white p-6 relative">
           <DialogTitle className="text-xl font-bold break-words whitespace-normal">Details</DialogTitle>
           <Button
             variant="ghost"
@@ -52,7 +51,7 @@ export default function Details({ agenda, showDetails, setShowDetails, selectedV
           </Button>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="space-y-6 py-4 p-6">
           {/* Title */}
           {/* <div className="p-3 bg-gray-50 rounded-md min-h-[80px] break-all whitespace-normal"> */}
           <div className="space-y-1 break-all whitespace-normal">
@@ -107,8 +106,8 @@ export default function Details({ agenda, showDetails, setShowDetails, selectedV
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-2 pt-2">
-          <Button variant="outline" onClick={toggleDetails}>
+        <div className="flex justify-end gap-2 pt-2 p-6">
+          <Button variant="outline" onClick={toggleDetails}   className="bg-purple-800 text-white hover:bg-[#5b3a8b]">
             Back
           </Button>
         </div>

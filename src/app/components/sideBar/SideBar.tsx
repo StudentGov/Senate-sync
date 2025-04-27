@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import styles from './sideBar.module.css'
 import { useRouter } from "next/navigation";
+import { useAgendaStore } from "@/app/lib/store"; // <-- import your store
 import Logo from '../../assets/menu.png'
 import Image from 'next/image'
 import { useUser } from "@clerk/nextjs";
@@ -15,6 +16,7 @@ interface SideBarProps {
 
 export default function SideBar({collapsed, setCollapsed}: SideBarProps) {
   const router = useRouter();
+  const { setAgendaType } = useAgendaStore(); // <-- get the setter
   const { user, isSignedIn } = useUser();
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false);
   const { openUserProfile, signOut } = useClerk();
@@ -36,8 +38,8 @@ export default function SideBar({collapsed, setCollapsed}: SideBarProps) {
         <div className={`${styles.x} ${collapsed ? 'hidden' : 'block'}`}>
           <Sidebar onClick={() => setCollapsed(!collapsed)}>
             <Menu>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/dashboard/currentAgendas')}> Current Agendas </MenuItem>
-                <MenuItem className={styles.sideBarItem} onClick={() => router.push('/senate/dashboard/pastAgendas')}> Past Agendas </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => setAgendaType("current")}> Current Agendas </MenuItem>
+                <MenuItem className={styles.sideBarItem} onClick={() => setAgendaType("past")}> Past Agendas </MenuItem>
                 <MenuItem className={styles.sideBarItem} onClick={() => handleProfileClick()}> Profile </MenuItem>
                 <MenuItem className={styles.sideBarItem} onClick={() => signOut()}> Sign Out </MenuItem>
                 {isSuperAdmin && (<MenuItem className={styles.sideBarItem} onClick={() => router.push('/admin/dashboard')}> Admin Dashboard </MenuItem>)}

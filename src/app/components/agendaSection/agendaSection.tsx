@@ -129,68 +129,74 @@ export default function AgendaSection({ agenda, page, isMember, isSpeaker, user 
 
   return (
     <>
-      <Card className="hover:shadow-md transition-shadow cursor-pointer p-4">
-        <div className="grid grid-cols-12 gap-4 items-center">
-          {/* Title Section */}
-          <div
-            className="col-span-12 sm:col-span-5 flex items-center h-full w-full"
-            onClick={toggleDetails}
-          >
-            <h3 className="font-medium truncate w-full text-gray-800">{agenda.title}</h3>
-          </div>
+      <Card className="hover:shadow-md transition-shadow cursor-pointer p-4 sm:p-6" onClick={toggleDetails}>
+  <div className="grid grid-cols-12 gap-2 sm:gap-4 items-center h-full w-full">
+    {/* Title Section (full height clickable) */}
+    <div className="col-span-12 sm:col-span-5 flex items-center h-full">
+      <h3 className="font-semibold text-gray-800 truncate w-full">{agenda.title}</h3>
+    </div>
 
-          {/* Date Section */}
-          <div className="col-span-6 sm:col-span-3 text-gray-600">
-            {new Date(agenda.created_at).toISOString().split("T")[0]}
-          </div>
+    {/* Date */}
+    <div
+      className="col-span-6 sm:col-span-3 text-gray-600 text-sm"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {new Date(agenda.created_at).toISOString().split("T")[0]}
+    </div>
 
-          {/* Your Vote or Visibility */}
-          {isSpeaker && page !== "past" ? (
-            <div className="col-span-6 sm:col-span-2 flex justify-end sm:justify-center">
-              <Switch
-                checked={visible}
-                onCheckedChange={handleToggle}
-                onClick={(e) => e.stopPropagation()}
-              />
-            </div>
-          ) : (
-            <div className="col-span-6 sm:col-span-2 flex justify-end sm:justify-center text-gray-700 font-semibold">
-              {selectedOption.optionText === "N/A" ? "No Vote" : selectedOption.optionText}
-            </div>
-          )}
+    {/* Vote/Visibility */}
+    <div
+      className="col-span-6 sm:col-span-2 flex justify-end sm:justify-center"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {isSpeaker && page !== "past" ? (
+        <Switch
+          checked={visible}
+          onCheckedChange={handleToggle}
+          onClick={(e) => e.stopPropagation()}
+        />
+      ) : (
+        <span className="text-gray-700 font-semibold text-sm">
+          {selectedOption.optionText === "N/A" ? "No Vote" : selectedOption.optionText}
+        </span>
+      )}
+    </div>
 
-          {/* Actions Section */}
-          <div className="col-span-12 sm:col-span-2 flex flex-wrap gap-2 justify-end sm:justify-center mt-2 sm:mt-0">
-            {isMember && agenda.is_open && selectedOption.optionText === "N/A" && (
-              <Button
-                variant="default"
-                size="sm"
-                className="bg-purple-600 hover:bg-purple-700"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setVoteModalOpen(true);
-                }}
-              >
-                Vote
-              </Button>
-            )}
-            {isSpeaker && agenda.is_open && (
-              <Button
-                variant="default"
-                size="sm"
-                className="bg-purple-600 hover:bg-purple-700"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowConfirmation(true);
-                }}
-              >
-                Close
-              </Button>
-            )}
-            <PieChart agenda={agenda} isSpeaker={isSpeaker}/>
-          </div>
-        </div>
-      </Card>
+    {/* Action Buttons */}
+    <div
+      className="col-span-12 sm:col-span-2 flex flex-wrap justify-end sm:justify-center gap-2 mt-2 sm:mt-0"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {isMember && agenda.is_open && selectedOption.optionText === "N/A" && (
+        <Button
+          variant="default"
+          size="sm"
+          className="bg-purple-600 hover:bg-purple-700"
+          onClick={(e) => {
+            e.stopPropagation();
+            setVoteModalOpen(true);
+          }}
+        >
+          Vote
+        </Button>
+      )}
+      {isSpeaker && agenda.is_open && (
+        <Button
+          variant="default"
+          size="sm"
+          className="bg-purple-600 hover:bg-purple-700"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowConfirmation(true);
+          }}
+        >
+          Close
+        </Button>
+      )}
+      <PieChart agenda={agenda} isSpeaker={isSpeaker} />
+    </div>
+  </div>
+</Card>
 
       {/* Modals */}
       {voteModalOpen && (

@@ -60,7 +60,7 @@ body.active-modal {
     height: 30px;
     font-size: 10px;
     width:70px;
-    background-color: purple;
+    background-color: #6b21a8;
     color:white;
     border-radius: 5px;
     z-index: 200;
@@ -92,7 +92,7 @@ body.active-modal {
     font-size: 12px;
     width:80px;
     height: 40px;
-    background-color: purple;
+    background-color: #6b21a8;
     color:white;
     border-radius: 5px;
 }
