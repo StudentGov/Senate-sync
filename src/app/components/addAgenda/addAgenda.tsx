@@ -74,7 +74,7 @@ export default function AddAgendaModal({ user, isOpen, onClose }: AddAgendaModal
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[90vw] max-w-lg max-h-[90vh] overflow-y-auto rounded-lg">
+      <DialogContent className="mt-[5vh] w-[90vw] max-w-lg max-h-[80vh] overflow-y-auto rounded-lg">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Write Agenda</DialogTitle>
           <Button variant="ghost" size="icon" className="absolute right-4 top-4" onClick={onClose}>

@@ -37,7 +37,7 @@ export default function Details({ agenda, showDetails, setShowDetails, selectedV
 
   return (
     <Dialog open={showDetails} onOpenChange={toggleDetails}>
-      <DialogContent className="w-[90vw] max-w-lg p-0 max-h-[90vh] overflow-y-auto rounded-lg">
+      <DialogContent className="mt-[5vh] w-[90vw] max-w-lg p-0 max-h-[80vh] overflow-y-auto rounded-lg">
         <DialogHeader className="bg-purple-800 text-white p-6 relative">
           <DialogTitle className="text-xl font-bold break-words whitespace-normal">Details</DialogTitle>
           <Button
