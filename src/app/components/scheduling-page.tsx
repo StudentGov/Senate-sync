@@ -44,18 +44,18 @@ export default function SchedulingPage() {
     setIsModalOpen(false);
   };
 
-  const handleBookingSubmit = (data: { starId: string; techId: string; description: string }) => {
-    console.log("Booking form submitted:", {
-      date,
-      timeSlot: selectedSlot,
-      ...data,
-    });
+  // const handleBookingSubmit = (data: { starId: string; techId: string; description: string }) => {
+  //   console.log("Booking form submitted:", {
+  //     date,
+  //     timeSlot: selectedSlot,
+  //     ...data,
+  //   });
 
-    setIsModalOpen(false);
-    setDate(undefined);
-    setSelectedSlot(null);
-    setStep(1);
-  };
+  //   setIsModalOpen(false);
+  //   setDate(undefined);
+  //   setSelectedSlot(null);
+  //   setStep(1);
+  // };
 
   return (
     <div className="max-w-4xl mx-auto">
