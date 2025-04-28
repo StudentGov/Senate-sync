@@ -83,7 +83,7 @@ export default function BookingModal({ isOpen, onClose, date, timeSlot }: Bookin
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden bg-white">
+      <DialogContent className="w-[500px] max-w-[90vw] max-h-[90vh] p-0 overflow-auto bg-white">
         <DialogHeader className="bg-primary text-primary-foreground p-6">
           <DialogTitle className="text-2xl">Complete Your Booking</DialogTitle>
           <p className="text-primary-foreground/80 text-sm">Please provide the required information</p>
