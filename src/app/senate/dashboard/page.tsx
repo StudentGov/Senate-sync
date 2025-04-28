@@ -36,7 +36,7 @@ interface User {
   lastName: string;
 }
 
-export default function CurrentAgendas() {
+export default function Agendas() {
   const { collapsed, setCollapsed } = useCollapsedContext();
   const { agendaType } = useAgendaStore();
   const { user, isSignedIn } = useUser();
