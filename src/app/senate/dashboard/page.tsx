@@ -49,6 +49,7 @@ export default function CurrentAgendas() {
   const [sortField, setSortField] = useState<"date" | "title">("date");
   const [addAgendaModalOpen, setAddAgendaModalOpen] = useState(false);
   const [dateFilter, setDateFilter] = useState("7days"); // NEW
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query.toLowerCase());
@@ -130,6 +131,7 @@ export default function CurrentAgendas() {
 
   async function fetchAgendas() {
     try {
+      setIsLoading(true);
       const response = await fetch('/api/get-agendas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -142,7 +144,9 @@ export default function CurrentAgendas() {
       setAgendaData(data.agendas);
     } catch (error) {
       console.error('Error fetching agendas:', error);
-    } 
+    } finally{
+      setIsLoading(false);
+    }
   }
 
   const userData: User = {
@@ -272,7 +276,11 @@ export default function CurrentAgendas() {
 
         {/* Agenda List */}
         <div className="space-y-4">
-          {filteredAndSortedAgendas.length > 0 ? (
+        {isLoading ? (
+          <div className="text-center py-8 text-gray-500">
+            Loading agendas...
+          </div>
+        ) : filteredAndSortedAgendas.length > 0 ? (
             filteredAndSortedAgendas.map((item, index) => (
               <AgendaSection
                 key={index}

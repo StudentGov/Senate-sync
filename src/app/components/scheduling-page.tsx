@@ -8,7 +8,7 @@ import { CalendarIcon, Clock, ArrowRight } from "lucide-react"
 import TimeSlots from "../components/time-slots"
 import BookingModal from "../components/booking-modal"
 import { format } from "date-fns"
-// import { motion, AnimatePresence } from "framer-motion"
+
 
 export default function SchedulingPage() {
   const [date, setDate] = useState<Date | undefined>(undefined)
