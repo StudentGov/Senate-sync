@@ -8,11 +8,13 @@ import { CollapsedProvider, useCollapsedContext } from "../../../components/atto
 
 interface Appointment {
   id: number;
-  student: string;
+  student_name: string;
   date: string;
   start_time: string;
   end_time: string;
-  reason?: string;
+  star_id: string;
+  tech_id: string;
+  description: string;
 }
 
 function UpcomingAppointmentsContent() {
@@ -83,12 +85,16 @@ function UpcomingAppointmentsContent() {
                   {appts.map((appt) => (
                     <li key={appt.id} className={styles.appointmentItem}>
                       <div className={styles.topRow}>
-                        <span className={styles.name}>{appt.student}</span>
+                        <span className={styles.name}>{appt.student_name}</span>
                         <span className={styles.time}>
                           {appt.start_time} - {appt.end_time}
                         </span>
                       </div>
-                      {appt.reason && <p className={styles.reason}>{appt.reason}</p>}
+                      <div className={styles.hiddenDetails}>
+                        <p>Star ID: {appt.star_id}</p>
+                        <p>Tech ID: {appt.tech_id}</p>
+                        <p>Description: {appt.description}</p>
+                      </div>
                     </li>
                   ))}
                 </ul>

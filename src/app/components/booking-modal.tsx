@@ -1,74 +1,85 @@
-"use client"
+"use client";
 
-import type React from "react"
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/dialog";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Textarea } from "../components/ui/textarea";
+import { format } from "date-fns";
+import { CalendarIcon, Clock, Info, Loader2 } from "lucide-react";
+// 🛠️ Import Clerk hook to get current user ID
+import { useUser } from "@clerk/nextjs";
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/dialog"
-import { Button } from "../components/ui/button"
-import { Input } from "../components/ui/input"
-import { Label } from "../components/ui/label"
-import { Textarea } from "../components/ui/textarea"
-import { format } from "date-fns"
-import { CalendarIcon, Clock, Info, Loader2 } from "lucide-react"
-
-
-interface BookingModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSubmit: (data: { starId: string; techId: string; description: string }) => void
-  date: Date | undefined
-  timeSlot: string | null
+interface Slot {
+  id: number;
+  date: string;
+  start_time: string;
+  end_time: string;
 }
 
-export default function BookingModal({ isOpen, onClose, onSubmit, date, timeSlot }: BookingModalProps) {
-  const [starId, setStarId] = useState("")
-  const [techId, setTechId] = useState("")
-  const [description, setDescription] = useState("")
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
+interface BookingModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  date: Date | undefined;
+  timeSlot: Slot | null;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+export default function BookingModal({ isOpen, onClose, date, timeSlot }: BookingModalProps) {
+  const { user } = useUser(); // 🛠️ get current user
+  const userId = user?.id; // 🛠️ safely grab userId
 
-    // Validate form
-    const newErrors: Record<string, string> = {}
+  const [starId, setStarId] = useState("");
+  const [techId, setTechId] = useState("");
+  const [description, setDescription] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    if (!starId.trim()) {
-      newErrors.starId = "Star ID is required"
-    }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    if (!techId.trim()) {
-      newErrors.techId = "Tech ID is required"
-    }
-
-    if (!description.trim()) {
-      newErrors.description = "Description is required"
-    }
+    const newErrors: Record<string, string> = {};
+    if (!starId.trim()) newErrors.starId = "Star ID is required";
+    if (!techId.trim()) newErrors.techId = "Tech ID is required";
+    if (!description.trim()) newErrors.description = "Description is required";
+    if (!timeSlot) newErrors.timeSlot = "No slot selected";
+    if (!userId) newErrors.userId = "No student ID found";
 
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
+      setErrors(newErrors);
+      return;
     }
 
-    // Simulate submission
-    setIsSubmitting(true)
+    try {
+      setIsSubmitting(true);
 
-    setTimeout(() => {
-      // Submit form
-      onSubmit({
-        starId,
-        techId,
-        description,
-      })
+      const res = await fetch("/api/student/book-appointment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slotId: timeSlot!.id,
+          starId,
+          techId,
+          description,
+          studentId: userId, // 🛠️ Now correctly send Clerk student ID
+        }),
+      });
 
-      // Reset form
-      setStarId("")
-      setTechId("")
-      setDescription("")
-      setErrors({})
-      setIsSubmitting(false)
-    }, 1000)
-  }
+      if (!res.ok) throw new Error("Booking failed");
+
+      alert("✅ Appointment booked successfully!");
+      onClose();
+    } catch (error) {
+      console.error("Booking error:", error);
+      alert("❌ Failed to book appointment. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+      setStarId("");
+      setTechId("");
+      setDescription("");
+      setErrors({});
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -96,7 +107,7 @@ export default function BookingModal({ isOpen, onClose, onSubmit, date, timeSlot
               </div>
               <div>
                 <p className="text-sm font-medium">Time</p>
-                <p className="text-sm">{timeSlot}</p>
+                <p className="text-sm">{timeSlot.start_time} - {timeSlot.end_time}</p>
               </div>
             </div>
           </div>
@@ -104,22 +115,12 @@ export default function BookingModal({ isOpen, onClose, onSubmit, date, timeSlot
 
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid gap-5 py-2">
-            <div
-              className="grid gap-2 opacity-0 animate-fadeIn"
-              style={{ animationDelay: "100ms", animationFillMode: "forwards" }}
-            >
-              <Label htmlFor="starId" className="text-sm font-medium ">
-                Star ID
-              </Label>
+            <div className="grid gap-2">
+              <Label htmlFor="starId">Star ID</Label>
               <Input
                 id="starId"
                 value={starId}
-                onChange={(e) => {
-                  setStarId(e.target.value)
-                  if (errors.starId) {
-                    setErrors({ ...errors, starId: "" })
-                  }
-                }}
+                onChange={(e) => setStarId(e.target.value)}
                 placeholder="Enter Star ID"
                 className={errors.starId ? "border-red-500" : ""}
               />
@@ -130,22 +131,12 @@ export default function BookingModal({ isOpen, onClose, onSubmit, date, timeSlot
               )}
             </div>
 
-            <div
-              className="grid gap-2 opacity-0 animate-fadeIn"
-              style={{ animationDelay: "200ms", animationFillMode: "forwards" }}
-            >
-              <Label htmlFor="techId" className="text-sm font-medium">
-                Tech ID
-              </Label>
+            <div className="grid gap-2">
+              <Label htmlFor="techId">Tech ID</Label>
               <Input
                 id="techId"
                 value={techId}
-                onChange={(e) => {
-                  setTechId(e.target.value)
-                  if (errors.techId) {
-                    setErrors({ ...errors, techId: "" })
-                  }
-                }}
+                onChange={(e) => setTechId(e.target.value)}
                 placeholder="Enter Tech ID"
                 className={errors.techId ? "border-red-500" : ""}
               />
@@ -156,22 +147,12 @@ export default function BookingModal({ isOpen, onClose, onSubmit, date, timeSlot
               )}
             </div>
 
-            <div
-              className="grid gap-2 opacity-0 animate-fadeIn"
-              style={{ animationDelay: "300ms", animationFillMode: "forwards" }}
-            >
-              <Label htmlFor="description" className="text-sm font-medium">
-                Description
-              </Label>
+            <div className="grid gap-2">
+              <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
                 value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value)
-                  if (errors.description) {
-                    setErrors({ ...errors, description: "" })
-                  }
-                }}
+                onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe your appointment"
                 rows={3}
                 className={errors.description ? "border-red-500" : ""}
@@ -202,5 +183,5 @@ export default function BookingModal({ isOpen, onClose, onSubmit, date, timeSlot
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

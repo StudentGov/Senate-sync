@@ -1,87 +1,74 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Calendar } from "../components/ui/calendar"
-import { Button } from "../components/ui/button"
-import { Card, CardContent } from "../components/ui/card"
-import { CalendarIcon, Clock, ArrowRight } from "lucide-react"
-import TimeSlots from "../components/time-slots"
-import BookingModal from "../components/booking-modal"
-import { format } from "date-fns"
-// import { motion, AnimatePresence } from "framer-motion"
+import { useState } from "react";
+import { Calendar } from "../components/ui/calendar";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { CalendarIcon, Clock, ArrowRight } from "lucide-react";
+import TimeSlots from "../components/time-slots";
+import BookingModal from "../components/booking-modal";
+import { format } from "date-fns";
+
+interface Slot {
+  id: number;
+  date: string;
+  start_time: string;
+  end_time: string;
+}
 
 export default function SchedulingPage() {
-  const [date, setDate] = useState<Date | undefined>(undefined)
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [step, setStep] = useState(1)
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [step, setStep] = useState(1);
 
-  // Function to handle date selection
   const handleDateSelect = (selectedDate: Date | undefined) => {
-    setDate(selectedDate)
-    setSelectedSlot(null)
+    setDate(selectedDate);
+    setSelectedSlot(null);
     if (selectedDate) {
-      setStep(2)
+      setStep(2);
     }
-  }
+  };
 
-  // Function to handle time slot selection
-  const handleSlotSelect = (slot: string) => {
-    setSelectedSlot(slot)
-  }
+  const handleSlotSelect = (slot: Slot) => {
+    setSelectedSlot(slot);
+  };
 
-  // Function to handle next button click
   const handleNext = () => {
     if (selectedSlot) {
-      setIsModalOpen(true)
+      setIsModalOpen(true);
     }
-  }
+  };
 
-  // Function to handle modal close
   const handleModalClose = () => {
-    setIsModalOpen(false)
-  }
+    setIsModalOpen(false);
+  };
 
-  // Function to handle booking submission
-  const handleBookingSubmit = (data: {
-    starId: string
-    techId: string
-    description: string
-  }) => {
-    console.log("Booking data:", {
+  const handleBookingSubmit = (data: { starId: string; techId: string; description: string }) => {
+    console.log("Booking form submitted:", {
       date,
       timeSlot: selectedSlot,
       ...data,
-    })
+    });
 
-    // Here you would typically send this data to your backend
-
-    setIsModalOpen(false)
-    setDate(undefined)
-    setSelectedSlot(null)
-    setStep(1)
-
-    // Show success message
-    alert("Appointment scheduled successfully!")
-  }
+    setIsModalOpen(false);
+    setDate(undefined);
+    setSelectedSlot(null);
+    setStep(1);
+  };
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Progress Steps */}
       <div className="mb-8">
         <div className="flex items-center justify-center">
           <div className="flex items-center">
-            <div
-              className={`rounded-full h-10 w-10 flex items-center justify-center ${step >= 1 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
-            >
+            <div className={`rounded-full h-10 w-10 flex items-center justify-center ${step >= 1 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
               <CalendarIcon className="h-5 w-5" />
             </div>
             <div className={`h-1 w-16 md:w-24 ${step >= 2 ? "bg-primary" : "bg-muted"}`}></div>
           </div>
           <div className="flex items-center">
-            <div
-              className={`rounded-full h-10 w-10 flex items-center justify-center ${step >= 2 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
-            >
+            <div className={`rounded-full h-10 w-10 flex items-center justify-center ${step >= 2 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
               <Clock className="h-5 w-5" />
             </div>
           </div>
@@ -117,7 +104,11 @@ export default function SchedulingPage() {
               <div className="p-4 h-[calc(100%-5rem)] flex flex-col">
                 {date ? (
                   <>
-                    <TimeSlots date={date} selectedSlot={selectedSlot} onSelectSlot={handleSlotSelect} />
+                    <TimeSlots
+                      date={date}
+                      selectedSlot={selectedSlot}
+                      onSelectSlot={handleSlotSelect}
+                    />
                     <div className="mt-auto pt-4">
                       <Button onClick={handleNext} disabled={!selectedSlot} className="w-full group">
                         Continue
@@ -142,10 +133,9 @@ export default function SchedulingPage() {
       <BookingModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        onSubmit={handleBookingSubmit}
         date={date}
         timeSlot={selectedSlot}
       />
     </div>
-  )
+  );
 }

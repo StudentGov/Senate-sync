@@ -53,8 +53,17 @@
   background-color: #f5f5f5;
   padding: 1rem;
   border-left: 5px solid #4b287d;
-  border-radius: 6px;
+  border-radius: 8px;
   margin-bottom: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.appointmentItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .topRow {
@@ -66,6 +75,7 @@
 
 .name {
   color: #222;
+  font-size: 1rem;
 }
 
 .time {
@@ -73,10 +83,26 @@
   font-size: 0.9rem;
 }
 
+/* Hidden details that show on hover */
+.hiddenDetails {
+  display: none;
+  background-color: #ececec;
+  padding: 0.5rem;
+  margin-top: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.appointmentItem:hover .hiddenDetails {
+  display: block;
+}
+
 .reason {
   font-style: italic;
-  color: #333;
-  margin: 0;
+  color: #666;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
 }
 
 .navButtons {
@@ -98,4 +124,11 @@
 
 .navButtons button:hover {
   background-color: #391f5d;
+}
+
+.noAppointments {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  color: #555;
+  text-align: center;
 }

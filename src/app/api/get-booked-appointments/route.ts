@@ -6,16 +6,20 @@ export async function GET() {
     const result = await turso.execute({
       sql: `
         SELECT 
-          id,
-          date,
-          start_time,
-          end_time,
-          booked_by_student_id AS student
-        FROM Availability
-        WHERE is_booked = 1
-        ORDER BY date ASC, start_time ASC
+          a.id,
+          a.date,
+          a.start_time,
+          a.end_time,
+          ap.student_name,
+          ap.star_id,
+          ap.tech_id,
+          ap.description
+        FROM Availability a
+        JOIN Appointments ap ON ap.slot_id = a.id
+        WHERE a.is_booked = 1
+        ORDER BY a.date ASC, a.start_time ASC
       `,
-      args: [] // ✅ Required even when unused
+      args: []
     });
 
     const appointments = result.rows || [];
