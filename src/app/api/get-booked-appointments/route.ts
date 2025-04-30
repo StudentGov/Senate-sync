@@ -27,6 +27,7 @@ export async function GET(req: Request) {
           a.start_time,
           a.end_time,
           ap.student_name,
+          ap.student_email,
           ap.star_id,
           ap.tech_id,
           ap.description

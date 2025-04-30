@@ -10,6 +10,7 @@ import { CollapsedProvider, useCollapsedContext } from "../../../components/atto
 interface Appointment {
   id: number;
   student_name: string;
+  student_email: string;
   date: string;
   start_time: string;
   end_time: string;
@@ -95,6 +96,7 @@ function UpcomingAppointmentsContent() {
                         </span>
                       </div>
                       <div className={styles.hiddenDetails}>
+                        <p>Email: {appt.student_email}</p>
                         <p>Star ID: {appt.star_id}</p>
                         <p>Tech ID: {appt.tech_id}</p>
                         <p>Description: {appt.description}</p>
