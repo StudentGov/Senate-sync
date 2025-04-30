@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useUser } from "@clerk/nextjs"; // ✅ Clerk hook
 import styles from "./upcomingAppointments.module.css";
 import SideBar from "../../../components/attorneySideBar/AttorneySideBar";
 import { CollapsedProvider, useCollapsedContext } from "../../../components/attorneySideBar/attorneySideBarContext";
@@ -22,13 +23,16 @@ function UpcomingAppointmentsContent() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const { user, isLoaded } = useUser(); // ✅ get logged-in user
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isLoaded || !user) return;
+
     const fetchAppointments = async () => {
       try {
-        const res = await fetch("/api/get-booked-appointments");
+        const res = await fetch(`/api/get-booked-appointments?userId=${user.id}`);
         const data = await res.json();
 
         if (Array.isArray(data) && data.length > 0) {
@@ -45,7 +49,7 @@ function UpcomingAppointmentsContent() {
     };
 
     fetchAppointments();
-  }, []);
+  }, [isLoaded, user]);
 
   const groupByDate = (appointments: Appointment[]): Record<string, Appointment[]> => {
     return appointments.reduce((acc, curr) => {
@@ -87,7 +91,7 @@ function UpcomingAppointmentsContent() {
                       <div className={styles.topRow}>
                         <span className={styles.name}>{appt.student_name}</span>
                         <span className={styles.time}>
-                          {appt.start_time} - {appt.end_time}
+                          {appt.start_time} – {appt.end_time}
                         </span>
                       </div>
                       <div className={styles.hiddenDetails}>
