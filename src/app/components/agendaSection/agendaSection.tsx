@@ -186,7 +186,7 @@ export default function AgendaSection({
               <Button
                 variant="default"
                 size="sm"
-                className="bg-purple-600 hover:bg-purple-700"
+                className="bg-[#63439a] hover:bg-[#8257cb]"
                 onClick={() => setVoteModalOpen(true)}
               >
                 Vote

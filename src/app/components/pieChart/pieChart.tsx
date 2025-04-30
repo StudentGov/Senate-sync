@@ -100,7 +100,14 @@ export default function PieChartPopUp({ agenda, isSpeaker }: AgendaProps) {
 
   // PieChart sizing and colors
   const size = { width: 400, height: 400 }
-  const colors = ["#8b5cf6", "#3b82f6", "#10b981", "#f97316", "#ef4444", "#ec4899"]
+  const colors = [
+    "#8b5cf6", "#3b82f6", "#10b981", "#f97316",
+    "#ef4444", "#ec4899", "#6366f1", "#14b8a6",
+    "#f59e0b", "#4ade80", "#f472b6", "#60a5fa",
+    "#f87171", "#34d399", "#fb923c", "#a0522d",
+    "#999999", "#22d3ee", "#fde047", "#7c3aed"
+  ];
+  
   const palette = voteData.map((_, i) => colors[i % colors.length])
 
   return (

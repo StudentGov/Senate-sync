@@ -160,7 +160,7 @@ export default function AddAgendaModal({ user, isOpen, onClose }: AddAgendaModal
         <DialogFooter className="sm:justify-center gap-2">
           <div className="text-center text-sm text-green-700">{message}</div>
           <Button
-            className="bg-purple-600 hover:bg-purple-700"
+            className="bg-[#63439a] hover:bg-[#8257cb]"
             onClick={handleSubmit}
             disabled={title.trim() === ""}
           >

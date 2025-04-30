@@ -14,6 +14,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import AgendaNavigation from "../../components/agenda-navigation";
 import { useAgendaStore } from "@/app/lib/store";
 
+
+
 interface Option {
   id: number;
   optionText: string;
@@ -174,7 +176,7 @@ export default function Agendas() {
               />
             </div>
             {isSpeaker && (
-              <Button onClick={() => setAddAgendaModalOpen(true)} className="bg-purple-600 hover:bg-purple-700">
+              <Button onClick={() => setAddAgendaModalOpen(true)} className="bg-[#63439a] hover:bg-[#8257cb]">
                 <Plus className="h-4 w-4 mr-1" /> Add Agenda
               </Button>
             )}
@@ -275,7 +277,7 @@ export default function Agendas() {
 
 
         {/* Agenda List */}
-        <div className="space-y-4">
+        <div className="max-h-[600px] overflow-y-auto space-y-4">
         {isLoading ? (
           <div className="text-center py-8 text-gray-500">
             Loading agendas...

@@ -103,7 +103,7 @@ export default function Individual({ agenda_id, agenda_title }: Props) {
     <>
       <button
         onClick={toggleModal}
-        className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-[#63439a] hover:bg-[#8257cb] text-white font-bold py-2 px-4 rounded"
       >
         Individual Stats
       </button>
@@ -152,7 +152,7 @@ export default function Individual({ agenda_id, agenda_title }: Props) {
                     onClick={() => setFilterOption(null)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition ${
                       filterOption === null
-                        ? "bg-purple-600 text-white shadow"
+                        ? "bg-[#63439a] hover:bg-[#8257cb] text-white shadow"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
@@ -259,7 +259,7 @@ export default function Individual({ agenda_id, agenda_title }: Props) {
                 </div>
                 <button
                   onClick={toggleModal}
-                  className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded-md shadow transition"
+                  className="bg-[#63439a] hover:bg-[#8257cb] text-white font-semibold px-4 py-2 rounded-md shadow transition"
                 >
                   Close
                 </button>
