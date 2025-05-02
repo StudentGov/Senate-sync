@@ -1,0 +1,189 @@
+.availabilityPage {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: 1rem;
+}
+
+.headerContainer h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.calendarWrapper {
+  width: 100%;
+  max-width: 1100px;
+  font-size: 0.9rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.navButtons {
+  display: flex;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.navButtons button {
+  background-color: #4b287d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.navButtons button:hover {
+  background-color: #391f5d;
+}
+
+.dropdownContainer {
+  position: fixed;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  text-align: center;
+  min-width: 320px;
+}
+
+.dropdownContainer h4 {
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+/* All Day Row (checkbox) */
+.timeRow:first-of-type {
+  margin-bottom: 0.75rem;
+  justify-content: center;
+  font-size: 0.95rem;
+  gap: 0.5rem;
+}
+
+/* Dropdown + Button row */
+.timeRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.dropdownContainer select {
+  padding: 0.4rem 0.6rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  min-width: 130px;
+}
+
+.addButton {
+  padding: 0.5rem 1.2rem;
+  background-color: #4b287d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.addButton:hover {
+  background-color: #3a2064;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modalContent {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.deleteButton {
+  background-color: #c92a2a;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deleteButton:hover {
+  background-color: #a51111;
+}
+
+.cancelButton {
+  background-color: #f1f1f1;
+  color: #333;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancelButton:hover {
+  background-color: #d4d4d4;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

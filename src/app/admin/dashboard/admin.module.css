@@ -13,4 +13,93 @@
   .tableContainer th {
     background-color: #f4f4f4;
   }
+  .mainContainer {
+    padding: 2rem;
+  }
+  
+  .topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .pageTitle {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+  .searchSortContainer {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .labelsRow {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    background-color: #f7f7f7;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .rightLabels {
+    display: flex;
+    gap: 5rem;
+  }
+  
+  .scrollArea {
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  
+  .userRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 1rem;
+  }
+  
+  .userInfo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .name {
+    font-weight: 600;
+  }
+  
+  .email {
+    color: #555;
+  }
+  
+  .userActions {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .role {
+    font-weight: 500;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .deleteButton {
+    background-color: #c0392b;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .deleteButton:hover {
+    background-color: #e74c3c;
+  }
   

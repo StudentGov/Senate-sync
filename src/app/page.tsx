@@ -6,6 +6,7 @@ import Image from "next/image";
 import logo from '../app/assets/purpleLogo.png'
 import Card from "./components/card/Card";
 import Navbar from "./components/navBar/navBar";
+import Footer from './components/footer'
 
 export default function HomePage() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function HomePage() {
               <div className={styles.rightBoxes}>
                 <h2>Senates</h2>
                 <p>Ready to vote? Check out what is on the table and make your voice count where it matters.<br /> <br />Please click here to get started.</p>
-                <button className={styles.navButton} onClick={() => handleNavigation("/senate/dashboard/currentAgendas")}>Vote Now</button>
+                <button className={styles.navButton} onClick={() => handleNavigation("/senate/dashboard")}>Vote Now</button>
               </div>
 
               <div className={styles.rightBoxes}>
@@ -63,20 +64,11 @@ export default function HomePage() {
         <div className={styles.cards}>
           <Card title={"Students"} text={"Whether you are here to share your ideas or just learn more, we are here to listen, support, and empower your journey. Schedule your appointment today!"} path={"/student/schedule"}/>
           <Card title={"Attorneys"} text={"Easily manage appointments, stay organized, and connect with students on your terms. \n When you are ready, just click the button to get started."}  path={"/attorney/dashboard"}/>
-          <Card title={"Senates"} text={"Ready to vote? Check out what is on the table and make your voice count when it matters. \n Click the button to get started."} path={"/senate/dashboard/currentAgendas"}/>
+          <Card title={"Senates"} text={"Ready to vote? Check out what is on the table and make your voice count when it matters. \n Click the button to get started."} path={"/senate/dashboard"}/>
         </div>
       </div>
       {/* Footer */}
-      <div className={styles.footer}>
-      </div>
-      {/* Navigation Buttons */}
-      {/* <div>
-        <button className={styles.navButton} onClick={() => router.push("/student/schedule")}> Schedule</button>
-        <button className={styles.navButton} onClick={() => handleNavigation("/attorney/dashboard")}> Attorney</button>
-        <button className={styles.navButton} onClick={() => handleNavigation("/senate/dashboard")}> Senate</button>
-      </div> */}
-
-
+      <Footer />
 
     </div>
   );

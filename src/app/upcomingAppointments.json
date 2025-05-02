@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "student": "Hermon Metaferia",
+    "date": "March 25, 2025",
+    "time": "10:00 AM",
+    "reason": "Scholarship consultation"
+  },
+  {
+    "id": 2,
+    "student": "Nahome Woinu",
+    "date": "March 26, 2025",
+    "time": "1:30 PM",
+    "reason": "Housing concern"
+  },
+  {
+    "id": 3,
+    "student": "Kidus Girmay",
+    "date": "March 27, 2025",
+    "time": "9:00 AM",
+    "reason": "Legal documentation review"
+  }
+]
