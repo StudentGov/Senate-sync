@@ -7,6 +7,7 @@ import logo from '../app/assets/purpleLogo.png'
 import Card from "./components/card/Card";
 import Navbar from "./components/navBar/navBar";
 import Footer from './components/footer'
+import { SignInButton } from './components/SignInButton';
 
 export default function HomePage() {
   const router = useRouter();
@@ -69,6 +70,7 @@ export default function HomePage() {
       </div>
       {/* Footer */}
       <Footer />
+      <SignInButton />
 
     </div>
   );
