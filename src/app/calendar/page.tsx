@@ -8,6 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { EventClickArg } from "@fullcalendar/core";
 
 import StudentGovernmentFooter from "@/app/components/footer";
+import "./calendar.css";
 
 interface EventDetails {
   title: string;
@@ -22,10 +23,25 @@ interface PopoverPosition {
   left: number;
 }
 
+interface CalendarEvent {
+  id: string;
+  title: string;
+  description?: string;
+  location?: string;
+  start: string;
+  end?: string;
+  allDay?: boolean;
+  backgroundColor?: string;
+  borderColor?: string;
+  textColor?: string;
+}
+
 export default function CalendarPage() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventDetails | null>(null);
   const [popoverPosition, setPopoverPosition] = useState<PopoverPosition>({ top: 0, left: 0 });
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   const handleEventClick = (clickInfo: EventClickArg) => {
@@ -34,8 +50,8 @@ export default function CalendarPage() {
     
     setSelectedEvent({
       title: event.title,
-      start: event.start ? event.start.toLocaleString() : "",
-      end: event.end ? event.end.toLocaleString() : "",
+      start: event.allDay ? "All day" : (event.start ? event.start.toLocaleString() : ""),
+      end: event.allDay ? "" : (event.end ? event.end.toLocaleString() : ""),
       description: event.extendedProps.description || "No description available",
       location: event.extendedProps.location || "No location specified",
     });
@@ -49,6 +65,33 @@ export default function CalendarPage() {
     
     setIsPopoverOpen(true);
   };
+
+  // Fetch events from the database
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/get-events");
+        if (response.ok) {
+          const data = await response.json();
+          // Ensure all event IDs are strings
+          const formattedEvents = data.map((event: any) => ({
+            ...event,
+            id: String(event.id),
+          }));
+          setEvents(formattedEvents);
+        } else {
+          console.error("Failed to fetch events");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   // Close popover when clicking outside
   useEffect(() => {
@@ -68,49 +111,69 @@ export default function CalendarPage() {
   }, [isPopoverOpen]);
 
   return (
-    <main className="w-full">
-      <section className="mx-auto max-w-7xl px-4 py-8">
-        <h1 className="text-2xl font-semibold mb-4">Calendar</h1>
-        <div className="bg-white rounded-md shadow p-4">
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="dayGridMonth"
-            headerToolbar={{
-              left: "prev,next today",
-              center: "title",
-              right: "dayGridMonth,timeGridWeek,timeGridDay",
-            }}
-            height="auto"
-            selectable={true}
-            selectMirror={true}
-            dayMaxEvents={true}
-            eventClick={handleEventClick}
-            events={[
-              // sample events; replace with your data or API
-              {
-                title: "Student Government Meeting",
-                start: new Date().toISOString().slice(0, 10) + "T14:00:00",
-                end: new Date().toISOString().slice(0, 10) + "T16:00:00",
-                description: "Monthly student government meeting to discuss campus initiatives.",
-                location: "Centennial Student Union, Room 280",
-              },
-              {
-                title: "Campus Event",
-                start: new Date(Date.now() + 86400000 * 3).toISOString().slice(0, 10) + "T18:00:00",
-                end: new Date(Date.now() + 86400000 * 3).toISOString().slice(0, 10) + "T20:00:00",
-                description: "Annual campus social event for all students.",
-                location: "Main Quad",
-              },
-            ]}
-            dateClick={(info) => {
-              // handle day clicks if needed
-              // console.log("dateClick", info.dateStr);
-            }}
-            select={(info) => {
-              // handle drag-select if needed
-              // console.log("select", info.startStr, info.endStr);
-            }}
-          />
+    <main className="w-full min-h-screen flex flex-col">
+      <section className="flex-1 mx-auto w-full max-w-[95rem] px-4 py-8">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Calendar</h1>
+          <button className="px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-colors flex items-center gap-2">
+            <span className="text-lg">+</span> Add Event
+          </button>
+        </div>
+        
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 calendar-container">
+          {loading ? (
+            <div className="flex justify-center items-center" style={{ minHeight: '60vh' }}>
+              <p className="text-gray-500">Loading events...</p>
+            </div>
+          ) : (
+            <FullCalendar
+              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+              initialView="dayGridMonth"
+              headerToolbar={{
+                left: "prev,next",
+                center: "title",
+                right: "dayGridMonth,timeGridWeek",
+              }}
+              height="auto"
+              selectable={true}
+              selectMirror={true}
+              dayMaxEvents={false}
+              eventClick={handleEventClick}
+              eventDisplay="block"
+              displayEventTime={true}
+              expandRows={true}
+              slotMinTime="07:00:00"
+              slotMaxTime="22:00:00"
+              slotDuration="00:30:00"
+              scrollTime="08:00:00"
+              allDaySlot={true}
+              dayMaxEventRows={2}
+              nowIndicator={true}
+              eventTimeFormat={{
+                hour: 'numeric',
+                minute: '2-digit',
+                meridiem: 'short',
+                hour12: true
+              }}
+              slotLabelFormat={{
+                hour: 'numeric',
+                minute: '2-digit',
+                meridiem: 'short',
+                hour12: true
+              }}
+              events={events}
+              eventContent={(eventInfo) => {
+                return (
+                  <div className="fc-event-main-frame">
+                    <div className="fc-event-time">{eventInfo.timeText}</div>
+                    <div className="fc-event-title-container">
+                      <div className="fc-event-title fc-sticky">{eventInfo.event.title}</div>
+                    </div>
+                  </div>
+                );
+              }}
+            />
+          )}
         </div>
       </section>
 

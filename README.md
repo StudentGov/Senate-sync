@@ -33,13 +33,21 @@ This project leverages the power of **Next.js** for a modern, server-rendered, a
 - Secure voting mechanisms to maintain confidentiality.
 - Transparent vote counting and result display.
 - Speaker dashboard for managing the display of votes.
+
+### Events Calendar
+- Interactive calendar with month and week views.
+- Colored event blocks with customizable styling.
+- Click events to view detailed information in a popover.
+- Database-backed event management.
+- Fixed height design for consistent user experience.
+
 ---
 
 ## Tech Stack
 
 - **Framework:** [Next.js](https://nextjs.org) for server-rendered React applications.
 - **Authentication & Authorization:** [Clerk](https://clerk.dev) for role-based access control.
-- **Database:** TBD.
+- **Database:** [Turso](https://turso.tech) (libSQL) for serverless SQLite.
 - **Frontend:** React with Tailwind CSS for styling.
 - **Backend:** Next.js API Routes.
 ---
@@ -82,13 +90,33 @@ To get started with the development environment:
 
 5. **Open** [http://localhost:3000](http://localhost:3000) or where it says it is being deployed on localy with your browser to see the result. The application supports hot-reloading, so changes reflect in real-time.
 
+6. **Seed sample calendar events (optional):**
+   ```bash
+   node src/app/db-test-script/seed-events.js
+   ```
+   This will populate the Events table with 10 colorful sample events for the current month.
+
 ---
 
 ## Directory Structure
 
 ```plaintext
-will be displayed when we organize.
+Sync-Government/
+├── db_schema/                    # Database schema definitions
+│   ├── README.md                # Database schema documentation
+│   ├── users-events-schema.sql  # Users, Events, Hours tables
+│   ├── Schedule-schema.sql      # Attorney appointment scheduling
+│   └── voting-schema.sql        # Senate voting system
+├── src/
+│   ├── app/
+│   │   ├── api/                 # Next.js API routes
+│   │   ├── calendar/            # Calendar page and components
+│   │   └── components/          # Reusable React components
+│   └── db.js                    # Database connection setup
+└── ...
 ```
+
+For detailed database schema information, see [db_schema/README.md](db_schema/README.md).
 
 ---
 

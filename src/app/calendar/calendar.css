@@ -1,0 +1,392 @@
+/* FullCalendar Custom Styling */
+
+/* Calendar Container */
+.calendar-container {
+  min-height: 70vh;
+  height: auto;
+}
+
+.fc {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+/* Minimal all-day section in week view */
+.fc-timeGridWeek-view .fc-daygrid-body {
+  height: 3.75rem !important;
+  max-height: 3.75rem !important;
+  min-height: 3.75rem !important;
+  overflow: hidden !important;
+}
+
+.fc-timeGridWeek-view .fc-daygrid-day-frame {
+  min-height: 3.75rem !important;
+  padding: 0.25rem !important;
+  overflow: hidden !important;
+}
+
+.fc-timeGridWeek-view .fc-daygrid-day-events {
+  min-height: 2.5rem;
+  max-height: 2.5rem;
+  overflow: hidden !important;
+}
+
+.fc-timeGridWeek-view .fc-timegrid-divider {
+  padding: 0 !important;
+  height: 2px;
+}
+
+.fc-timeGridWeek-view .fc-daygrid-event {
+  margin: 1px 2px !important;
+  padding: 2px 4px !important;
+  font-size: 0.7rem !important;
+  line-height: 1.1 !important;
+}
+
+.fc-timeGridWeek-view .fc-daygrid-event-harness {
+  margin-bottom: 1px;
+}
+
+/* Style the all-day text label to match rest of calendar */
+.fc-timeGridWeek-view .fc-timegrid-axis {
+  text-align: center !important;
+}
+
+.fc-timeGridWeek-view .fc-timegrid-axis-chunk {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.fc-timeGridWeek-view .fc-timegrid-axis-cushion {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+  padding: 0.25rem;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100%;
+}
+
+/* Prevent scrolling in all-day area */
+.fc-timeGridWeek-view .fc-timegrid-axis-frame {
+  overflow: hidden !important;
+}
+
+.fc-timeGridWeek-view .fc-scroller-harness {
+  overflow: hidden !important;
+}
+
+.fc-timeGridWeek-view .fc-daygrid-body .fc-scroller {
+  overflow: hidden !important;
+}
+
+/* Month view - normal height */
+.fc-dayGridMonth-view .fc-daygrid-body {
+  height: auto;
+}
+
+/* Make day cells more square in month view */
+.fc-dayGridMonth-view .fc-daygrid-day {
+  aspect-ratio: 1 / 1;
+}
+
+.fc-dayGridMonth-view .fc-daygrid-day-frame {
+  min-height: 12vh;
+}
+
+/* Header Styling */
+.fc .fc-toolbar-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.fc .fc-button {
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-transform: capitalize;
+  transition: all 0.2s;
+}
+
+.fc .fc-button:hover {
+  background-color: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: #565458;
+  border-color: #565458;
+  color: white;
+}
+
+.fc .fc-button:focus {
+  box-shadow: 0 0 0 3px rgba(86, 84, 88, 0.1);
+}
+
+/* Day Header Styling */
+.fc .fc-col-header-cell {
+  background-color: #fafafa;
+  border-color: #e5e7eb;
+  padding: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Day Cells */
+.fc .fc-daygrid-day {
+  background-color: white;
+  transition: background-color 0.2s;
+}
+
+.fc .fc-daygrid-day:hover {
+  background-color: #f9fafb;
+}
+
+.fc .fc-daygrid-day-frame {
+  min-height: 10vh;
+  padding: 0.25rem;
+}
+
+.fc .fc-daygrid-day-top {
+  flex-direction: row;
+  padding: 0.5rem;
+}
+
+.fc .fc-daygrid-day-number {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Today's Date */
+.fc .fc-day-today {
+  background-color: #fef3c7 !important;
+}
+
+.fc .fc-day-today .fc-daygrid-day-number {
+  color: #92400e;
+  font-weight: 700;
+}
+
+/* Other Month Days */
+.fc .fc-day-other .fc-daygrid-day-number {
+  color: #d1d5db;
+}
+
+/* Event Styling */
+.fc-event {
+  border-radius: 4px;
+  border-left-width: 4px !important;
+  padding: 2px 6px;
+  margin-bottom: 2px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fc-event:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fc-event-title {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.fc-event-time {
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+/* Remove default event dots */
+.fc .fc-daygrid-event-dot {
+  display: none;
+}
+
+/* Event Container */
+.fc .fc-daygrid-event-harness {
+  margin-top: 2px;
+}
+
+/* More Link */
+.fc .fc-daygrid-more-link {
+  color: #565458;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.fc .fc-daygrid-more-link:hover {
+  background-color: #f3f4f6;
+}
+
+/* Grid Lines */
+.fc .fc-scrollgrid {
+  border-color: #e5e7eb;
+}
+
+.fc .fc-scrollgrid td,
+.fc .fc-scrollgrid th {
+  border-color: #e5e7eb;
+}
+
+/* Week View Styling */
+.fc .fc-timegrid-slot {
+  height: 3rem;
+}
+
+.fc .fc-timegrid-slot-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  padding: 0 0.5rem;
+}
+
+.fc .fc-timegrid-axis {
+  width: 5rem;
+}
+
+.fc-timegrid-event {
+  border-radius: 4px;
+}
+
+.fc .fc-timegrid-event-harness {
+  margin-right: 2px;
+}
+
+/* Week view column headers */
+.fc .fc-timegrid-col-frame {
+  background-color: white;
+}
+
+/* All-day section in week view */
+.fc .fc-timegrid-axis-chunk {
+  text-align: center;
+}
+
+.fc .fc-timegrid-slot-label-cushion {
+  padding: 0.25rem;
+}
+
+/* Week view - remove scrolling */
+.fc-timeGridWeek-view .fc-scroller {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.fc-timeGridWeek-view .fc-scroller-liquid {
+  overflow: visible !important;
+}
+
+.fc-timeGridWeek-view .fc-scroller-liquid-absolute {
+  overflow: visible !important;
+  position: relative !important;
+}
+
+.fc-timeGridWeek-view .fc-timegrid-body {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Popover z-index fix */
+.fc .fc-popover {
+  z-index: 999;
+}
+
+/* Remove outline on focus */
+.fc-event:focus {
+  outline: none;
+}
+
+/* Scrollbar styling for popover */
+.fc-more-popover {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar */
+.fc-more-popover::-webkit-scrollbar {
+  width: 6px;
+}
+
+.fc-more-popover::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.fc-more-popover::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.fc-more-popover::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .calendar-container {
+    min-height: 50vh;
+  }
+
+  .fc .fc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .fc .fc-toolbar-title {
+    font-size: 1.25rem;
+  }
+  
+  .fc .fc-daygrid-day-frame {
+    min-height: 6vh;
+  }
+  
+  .fc-event {
+    font-size: 0.75rem;
+  }
+  
+  .fc-timeGridWeek-view .fc-scroller {
+    max-height: 50vh;
+  }
+}
+
+@media (min-width: 1440px) {
+  .calendar-container {
+    min-height: 70vh;
+  }
+
+  .fc .fc-daygrid-day-frame {
+    min-height: 10vh;
+  }
+  
+  .fc-timeGridWeek-view .fc-scroller {
+    max-height: 60vh;
+  }
+}
+
+/* Prevent horizontal scrolling */
+.fc-view-harness {
+  overflow-x: hidden;
+}
+
+.fc .fc-scroller {
+  overflow-x: hidden !important;
+  overflow-y: auto;
+}
+
