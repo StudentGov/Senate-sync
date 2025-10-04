@@ -1,44 +1,29 @@
-"use client";
-import Image from "next/image";
-import styles from './navBar.module.css'
-import purpleLogo from '../../assets/purpleImage.png'
-import whiteLogo from '../../assets/whiteImage.png'
-import { useRouter,usePathname } from "next/navigation";
-import { useUser, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 
-export default function Navbar() {
-    const router = useRouter();
-    const pathname = usePathname()
-    const { user } = useUser(); // Get user info from Clerk
-    const isHome = pathname === '/'
-    const showButton = pathname !== '/auth/sign-in'
-
+// Figma-based NavBar for Student Government
+export default function NavBar() {
   return (
-    <div className={`${styles.navBar} ${isHome ? styles.whiteBg : styles.purpleBg}`}>
-      {/* Home icon */}
-        <div onClick={() => router.push('/')}>
-          <svg
-            className={styles.homeIcon}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            style={{ color: isHome ? '#3f3f3f' : '#FFFFFF'}} // purple or white
-          >
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-          </svg>
-        </div>
-        <div style={{height: '40px', width: '1px', backgroundColor: '#ccc', margin: '0 16px', marginTop:'5px', flexShrink: 0}}
+    <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-20 relative z-10">
+      <div className="flex items-center h-16">
+        <a href="/">
+          <img
+            alt="MSU Logo"
+            className="h-32 w-32 object-contain"
+            src="https://www.figma.com/api/mcp/asset/dd431b26-5c8c-4155-9e1b-a8e7bc3d897c"
           />
-      <Image src={isHome? whiteLogo: purpleLogo} alt="MNSU Logo" className={styles.img} onClick={() => router.push('/')}/>
-      {/* Profile Section at Bottom  */}
-      <div className={styles.profileSection}>
-        <SignedIn>
-          <p>Welcome, {user?.firstName}.</p>
-          <UserButton />
-        </SignedIn>
-        <SignedOut>
-          {showButton && (<button className={styles.loginBtn} onClick={() => router.push("/auth/sign-in")}>Sign In</button>)}
-        </SignedOut>
+        </a>
       </div>
-    </div>
+      <nav className="flex gap-10 text-white font-kanit text-base">
+        <a href="#calendar" className="hover:text-[#febd11]">Calendar</a>
+        <a href="#attorney" className="hover:text-[#febd11]">Attorney</a>
+        <a href="#resources" className="hover:text-[#febd11]">Resources</a>
+        <a href="#files" className="hover:text-[#febd11]">Files</a>
+      </nav>
+      <a
+        href="/auth/sign-in"
+        className="bg-[#febd11] text-white rounded-lg px-6 py-2 font-kanit hover:bg-[#e6a900] transition"
+      >
+        Sign In
+      </a>
+    </header>
   );
 }
