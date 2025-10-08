@@ -5,7 +5,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { EventClickArg } from "@fullcalendar/core";
+import { EventClickArg, CalendarApi } from "@fullcalendar/core";
 
 import StudentGovernmentFooter from "@/app/components/footer";
 import "./calendar.css";
@@ -43,10 +43,13 @@ export default function CalendarPage() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const calendarRef = useRef<FullCalendar>(null);
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     const event = clickInfo.event;
     const jsEvent = clickInfo.jsEvent;
+    const calendarApi = clickInfo.view.calendar;
+    const currentView = calendarApi.view.type;
     
     setSelectedEvent({
       title: event.title,
@@ -56,12 +59,22 @@ export default function CalendarPage() {
       location: event.extendedProps.location || "No location specified",
     });
 
-    // Position the popover near the clicked event
+    // Position the popover based on the view
     const rect = (jsEvent.target as HTMLElement).getBoundingClientRect();
-    setPopoverPosition({
-      top: rect.bottom + window.scrollY + 5,
-      left: rect.left + window.scrollX,
-    });
+    
+    if (currentView === 'timeGridWeek') {
+      // For weekly view, position to the right of the event
+      setPopoverPosition({
+        top: rect.top + window.scrollY,
+        left: rect.right + window.scrollX + 10,
+      });
+    } else {
+      // For monthly view, position below the event
+      setPopoverPosition({
+        top: rect.bottom + window.scrollY + 5,
+        left: rect.left + window.scrollX,
+      });
+    }
     
     setIsPopoverOpen(true);
   };
@@ -127,16 +140,17 @@ export default function CalendarPage() {
             </div>
           ) : (
             <FullCalendar
+              ref={calendarRef}
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-              initialView="dayGridMonth"
+              initialView="timeGridWeek"
               headerToolbar={{
                 left: "prev,next",
                 center: "title",
-                right: "dayGridMonth,timeGridWeek",
+                right: "timeGridWeek,dayGridMonth",
               }}
               height="auto"
-              selectable={true}
-              selectMirror={true}
+              selectable={false}
+              selectMirror={false}
               dayMaxEvents={false}
               eventClick={handleEventClick}
               eventDisplay="block"
