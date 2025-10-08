@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS Users (
   id TEXT PRIMARY KEY,  -- Clerk user ID
   username VARCHAR(50) UNIQUE NOT NULL,
-  role TEXT NOT NULL CHECK (role IN ('admin','senator','coordinator')),
+  role TEXT NOT NULL CHECK (role IN ('admin','senator','coordinator','attorney','dev')),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

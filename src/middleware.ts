@@ -30,25 +30,29 @@ export default clerkMiddleware(async (auth, req) => {
   console.log("User Role from Session:", userRole);
 
   /**
-   * Super Admin Access Control:
-   * Super Admins are allowed to access all routes without restriction.
+   * Admin and Dev Access Control:
+   * Admins and Devs are allowed to access all routes without restriction.
    */
-  if (userRole === "super_admin") {
-    console.log("Super Admin Access Granted");
+  if (userRole === "admin" || userRole === "dev") {
+    console.log(`${userRole === "admin" ? "Admin" : "Dev"} Access Granted - Full Access`);
+    return NextResponse.next();
+  }
+
+  /**
+   * Coordinator Access Control:
+   * Coordinators have admin-level access.
+   */
+  if (userRole === "coordinator" && req.nextUrl.pathname.startsWith("/admin")) {
+    console.log("Coordinator Access Granted to Admin");
     return NextResponse.next();
   }
 
   /**
    * Attorney Access Control:
-   * Attorneys are allowed to access Student pages.
-   * This grants cross-role access for specific use cases.
+   * Attorneys can access attorney-specific routes.
    */
-  if (
-    isProtectedRoute(req) &&
-    req.nextUrl.pathname.startsWith("/student") &&
-    userRole === "attorney"
-  ) {
-    console.log("Attorney Access Granted to Student Page");
+  if (userRole === "attorney" && req.nextUrl.pathname.startsWith("/attorney")) {
+    console.log("Attorney Access Granted");
     return NextResponse.next();
   }
 
@@ -58,21 +62,20 @@ export default clerkMiddleware(async (auth, req) => {
    * Only users with the corresponding role can access these directories.
    */
   const roleBasedRoutes = {
-    student: "/student",
     attorney: "/attorney",
-    senate_member: "/senate",
-    senate_speaker: "/senate"
+    senator: "/senate",
+    coordinator: "/admin"
+    // Note: admin and dev have full access (handled above)
   };
 
   /**
    * Senate Access Control:
-   * Both senate_member and senate_speaker are allowed to access /senate.
-   * This grants shared access to the senate dashboard.
+   * Senators are allowed to access /senate.
    */
   if (
     isProtectedRoute(req) &&
     req.nextUrl.pathname.startsWith("/senate") &&
-    (userRole === "senate_member" || userRole === "senate_speaker")
+    userRole === "senator"
   ) {
     return NextResponse.next();
   }

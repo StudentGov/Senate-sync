@@ -11,12 +11,14 @@
 2. **Senate Voting System:**  
    Provides a secure and transparent platform for student government members to cast votes on motions, proposals, and resolutions. The system ensures role-based access control and accurate vote tallying.
 
-This project leverages the power of **Next.js** for a modern, server-rendered, and high-performance web application. We utilize **Clerk** for authentication and role-based access control, ensuring a secure user experience for all roles :
-- Student
-- Attorney
-- Senate Speaker
-- Senate Member
-- Super Admin
+This project leverages the power of **Next.js** for a modern, server-rendered, and high-performance web application. We utilize **Clerk** for authentication integrated with our database for role-based access control, ensuring a secure user experience for all roles:
+- **Admin** - Full system access
+- **Dev** - Full system access (developers)
+- **Coordinator** - Event coordination and admin access
+- **Senator** - Senate voting and proposals (default role)
+- **Attorney** - Legal appointment scheduling
+
+See [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md) for complete authentication and database integration details.
 
 ---
 
@@ -75,7 +77,24 @@ To get started with the development environment:
 
 3. **Set up environment variables:**
    - Create a `.env.local` file at the root of your project.
-   - Add necessary configuration variables as shown in `.env.example`.
+   - Add the following required variables:
+     ```bash
+     # Turso Database
+     TURSO_DATABASE_URL=libsql://your-database.turso.io
+     TURSO_AUTH_TOKEN=your-turso-token
+     
+     # Clerk Authentication
+     CLERK_SECRET_KEY=sk_test_your-key
+     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your-key
+     NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/sign-in
+     NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/sign-up
+     
+     # Pusher (Real-time updates)
+     NEXT_PUBLIC_PUSHER_APP_KEY=your-pusher-key
+     PUSHER_APP_ID=your-pusher-id
+     PUSHER_SECRET=your-pusher-secret
+     NEXT_PUBLIC_PUSHER_CLUSTER=us2
+     ```
 
 4. **Run the development server:**
    ```bash
@@ -88,13 +107,22 @@ To get started with the development environment:
    bun dev
    ```
 
-5. **Open** [http://localhost:3000](http://localhost:3000) or where it says it is being deployed on localy with your browser to see the result. The application supports hot-reloading, so changes reflect in real-time.
+5. **Open** [http://localhost:3000](http://localhost:3000) with your browser to see the result. The application supports hot-reloading, so changes reflect in real-time.
 
-6. **Seed sample calendar events (optional):**
-   ```bash
-   node src/app/db-test-script/seed-events.js
-   ```
-   This will populate the Events table with 10 colorful sample events for the current month.
+## Database Setup
+
+The database schema is automatically created when needed. All tables use foreign key constraints for referential integrity.
+
+**Tables:**
+- **Users** - Central user table (synced with Clerk)
+- **Events** - Calendar events
+- **Hours** - Time tracking
+- **Agendas, Options, Votes** - Voting system
+- **Availability, Appointments** - Attorney scheduling
+
+Users are automatically synced to the database on their first login. New users receive the "senator" role by default.
+
+For complete database and authentication details, see [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md).
 
 ---
 
@@ -110,13 +138,23 @@ Sync-Government/
 ├── src/
 │   ├── app/
 │   │   ├── api/                 # Next.js API routes
+│   │   │   ├── assign-default-role/  # User sync endpoint
+│   │   │   ├── update-user-role/     # Role management
+│   │   │   └── ...
+│   │   ├── auth/                # Authentication pages
 │   │   ├── calendar/            # Calendar page and components
-│   │   └── components/          # Reusable React components
+│   │   ├── components/          # Reusable React components
+│   │   └── hooks/
+│   │       └── useAssignRole.ts # Auto-assign role hook
+│   ├── middleware.ts            # Route protection
 │   └── db.js                    # Database connection setup
+├── IMPLEMENTATION_SUMMARY.md    # Clerk + Database integration guide
 └── ...
 ```
 
-For detailed database schema information, see [db_schema/README.md](db_schema/README.md).
+**Key Documentation:**
+- [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md) - Complete Clerk authentication and database integration guide
+- [db_schema/README.md](db_schema/README.md) - Database schema details
 
 ---
 
