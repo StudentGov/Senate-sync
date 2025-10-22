@@ -8,36 +8,18 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { EventClickArg, CalendarApi } from "@fullcalendar/core";
 
 import StudentGovernmentFooter from "@/app/components/footer";
+import AddEventModal from "@/app/components/add-event-modal";
+import { EventDetails, CalendarEvent } from "@/types/calendar";
 import "./calendar.css";
-
-interface EventDetails {
-  title: string;
-  start: string;
-  end?: string;
-  description?: string;
-  location?: string;
-}
 
 interface PopoverPosition {
   top: number;
   left: number;
 }
 
-interface CalendarEvent {
-  id: string;
-  title: string;
-  description?: string;
-  location?: string;
-  start: string;
-  end?: string;
-  allDay?: boolean;
-  backgroundColor?: string;
-  borderColor?: string;
-  textColor?: string;
-}
-
 export default function CalendarPage() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventDetails | null>(null);
   const [popoverPosition, setPopoverPosition] = useState<PopoverPosition>({ top: 0, left: 0 });
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -50,6 +32,10 @@ export default function CalendarPage() {
     const jsEvent = clickInfo.jsEvent;
     const calendarApi = clickInfo.view.calendar;
     const currentView = calendarApi.view.type;
+    
+    console.log("Event clicked:", event.title);
+    console.log("Extended props:", event.extendedProps);
+    console.log("Location:", event.extendedProps.location);
     
     setSelectedEvent({
       title: event.title,
@@ -80,29 +66,31 @@ export default function CalendarPage() {
   };
 
   // Fetch events from the database
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/get-events");
-        if (response.ok) {
-          const data = await response.json();
-          // Ensure all event IDs are strings
-          const formattedEvents = data.map((event: any) => ({
-            ...event,
-            id: String(event.id),
-          }));
-          setEvents(formattedEvents);
-        } else {
-          console.error("Failed to fetch events");
-        }
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      } finally {
-        setLoading(false);
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/get-events");
+      if (response.ok) {
+        const data = await response.json();
+        console.log("API Response - First Event:", data[0]);
+        // Ensure all event IDs are strings
+        const formattedEvents = data.map((event: any) => ({
+          ...event,
+          id: String(event.id),
+        }));
+        console.log("Formatted Events - First Event:", formattedEvents[0]);
+        setEvents(formattedEvents);
+      } else {
+        console.error("Failed to fetch events");
       }
-    };
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchEvents();
   }, []);
 
@@ -128,7 +116,10 @@ export default function CalendarPage() {
       <section className="flex-1 mx-auto w-full max-w-[95rem] px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Calendar</h1>
-          <button className="px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-colors flex items-center gap-2">
+          <button 
+            onClick={() => setIsAddEventModalOpen(true)}
+            className="px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-colors flex items-center gap-2"
+          >
             <span className="text-lg">+</span> Add Event
           </button>
         </div>
@@ -301,6 +292,13 @@ export default function CalendarPage() {
           </div>
         </div>
       )}
+
+      {/* Add Event Modal */}
+      <AddEventModal
+        isOpen={isAddEventModalOpen}
+        onClose={() => setIsAddEventModalOpen(false)}
+        onEventAdded={fetchEvents}
+      />
 
       <StudentGovernmentFooter />
     </main>

@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS Users (
 
 -- Events table
 -- Calendar events created by users
+-- Colors are determined by event_type (see src/lib/eventTypes.ts)
 CREATE TABLE IF NOT EXISTS Events (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_by TEXT NOT NULL,  -- Clerk user ID
@@ -18,30 +19,33 @@ CREATE TABLE IF NOT EXISTS Events (
   end_time TIMESTAMP NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT,
+  location VARCHAR(255),
   is_all_day BOOLEAN DEFAULT FALSE,
-  color VARCHAR(9) CHECK (
-    color GLOB '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'
-    OR color GLOB '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'
+  event_type TEXT NOT NULL DEFAULT 'misc' CHECK (
+    event_type IN (
+      'senate_meeting',
+      'committee_meeting',
+      'office_hours',
+      'administrative_meeting',
+      'misc'
+    )
   ),
   FOREIGN KEY (created_by) REFERENCES Users(id) ON DELETE CASCADE
 );
 
 -- Hours table
--- Time tracking for users, optionally linked to events
+-- Time tracking for users
 CREATE TABLE IF NOT EXISTS Hours (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id TEXT NOT NULL,  -- Clerk user ID
-  event_id INTEGER,
   start_time TIMESTAMP NOT NULL,
   end_time TIMESTAMP NOT NULL,
   comments TEXT,
-  FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
-  FOREIGN KEY (event_id) REFERENCES Events(id) ON DELETE SET NULL
+  FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_events_created_by ON Events(created_by);
 CREATE INDEX IF NOT EXISTS idx_events_start_time ON Events(start_time);
 CREATE INDEX IF NOT EXISTS idx_hours_user_id ON Hours(user_id);
-CREATE INDEX IF NOT EXISTS idx_hours_event_id ON Hours(event_id);
 

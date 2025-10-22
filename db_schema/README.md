@@ -35,6 +35,7 @@ CREATE TABLE Events (
   end_time TIMESTAMP NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT,
+  location VARCHAR(255),
   color VARCHAR(9) CHECK (
     color GLOB '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'
     OR color GLOB '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'
@@ -42,6 +43,9 @@ CREATE TABLE Events (
   FOREIGN KEY (created_by) REFERENCES Users(id)
 );
 ```
+
+**Fields:**
+- `location` - Optional event location (venue name, address, or "Online/Virtual")
 
 **Color Format:**
 - Must be a hex color string
@@ -85,7 +89,12 @@ Users (1) ─────< (many) Hours
 - `Schedule-schema.sql` - Attorney appointment scheduling tables (with foreign keys to Users)
 - `voting-schema.sql` - Senate voting system tables (with foreign keys to Users)
 - `migration-add-user-fks.sql` - Migration script for existing databases
+- `migration-add-location.sql` - Migration to add location column to Events table
 - `MIGRATION_GUIDE.md` - Step-by-step migration instructions
+
+## Seed Scripts
+
+- `../scripts/seed-october-events.js` - JavaScript script to populate 10 sample events for October 2025 (includes locations and all-day events)
 
 ## Architecture Notes
 

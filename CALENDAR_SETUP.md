@@ -52,20 +52,29 @@ Creates a new event in the database. Requires authentication (Clerk userId).
 **Required Fields:**
 - `title`: string (max 255 characters)
 - `start_time`: ISO datetime string (e.g., "2025-10-15T14:00:00")
+- `event_type`: one of the following event types:
+  - `senate_meeting` - Senate Meeting (Purple)
+  - `committee_meeting` - Committee Meeting (Blue)
+  - `office_hours` - Office Hours (Green)
+  - `administrative_meeting` - Administrative Meeting (Orange)
+  - `misc` - Misc. (Yellow)
 
 **Optional Fields:**
 - `description`: string (text)
 - `end_time`: ISO datetime string
-- `color`: hex color string (e.g., "#93C5FD")
+- `location`: string (max 255 characters)
+- `is_all_day`: boolean (default: false)
 
 **Example Request:**
 ```json
 {
-  "title": "Team Meeting",
-  "description": "Monthly team sync",
+  "title": "Senate Meeting - Fall Session",
+  "description": "Monthly senate meeting to discuss campus policies",
   "start_time": "2025-10-15T14:00:00",
   "end_time": "2025-10-15T16:00:00",
-  "color": "#93C5FD"
+  "location": "Student Center Room 201",
+  "event_type": "senate_meeting",
+  "is_all_day": false
 }
 ```
 
@@ -73,7 +82,7 @@ Creates a new event in the database. Requires authentication (Clerk userId).
 - Uses authenticated Clerk user ID directly (no mapping needed)
 - Requires Clerk authentication via `auth()` middleware
 - Title must be a string (VARCHAR 255 max length)
-- Colors must be hex strings (e.g., "#93C5FD") - CHECK constraint enforces this
+- Event type determines the color automatically (see `src/lib/eventTypes.ts`)
 - Timestamps should be in ISO 8601 format
 
 ## Calendar Features
@@ -110,11 +119,13 @@ const response = await fetch("/api/add-event", {
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    title: "Team Meeting",
-    description: "Monthly team sync",
+    title: "Senate Meeting - Fall Session",
+    description: "Monthly senate meeting to discuss campus policies",
     start_time: "2025-10-20T10:00:00",
     end_time: "2025-10-20T11:00:00",
-    color: "#93C5FD",
+    location: "Student Center Room 201",
+    event_type: "senate_meeting",
+    is_all_day: false,
   }),
 });
 ```
@@ -122,29 +133,30 @@ const response = await fetch("/api/add-event", {
 Or directly in the database:
 
 ```sql
-INSERT INTO Events (created_by, start_time, end_time, title, description, color)
+INSERT INTO Events (created_by, start_time, end_time, title, description, location, event_type, is_all_day)
 VALUES (
-  1,                               -- User ID
+  'user_clerk_id',                 -- Clerk User ID
   '2025-10-20 10:00:00',          -- ISO timestamp for start
   '2025-10-20 11:00:00',          -- ISO timestamp for end
-  'Team Meeting',                  -- Event title
-  'Monthly team sync',             -- Description
-  '#93C5FD'                        -- Hex color string
+  'Senate Meeting - Fall Session', -- Event title
+  'Monthly senate meeting',        -- Description
+  'Student Center Room 201',       -- Location
+  'senate_meeting',                -- Event type
+  0                                -- is_all_day (0 = false, 1 = true)
 );
 ```
 
-## Color Scheme
+## Event Types and Colors
 
-Here are some pre-defined color combinations you can use:
+The system uses predefined event types that automatically determine colors:
 
-- **Blue**: `#93C5FD` / `#3B82F6` / `#1E40AF`
-- **Green**: `#86EFAC` / `#22C55E` / `#166534`
-- **Purple**: `#C4B5FD` / `#8B5CF6` / `#5B21B6`
-- **Orange**: `#FED7AA` / `#F97316` / `#9A3412`
-- **Red**: `#FCA5A5` / `#EF4444` / `#991B1B`
-- **Yellow**: `#FDE047` / `#EAB308` / `#713F12`
-- **Pink**: `#F0ABFC` / `#D946EF` / `#701A75`
-- **Teal**: `#99F6E4` / `#14B8A6` / `#134E4A`
+- **Senate Meeting** (`senate_meeting`): Purple (`#9D45FC` / `#7D37CA` / `#4A1B73`)
+- **Committee Meeting** (`committee_meeting`): Green (`#34C237` / `#28A02D` / `#1A5F1E`)
+- **Office Hours** (`office_hours`): Yellow (`#FFBF00` / `#CC9900` / `#805F00`)
+- **Administrative Meeting** (`administrative_meeting`): Red (`#FF3A3A` / `#CC2E2E` / `#8C1F1F`)
+- **Misc.** (`misc`): Blue (`#2E82E8` / `#2468BA` / `#1A4A8C`)
+
+Colors are stored in `src/lib/eventTypes.ts` and can be updated centrally for all events of that type.
 
 ## Troubleshooting
 

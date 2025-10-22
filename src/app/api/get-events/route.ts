@@ -1,15 +1,6 @@
 import { NextResponse } from "next/server";
 import { turso } from "@/db";
-
-// Helper function to darken a hex color for border
-function darkenColor(hex: string): string {
-  const color = hex.replace('#', '');
-  const num = parseInt(color, 16);
-  const r = Math.max(0, ((num >> 16) & 0xFF) - 40);
-  const g = Math.max(0, ((num >> 8) & 0xFF) - 40);
-  const b = Math.max(0, (num & 0xFF) - 40);
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
-}
+import { getEventTypeConfig, isValidEventType, type EventType } from "@/lib/eventTypes";
 
 export async function GET(req: Request) {
   try {
@@ -49,6 +40,19 @@ export async function GET(req: Request) {
           end = endTime.split(' ')[0];
         }
       }
+
+      // Get colors from event type
+      const eventType = row.event_type as string;
+      let backgroundColor = "#2E82E8"; // Default misc blue
+      let borderColor = "#2468BA";
+      let textColor = "#1A4A8C";
+
+      if (eventType && isValidEventType(eventType)) {
+        const config = getEventTypeConfig(eventType as EventType);
+        backgroundColor = config.backgroundColor;
+        borderColor = config.borderColor;
+        textColor = config.textColor;
+      }
       
       return {
         id: String(row.id),
@@ -57,13 +61,15 @@ export async function GET(req: Request) {
         start,
         end,
         allDay: isAllDay,
-        backgroundColor: row.color || "#93C5FD",
-        borderColor: row.color ? darkenColor(String(row.color)) : "#3B82F6",
-        textColor: "#1E40AF",
+        backgroundColor,
+        borderColor,
+        textColor,
         extendedProps: {
           created_by: row.created_by,
           description: row.description || "",
+          location: row.location || "",
           is_all_day: isAllDay,
+          event_type: eventType || "misc",
         }
       };
     });
