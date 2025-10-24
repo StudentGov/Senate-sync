@@ -25,15 +25,18 @@ export default function RedirectPage() {
 
       // Redirect users to their respective dashboards based on role
       switch (userRole) {
+        case "admin":
+        case "dev":
+          router.replace("/admin/dashboard");
+          break;
         case "attorney":
           router.replace("/attorney/dashboard");
           break;
-        case "senate_member":
-        case "senate_speaker":
+        case "senator":
           router.replace("/senate/dashboard");
           break;
-        case "student":
-          router.replace("/student/dashboard");
+        case "coordinator":
+          router.replace("/admin/dashboard");
           break;
         default:
           router.replace("/unauthorized"); // Redirect if no valid role is found

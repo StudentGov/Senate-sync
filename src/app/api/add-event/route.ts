@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { turso } from "@/db";
 import { auth } from "@clerk/nextjs/server";
+import { isValidEventType, type EventType } from "@/lib/eventTypes";
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,7 +16,8 @@ export async function POST(req: NextRequest) {
       description,
       start_time,
       end_time,
-      color,
+      event_type,
+      location,
       is_all_day,
     } = await req.json();
 
@@ -30,16 +32,19 @@ export async function POST(req: NextRequest) {
     // Users table uses Clerk ID as primary key
     console.log(`📝 Using Clerk user ID: ${userId}`);
 
-    // Ensure color is in hex format
-    let hexColor = color || "#93C5FD";
-    if (typeof hexColor === 'string' && !hexColor.startsWith('#')) {
-      hexColor = `#${hexColor}`;
-    }
-
     // Validate required fields
     if (!title || title.length > 255) {
       return NextResponse.json(
         { error: "Title is required and must be 255 characters or less" },
+        { status: 400 }
+      );
+    }
+
+    // Validate event type
+    const eventType: EventType = event_type || "misc";
+    if (!isValidEventType(eventType)) {
+      return NextResponse.json(
+        { error: `Invalid event type. Must be one of: senate_meeting, committee_meeting, office_hours, administrative_meeting, misc` },
         { status: 400 }
       );
     }
@@ -55,9 +60,10 @@ export async function POST(req: NextRequest) {
           end_time,
           title,
           description,
+          location,
           is_all_day,
-          color
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+          event_type
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `,
       args: [
         userId,  // Clerk user ID (TEXT)
@@ -65,8 +71,9 @@ export async function POST(req: NextRequest) {
         end_time || null,
         String(title),
         description || null,
+        location || null,
         isAllDay,
-        hexColor,
+        eventType,
       ],
     });
 

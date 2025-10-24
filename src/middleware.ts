@@ -30,25 +30,20 @@ export default clerkMiddleware(async (auth, req) => {
   console.log("User Role from Session:", userRole);
 
   /**
-   * Super Admin Access Control:
-   * Super Admins are allowed to access all routes without restriction.
+   * Admin Access Control:
+   * Admins are allowed to access all routes without restriction.
    */
-  if (userRole === "super_admin") {
-    console.log("Super Admin Access Granted");
+  if (userRole === "admin") {
+    console.log("Admin Access Granted - Full Access");
     return NextResponse.next();
   }
 
   /**
    * Attorney Access Control:
-   * Attorneys are allowed to access Student pages.
-   * This grants cross-role access for specific use cases.
+   * Attorneys can access attorney-specific routes.
    */
-  if (
-    isProtectedRoute(req) &&
-    req.nextUrl.pathname.startsWith("/student") &&
-    userRole === "attorney"
-  ) {
-    console.log("Attorney Access Granted to Student Page");
+  if (userRole === "attorney" && req.nextUrl.pathname.startsWith("/attorney")) {
+    console.log("Attorney Access Granted");
     return NextResponse.next();
   }
 
@@ -58,21 +53,20 @@ export default clerkMiddleware(async (auth, req) => {
    * Only users with the corresponding role can access these directories.
    */
   const roleBasedRoutes = {
-    student: "/student",
     attorney: "/attorney",
-    senate_member: "/senate",
-    senate_speaker: "/senate"
+    senator: "/senate",
+    coordinator: "/coordinator"
+    // Note: admin has full access (handled above)
   };
 
   /**
    * Senate Access Control:
-   * Both senate_member and senate_speaker are allowed to access /senate.
-   * This grants shared access to the senate dashboard.
+   * Senators are allowed to access /senate.
    */
   if (
     isProtectedRoute(req) &&
     req.nextUrl.pathname.startsWith("/senate") &&
-    (userRole === "senate_member" || userRole === "senate_speaker")
+    userRole === "senator"
   ) {
     return NextResponse.next();
   }

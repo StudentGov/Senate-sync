@@ -1,35 +1,55 @@
 import { clerkClient } from "@clerk/clerk-sdk-node";
 import { NextResponse } from "next/server";
+import { turso } from "@/db";
 
 /**
- * GET API to fetch a list of all users from Clerk with pagination support.
- * Fetches all users in batches of 100 (Clerk's max limit).
+ * GET API to fetch a list of all users from the database.
+ * Enriches database data with Clerk user information (name, email).
+ * The database Users table is now the source of truth for user roles.
  */
 export async function GET() {
   try {
-    const allUsers = [];
-    let offset = 0;
-    const limit = 100;
+    // Fetch all users from the database
+    const dbResult = await turso.execute({
+      sql: "SELECT id, username, role, created_at, updated_at FROM Users ORDER BY created_at DESC",
+      args: [],
+    });
 
-    while (true) {
-      const response = await clerkClient.users.getUserList({ limit, offset });
-      allUsers.push(...response.data);
+    const dbUsers = dbResult.rows;
 
-      if (response.data.length < limit) {
-        break; // No more users to fetch
-      }
-
-      offset += limit;
-    }
-
-    // Format the user data for the frontend
-    const userList = allUsers.map((user) => ({
-      id: user.id,
-      firstName: user.firstName || "N/A",
-      lastName: user.lastName || "N/A",
-      email: user.emailAddresses[0]?.emailAddress,
-      role: user.publicMetadata?.role || "No role",
-    }));
+    // Fetch corresponding Clerk data for each user
+    const userList = await Promise.all(
+      dbUsers.map(async (dbUser) => {
+        try {
+          // Fetch user details from Clerk
+          const clerkUser = await clerkClient.users.getUser(dbUser.id as string);
+          
+          return {
+            id: dbUser.id,
+            username: dbUser.username,
+            firstName: clerkUser.firstName || "N/A",
+            lastName: clerkUser.lastName || "N/A",
+            email: clerkUser.emailAddresses[0]?.emailAddress || "N/A",
+            role: dbUser.role, // Role from database (source of truth)
+            created_at: dbUser.created_at,
+            updated_at: dbUser.updated_at,
+          };
+        } catch (clerkError) {
+          // If user exists in DB but not in Clerk, return DB data only
+          console.warn(`User ${dbUser.id} found in database but not in Clerk`);
+          return {
+            id: dbUser.id,
+            username: dbUser.username,
+            firstName: "N/A",
+            lastName: "N/A",
+            email: "N/A",
+            role: dbUser.role,
+            created_at: dbUser.created_at,
+            updated_at: dbUser.updated_at,
+          };
+        }
+      })
+    );
 
     return NextResponse.json(userList);
   } catch (error) {

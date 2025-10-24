@@ -35,6 +35,7 @@ CREATE TABLE Events (
   end_time TIMESTAMP NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT,
+  location VARCHAR(255),
   color VARCHAR(9) CHECK (
     color GLOB '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'
     OR color GLOB '#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]'
@@ -42,6 +43,9 @@ CREATE TABLE Events (
   FOREIGN KEY (created_by) REFERENCES Users(id)
 );
 ```
+
+**Fields:**
+- `location` - Optional event location (venue name, address, or "Online/Virtual")
 
 **Color Format:**
 - Must be a hex color string
@@ -81,32 +85,48 @@ Users (1) ─────< (many) Hours
 
 ## Schema Files
 
-- `users-events-schema.sql` - User management, calendar events, and hours tracking (NEW)
-- `Schedule-schema.sql` - Attorney appointment scheduling tables
-- `voting-schema.sql` - Senate voting system tables
+- `users-events-schema.sql` - User management (with Clerk integration), calendar events, and hours tracking
+- `Schedule-schema.sql` - Attorney appointment scheduling tables (with foreign keys to Users)
+- `voting-schema.sql` - Senate voting system tables (with foreign keys to Users)
+- `migration-add-user-fks.sql` - Migration script for existing databases
+- `migration-add-location.sql` - Migration to add location column to Events table
+- `MIGRATION_GUIDE.md` - Step-by-step migration instructions
+
+## Seed Scripts
+
+- `../scripts/seed-october-events.js` - JavaScript script to populate 10 sample events for October 2025 (includes locations and all-day events)
 
 ## Architecture Notes
 
 ### User ID Strategy
 
-✅ **Consistent approach across all tables:**
+✅ **Implemented: Clerk-Database Integration**
 
-All tables use Clerk user IDs (TEXT) for user references:
-- **New Tables**: `Users.id TEXT PRIMARY KEY`, `Events.created_by TEXT`, `Hours.user_id TEXT`
-- **Existing Tables**: `attorney_id TEXT`, `voter_id VARCHAR(255)`, `student_id TEXT`
+All tables now use Clerk user IDs (TEXT) with foreign key constraints to the Users table:
+
+**Users Table (Central):**
+- `Users.id TEXT PRIMARY KEY` - Clerk user ID
+- `Users.username VARCHAR(50)` - Extracted from email
+- `Users.role TEXT` - Source of truth for user roles
+
+**Foreign Key References:**
+- ✅ `Events.created_by` → `Users(id)` ON DELETE CASCADE
+- ✅ `Hours.user_id` → `Users(id)` ON DELETE CASCADE
+- ✅ `Agendas.speaker_id` → `Users(id)` ON DELETE CASCADE
+- ✅ `Votes.voter_id` → `Users(id)` ON DELETE CASCADE
+- ✅ `Availability.attorney_id` → `Users(id)` ON DELETE CASCADE
+- ✅ `Availability.booked_by_student_id` → `Users(id)` ON DELETE SET NULL
+- ✅ `Appointments.student_id` → `Users(id)` ON DELETE CASCADE
 
 **Benefits:**
-- No mapping needed between systems
-- Direct foreign key relationships
-- Consistent with existing architecture
-- Simple to understand and maintain
+- ✅ Referential integrity enforced at database level
+- ✅ Automatic cascade deletes for data consistency
+- ✅ Database as source of truth for roles
+- ✅ Reduced Clerk API calls for better performance
+- ✅ Users auto-synced on login
 
-**Future Migration (Optional):**
-To eliminate redundant name storage in existing tables:
-1. Add Users table entries for all Clerk users
-2. Update existing tables to use foreign keys to Users table
-3. Remove redundant `*_name` columns (attorney_name, voter_name, etc.)
-4. Query user details from Users table instead
+**Implementation Details:**
+See `CLERK_DATABASE_INTEGRATION.md` and `MIGRATION_GUIDE.md` for complete documentation.
 
 ## Notes
 
