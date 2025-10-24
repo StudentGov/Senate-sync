@@ -30,20 +30,11 @@ export default clerkMiddleware(async (auth, req) => {
   console.log("User Role from Session:", userRole);
 
   /**
-   * Admin and Dev Access Control:
-   * Admins and Devs are allowed to access all routes without restriction.
+   * Admin Access Control:
+   * Admins are allowed to access all routes without restriction.
    */
-  if (userRole === "admin" || userRole === "dev") {
-    console.log(`${userRole === "admin" ? "Admin" : "Dev"} Access Granted - Full Access`);
-    return NextResponse.next();
-  }
-
-  /**
-   * Coordinator Access Control:
-   * Coordinators have admin-level access.
-   */
-  if (userRole === "coordinator" && req.nextUrl.pathname.startsWith("/admin")) {
-    console.log("Coordinator Access Granted to Admin");
+  if (userRole === "admin") {
+    console.log("Admin Access Granted - Full Access");
     return NextResponse.next();
   }
 
@@ -64,8 +55,8 @@ export default clerkMiddleware(async (auth, req) => {
   const roleBasedRoutes = {
     attorney: "/attorney",
     senator: "/senate",
-    coordinator: "/admin"
-    // Note: admin and dev have full access (handled above)
+    coordinator: "/coordinator"
+    // Note: admin has full access (handled above)
   };
 
   /**

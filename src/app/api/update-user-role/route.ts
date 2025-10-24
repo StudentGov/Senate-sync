@@ -1,20 +1,43 @@
 import { clerkClient } from "@clerk/clerk-sdk-node";
 import { NextResponse } from "next/server";
 import { turso } from "@/db";
+import { auth } from "@clerk/nextjs/server";
 
 /**
  * POST API to manually assign a role to a user.
  * This API is intended for administrative actions to modify user roles.
+ * Only admins can update user roles.
  * Updates both Clerk and the database Users table.
  */
 export async function POST(req: Request) {
   try {
+    // Verify admin authentication
+    const { userId: adminId, sessionClaims } = await auth();
+    
+    if (!adminId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const adminRole = sessionClaims?.role;
+    if (adminRole !== "admin") {
+      return NextResponse.json({ error: "Forbidden: Admin access required" }, { status: 403 });
+    }
+
     // Parse the request body to extract userId and role
     const { userId, role } = await req.json();
 
     // Validate that both userId and role are provided
     if (!userId || !role) {
       return NextResponse.json({ error: "Missing userId or role" }, { status: 400 });
+    }
+
+    // Validate role
+    const validRoles = ["admin", "senator", "coordinator", "attorney"];
+    if (!validRoles.includes(role)) {
+      return NextResponse.json(
+        { error: `Invalid role. Must be one of: ${validRoles.join(", ")}` },
+        { status: 400 }
+      );
     }
 
     // Update the user's public metadata with the specified role in Clerk
@@ -50,8 +73,15 @@ export async function POST(req: Request) {
     // Return a success message confirming the role assignment
     return NextResponse.json({ message: `Role '${role}' assigned successfully` });
   } catch (error) {
-    // Error Handling
+    // Error Handling with detailed logging
     console.error("Error assigning role:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("Error details:", {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    return NextResponse.json({ 
+      error: "Internal server error",
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
