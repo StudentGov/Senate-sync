@@ -29,7 +29,7 @@ export default function HomePage() {
           <h1 className="text-5xl md:text-6xl font-kanit text-white mb-6">Student Government</h1>
           <p className="text-xl text-white/90 mb-8 max-w-xl font-kanit">Welcome to your student-led hub for advocacy, support, and connection.</p>
           <div className="flex gap-4">
-            <a href="/student/schedule" className="bg-[#febd11] text-white rounded-lg px-8 py-3 font-kanit text-lg hover:bg-[#e6a900] transition">Schedule Appointment</a>
+            <a href="#attorney" className="bg-[#febd11] text-white rounded-lg px-8 py-3 font-kanit text-lg hover:bg-[#e6a900] transition">Schedule Appointment</a>
             <a href="#learn-more" className="border-2 border-white text-white rounded-lg px-8 py-3 font-kanit text-lg hover:bg-white hover:text-[#49306e] transition">Learn More</a>
           </div>
         </div>
@@ -47,7 +47,7 @@ export default function HomePage() {
             <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center">
               <img src={imgImages2} alt="Andrew Colleran" className="rounded-full w-20 h-20 object-cover mb-4" />
               <h3 className="text-xl font-kanit text-[#49306e]">Andrew Colleran</h3>
-              <p className="text-[#febd11] font-kanit">Student Government President</p>
+              <p className="text-[#febd11] font-kanit">President</p>
               <p className="text-gray-600 text-center mt-2">Leading initiatives for student welfare, campus improvements, and academic advocacy.</p>
             </div>
             {/* Sneha Kafle */}
@@ -84,7 +84,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-2xl font-kanit text-[#49306e] mb-2">Students</h3>
               <p className="text-gray-600 text-center mb-4">Academic advocacy, campus life improvements, and direct representation in university decisions.</p>
-              <a href="/student/schedule" className="bg-[#febd11] text-white rounded-lg px-8 py-2 font-kanit hover:bg-[#e6a900] transition">Get Started</a>
+              <a href="#resources" className="bg-[#febd11] text-white rounded-lg px-8 py-2 font-kanit hover:bg-[#e6a900] transition">Get Started</a>
             </div>
             {/* Legal Support */}
             <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center">
@@ -93,7 +93,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-2xl font-kanit text-[#49306e] mb-2">Legal Support</h3>
               <p className="text-gray-600 text-center mb-4">Free legal consultation and support for student-related issues and campus concerns.</p>
-              <a href="/attorney/dashboard" className="bg-[#febd11] text-white rounded-lg px-8 py-2 font-kanit hover:bg-[#e6a900] transition">Get Started</a>
+              <a href="#attorney" className="bg-[#febd11] text-white rounded-lg px-8 py-2 font-kanit hover:bg-[#e6a900] transition">Get Started</a>
             </div>
             {/* Senate */}
             <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center">
@@ -102,7 +102,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-2xl font-kanit text-[#49306e] mb-2">Senate</h3>
               <p className="text-gray-600 text-center mb-4">Participate in student governance, policy-making, and represent your fellow students' interests.</p>
-              <a href="/senate/dashboard" className="bg-[#febd11] text-white rounded-lg px-8 py-2 font-kanit hover:bg-[#e6a900] transition">Get Started</a>
+              <a href="#archive" className="bg-[#febd11] text-white rounded-lg px-8 py-2 font-kanit hover:bg-[#e6a900] transition">Get Started</a>
             </div>
           </div>
         </div>

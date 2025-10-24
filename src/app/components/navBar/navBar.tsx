@@ -16,7 +16,7 @@ export default function NavBar() {
         <a href="#calendar" className="hover:text-[#febd11]">Calendar</a>
         <a href="#attorney" className="hover:text-[#febd11]">Attorney</a>
         <a href="#resources" className="hover:text-[#febd11]">Resources</a>
-        <a href="#files" className="hover:text-[#febd11]">Files</a>
+        <a href="#archive" className="hover:text-[#febd11]">Archive</a>
       </nav>
       <a
         href="/auth/sign-in"
