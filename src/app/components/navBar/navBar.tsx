@@ -2,13 +2,13 @@
 // Figma-based NavBar for Student Government
 export default function NavBar() {
   return (
-    <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-20 relative z-10">
+  <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-6 md:px-20 relative z-50">
       <div className="flex items-center h-16">
         <a href="/">
           <img
             alt="MSU Logo"
-            className="h-32 w-32 object-contain"
-            src="https://www.figma.com/api/mcp/asset/dd431b26-5c8c-4155-9e1b-a8e7bc3d897c"
+            className="h-12 w-auto object-contain"
+            src="/images/MSU Logo.png"
           />
         </a>
       </div>
