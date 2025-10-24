@@ -39,13 +39,11 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${kanit.variable} antialiased`}
         >
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
-            <SignedIn>
-              <AssignRoleAfterLogin />
-            </SignedIn>
-          </header>
-          <CollapsedProvider>   
-            <NavBar />
+          <SignedIn>
+            <AssignRoleAfterLogin />
+          </SignedIn>
+          <NavBar />
+          <CollapsedProvider>
             {children}
           </CollapsedProvider>
         </body>
