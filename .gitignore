@@ -43,3 +43,6 @@ next-env.d.ts
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# temporary orchid AI code (for reference only)
+/orchid/
