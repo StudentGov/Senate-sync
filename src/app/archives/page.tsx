@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Footer from "../components/footer/Footer";
 import { Search, Filter, Plus, Play, ChevronLeft, ChevronRight, FileText, X, Check } from "lucide-react";
 
 interface ArchiveItem {
@@ -241,8 +240,6 @@ export default function ArchivesPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
 
       {/* Add File Modal */}
       {isModalOpen && (

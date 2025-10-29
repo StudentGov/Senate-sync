@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Footer from "../components/footer/Footer";
 import { Plus, ChevronDown, X } from "lucide-react";
 
 interface User {
@@ -121,8 +120,6 @@ export default function AdminPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
 
       {/* Add User Modal */}
       {showAddUserModal && (

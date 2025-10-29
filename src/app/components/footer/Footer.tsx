@@ -1,5 +1,4 @@
-import imgFrame6 from "@/app/assets/purpleImage.png";
-import imgFrame7 from "@/app/assets/whiteImage.png";
+import { Facebook, Instagram } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -30,23 +29,23 @@ export default function Footer() {
         <div>
           <h3 className="text-white text-lg font-kanit mb-6">Follow Us</h3>
           <div className="flex gap-4">
-            <a 
-              href="https://www.facebook.com/mnsustudentgovernment/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://www.facebook.com/mnsustudentgovernment/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-[#febd11] rounded-full w-12 h-12 flex items-center justify-center hover:bg-[#e6a900] transition"
               aria-label="Facebook"
             >
-              <img src={imgFrame6} alt="Facebook" className="w-6 h-6 object-contain" />
+              <Facebook className="w-6 h-6 text-[#49306e]" />
             </a>
-            <a 
-              href="https://www.instagram.com/mnsustudentgovernment/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://www.instagram.com/mnsustudentgovernment/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-[#febd11] rounded-full w-12 h-12 flex items-center justify-center hover:bg-[#e6a900] transition"
               aria-label="Instagram"
             >
-              <img src={imgFrame7} alt="Instagram" className="w-6 h-6 object-contain" />
+              <Instagram className="w-6 h-6 text-[#49306e]" />
             </a>
           </div>
         </div>
