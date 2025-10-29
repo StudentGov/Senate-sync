@@ -18,19 +18,13 @@ export default function Navbar() {
   const isAdmin = userRole === "admin";
 
   return (
-    <div className={`${styles.navBar} ${isHome ? styles.whiteBg : styles.purpleBg}`}>
-      {/* Home icon */}
-        <div onClick={() => router.push('/')}>
-          <svg
-            className={styles.homeIcon}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            style={{ color: isHome ? '#3f3f3f' : '#FFFFFF'}} // purple or white
-          >
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-          </svg>
-        </div>
-        <div style={{height: '40px', width: '1px', backgroundColor: '#ccc', margin: '0 16px', marginTop:'5px', flexShrink: 0}}
+  <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-6 md:px-12 relative z-50">
+      <div className="flex items-center h-16">
+        <a href="/">
+          <img
+            alt="MSU Logo"
+            className="h-10 w-auto object-contain"
+            src="/images/MSU Logo.png"
           />
       <Image src={isHome? whiteLogo: purpleLogo} alt="MNSU Logo" className={styles.img} onClick={() => router.push('/')}/>
       <div className={styles.links}>
@@ -83,6 +77,18 @@ export default function Navbar() {
           {showButton && (<button className={styles.loginBtn} onClick={() => router.push("/auth/sign-in")}>Sign In</button>)}
         </SignedOut>
       </div>
-    </div>
+      <nav className="flex gap-10 text-white font-kanit text-base">
+        <a href="#calendar" className={`hover:text-[#febd11] ${pathname === '/calendar' ? 'text-[#febd11]' : ''}`}>Calendar</a>
+        <a href="/attorney" className={`hover:text-[#febd11] ${pathname === '/attorney' ? 'text-[#febd11]' : ''}`}>Attorney</a>
+        <a href="#resources" className={`hover:text-[#febd11] ${pathname === '/resources' ? 'text-[#febd11]' : ''}`}>Resources</a>
+        <a href="/archives" className={`hover:text-[#febd11] ${pathname === '/archives' ? 'text-[#febd11]' : ''}`}>Archives</a>
+      </nav>
+      <a
+        href="/auth/sign-in"
+        className="bg-[#febd11] text-white rounded-lg px-6 py-2 font-kanit hover:bg-[#e6a900] transition"
+      >
+        Sign In
+      </a>
+    </header>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { AttorneyCard } from "../../components/attorney-card";
-import { UserForm } from "../../components/user-form";
-import { AppointmentSummary } from "../../components/appointment-summary";
-import { MapPin } from "lucide-react";
+import { AttorneyCard } from "../components/attorney-card";
+import { UserForm } from "../components/user-form";
+import { AppointmentSummary } from "../components/appointment-summary";
+import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface TimeSlot {
   id: string;
@@ -12,11 +12,52 @@ interface TimeSlot {
   duration: string;
 }
 
-export default function SchedulePage() {
+// Helper function to get the start of the week (Monday)
+function getWeekStart(date: Date): Date {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+  return new Date(d.setDate(diff));
+}
+
+// Helper function to format date range (Mon - Fri)
+function formatWeekRange(startDate: Date): string {
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + 4); // Monday to Friday (5 days)
+
+  const startMonth = startDate.toLocaleDateString("en-US", { month: "short" });
+  const endMonth = endDate.toLocaleDateString("en-US", { month: "short" });
+  const startDay = startDate.getDate();
+  const endDay = endDate.getDate();
+
+  if (startMonth === endMonth) {
+    return `${startMonth} ${startDay} - ${endDay}`;
+  } else {
+    return `${startMonth} ${startDay} - ${endMonth} ${endDay}`;
+  }
+}
+
+export default function AttorneyPage() {
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(
+    getWeekStart(new Date())
+  );
   const [selectedSlot, setSelectedSlot] = useState<{
     attorney: string;
     slot: TimeSlot;
+    date: Date;
   } | null>(null);
+
+  const goToPreviousWeek = () => {
+    const newDate = new Date(currentWeekStart);
+    newDate.setDate(currentWeekStart.getDate() - 7);
+    setCurrentWeekStart(newDate);
+  };
+
+  const goToNextWeek = () => {
+    const newDate = new Date(currentWeekStart);
+    newDate.setDate(currentWeekStart.getDate() + 7);
+    setCurrentWeekStart(newDate);
+  };
 
   const sarahTimeSlots: TimeSlot[] = [
     { id: "sj-1", time: "Mon 9:00 AM", duration: "30 minutes" },
@@ -40,8 +81,12 @@ export default function SchedulePage() {
     { id: "mc-8", time: "Thu 12:30 PM", duration: "30 minutes" },
   ];
 
-  const handleSlotSelect = (attorney: string, slot: TimeSlot) => {
-    setSelectedSlot({ attorney, slot });
+  const handleSlotSelect = (attorney: string, slot: TimeSlot, dayOfWeek: number) => {
+    // Calculate the actual date based on the selected week and day
+    const appointmentDate = new Date(currentWeekStart);
+    appointmentDate.setDate(currentWeekStart.getDate() + dayOfWeek);
+
+    setSelectedSlot({ attorney, slot, date: appointmentDate });
   };
 
   const handleFormSubmit = (data: any) => {
@@ -56,7 +101,7 @@ export default function SchedulePage() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-white py-12">
+      <section className="bg-white py-12" id="attorney">
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-bold text-3xl md:text-4xl text-gray-900 mb-4">
             Schedule Your Legal Consultation
@@ -97,6 +142,9 @@ export default function SchedulePage() {
               timeSlots={sarahTimeSlots}
               onSelectSlot={handleSlotSelect}
               selectedSlotId={selectedSlot?.slot.id}
+              weekRange={formatWeekRange(currentWeekStart)}
+              onPreviousWeek={goToPreviousWeek}
+              onNextWeek={goToNextWeek}
             />
             <AttorneyCard
               initials="MC"
@@ -106,6 +154,9 @@ export default function SchedulePage() {
               timeSlots={michaelTimeSlots}
               onSelectSlot={handleSlotSelect}
               selectedSlotId={selectedSlot?.slot.id}
+              weekRange={formatWeekRange(currentWeekStart)}
+              onPreviousWeek={goToPreviousWeek}
+              onNextWeek={goToNextWeek}
             />
           </div>
 
@@ -116,7 +167,16 @@ export default function SchedulePage() {
             </div>
             <div>
               <AppointmentSummary
-                date={selectedSlot ? "December 10, 2024" : "-"}
+                date={
+                  selectedSlot
+                    ? selectedSlot.date.toLocaleDateString("en-US", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : "-"
+                }
                 time={selectedSlot?.slot.time || "-"}
                 attorney={selectedSlot?.attorney || "-"}
                 duration={selectedSlot?.slot.duration || "-"}
@@ -126,6 +186,8 @@ export default function SchedulePage() {
           </div>
         </div>
       </section>
+
     </div>
   );
 }
+

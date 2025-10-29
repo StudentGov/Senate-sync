@@ -1,12 +1,16 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+// 🚧 DEVELOPMENT MODE: Control Clerk authentication via environment variable
+// Set DISABLE_AUTH_FOR_DEV=true in .env.local to disable auth in development
+const DISABLE_AUTH_FOR_DEV = process.env.DISABLE_AUTH_FOR_DEV === 'true';
+
 // Define protected routes using route matcher
 // These routes require authentication and role-based authorization
 const isProtectedRoute = createRouteMatcher([
   "/student(.*)",
   "/attorney(.*)",
-  "/senate(.*)", 
+  "/senate(.*)",
   "/dashboard(.*)",
   "/admin(.*)"
 ]);
@@ -17,6 +21,11 @@ const isProtectedRoute = createRouteMatcher([
  * using Clerk session claims and redirects unauthorized users.
  */
 export default clerkMiddleware(async (auth, req) => {
+  // Skip authentication in development mode
+  if (DISABLE_AUTH_FOR_DEV) {
+    console.log("⚠️ DEV MODE: Authentication disabled");
+    return NextResponse.next();
+  }
   const { userId, sessionClaims, redirectToSignIn } = await auth();
 
   // Check if user is authenticated
