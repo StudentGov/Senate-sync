@@ -108,62 +108,69 @@ export default function HomePage() {
       {/* Contact Section */}
       <section className="w-full bg-[#49306e] py-20" id="contact">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-4xl font-kanit text-white text-center mb-4">Any feedback or Issues?</h2>
-          <p className="text-white/90 text-center mb-12 font-kanit">Send us a message and we'll get back to you.</p>
+          <h2 className="text-4xl font-kanit font-normal text-white text-center mb-3">Any feedback or Issues?</h2>
+          <p className="text-white/90 text-center mb-12 font-kanit text-lg">Send us a message and we'll get back to you.</p>
 
-          <div className="flex flex-col md:flex-row gap-12 items-start">
+          <div className="flex flex-col md:flex-row gap-0 items-stretch max-w-5xl mx-auto">
             {/* Contact Form */}
-            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 max-w-md">
+            <div className="flex-1 md:pr-12">
               <form className="space-y-6">
                 <div>
-                  <label className="block text-gray-700 font-kanit mb-2 text-sm">Name</label>
-                  <input type="text" className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#febd11]" />
+                  <label className="block text-white font-kanit mb-2">Name</label>
+                  <input
+                    type="text"
+                    className="w-full bg-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#febd11] font-kanit"
+                    style={{ borderRadius: '8px' }}
+                  />
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-kanit mb-2 text-sm">Email</label>
-                  <input type="email" className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#febd11]" />
+                  <label className="block text-white font-kanit mb-2">Email</label>
+                  <input
+                    type="email"
+                    className="w-full bg-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#febd11] font-kanit"
+                    style={{ borderRadius: '8px' }}
+                  />
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-kanit mb-2 text-sm">Message</label>
-                  <textarea className="w-full border border-gray-300 rounded-lg px-4 py-3 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-[#febd11]" />
+                  <label className="block text-white font-kanit mb-2">Message</label>
+                  <textarea
+                    className="w-full bg-white rounded-lg px-4 py-3 h-32 resize-none focus:outline-none focus:ring-2 focus:ring-[#febd11] font-kanit"
+                    style={{ borderRadius: '8px' }}
+                  />
                 </div>
-                <button type="submit" className="w-full bg-[#febd11] text-white rounded-lg px-8 py-3 font-kanit hover:bg-[#e6a900] transition">Send Message</button>
+                <button
+                  type="submit"
+                  className="w-full bg-[#febd11] text-white rounded-lg px-8 py-3 font-kanit hover:bg-[#e6a900] transition"
+                  style={{ borderRadius: '8px' }}
+                >
+                  Send Message
+                </button>
               </form>
             </div>
 
+            {/* Yellow Divider Line */}
+            <div className="hidden md:block w-px bg-[#febd11] mx-8 self-stretch" style={{ width: '2px' }}></div>
+
             {/* Office Info */}
-            <div className="flex-1 text-white font-kanit flex flex-col justify-start md:pl-12">
-              <h3 className="text-2xl mb-6 font-semibold">Office Information</h3>
-              <div className="space-y-3 mb-6">
-                <div className="flex items-start gap-2">
-                  <span className="text-[#febd11]">📍</span>
-                  <div>
-                    <p className="font-semibold">MSU Student Center</p>
-                    <p className="text-white/90">Mankato, MN 56001</p>
-                    <p className="text-white/90">Room 204, 1400 Highway 14 West</p>
-                  </div>
+            <div className="flex-1 text-white font-kanit flex flex-col justify-start md:pl-4 mt-8 md:mt-0">
+              <h3 className="text-2xl mb-6 font-normal">Office Information</h3>
+              <div className="space-y-4 mb-6">
+                <div>
+                  <p className="font-normal">MSU Student Center</p>
+                  <p className="text-white/90">Mankato, MN 56001</p>
                 </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-[#febd11]">📞</span>
+                <div className="flex items-start gap-3">
+                  <img src="/svg_icons/location_symbol.svg" alt="" className="w-3 h-4 mt-1 flex-shrink-0" />
+                  <p className="text-white/90">Room 204, 620 West 5 Rd</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <img src="/svg_icons/phone_symbol.svg" alt="" className="w-4 h-4 mt-1 flex-shrink-0" />
                   <p className="text-white/90">(507) 389-2611</p>
                 </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-[#febd11]">✉️</span>
+                <div className="flex items-start gap-3">
+                  <img src="/svg_icons/mail_symbol.svg" alt="" className="w-4 h-4 mt-1 flex-shrink-0" />
                   <p className="text-white/90">studentgov@mnsu.edu</p>
                 </div>
-              </div>
-
-              <div className="flex gap-4 mt-4">
-                <a href="https://www.facebook.com/mnsustudentgovernment/" target="_blank" rel="noopener noreferrer" className="bg-[#febd11] rounded-full w-12 h-12 flex items-center justify-center hover:bg-[#e6a900] transition" aria-label="Facebook">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6 fill-current text-[#382450]" aria-hidden="true">
-                    <path d="M22 12.07C22 6.48 17.52 2 12 2S2 6.48 2 12.07c0 5 3.66 9.13 8.44 9.93v-7.03H7.9v-2.9h2.54V9.41c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.45h-1.25c-1.23 0-1.61.77-1.61 1.56v1.87h2.74l-.44 2.9h-2.3V22c4.78-.8 8.44-4.93 8.44-9.93z"/>
-                  </svg>
-                </a>
-                <a href="https://www.instagram.com/mnsustudentgovernment/" target="_blank" rel="noopener noreferrer" className="bg-[#febd11] rounded-full w-12 h-12 flex items-center justify-center hover:bg-[#e6a900] transition" aria-label="Instagram">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6 fill-current text-[#382450]" aria-hidden="true">
-                    <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm8 3.5c.83 0 1.5.67 1.5 1.5S15.83 8.5 15 8.5 13.5 7.83 13.5 7 14.17 5.5 15 5.5zM12 8.5c2 0 3.5 1.5 3.5 3.5S14 15.5 12 15.5 8.5 14 8.5 12 10 8.5 12 8.5zm0 2c-.83 0-1.5.67-1.5 1.5S11.17 13.5 12 13.5s1.5-.67 1.5-1.5S12.83 10.5 12 10.5z"/>
-                  </svg>
-                </a>
               </div>
             </div>
           </div>
