@@ -13,12 +13,12 @@ export default function NavBar() {
   };
 
   return (
-    <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-6 md:px-20 relative z-50">
+    <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-6 md:px-12 relative z-50">
       <div className="flex items-center h-16">
-        <a href="/">
+        <a href="/" className="flex items-center">
           <img
             alt="MSU Logo"
-            className="h-12 w-auto object-contain"
+            className="h-10 w-auto object-contain"
             src="/images/MSU Logo.png"
           />
         </a>

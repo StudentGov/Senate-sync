@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AttorneyCard } from "../components/attorney-card";
 import { UserForm } from "../components/user-form";
 import { AppointmentSummary } from "../components/appointment-summary";
-import { MapPin } from "lucide-react";
+import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface TimeSlot {
   id: string;
@@ -12,15 +12,52 @@ interface TimeSlot {
   duration: string;
 }
 
-// Footer images
-const imgFrame6 = "/images/facebook logo.png";
-const imgFrame7 = "/images/instagram logo.png";
+// Helper function to get the start of the week (Monday)
+function getWeekStart(date: Date): Date {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+  return new Date(d.setDate(diff));
+}
+
+// Helper function to format date range (Mon - Fri)
+function formatWeekRange(startDate: Date): string {
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + 4); // Monday to Friday (5 days)
+
+  const startMonth = startDate.toLocaleDateString("en-US", { month: "short" });
+  const endMonth = endDate.toLocaleDateString("en-US", { month: "short" });
+  const startDay = startDate.getDate();
+  const endDay = endDate.getDate();
+
+  if (startMonth === endMonth) {
+    return `${startMonth} ${startDay} - ${endDay}`;
+  } else {
+    return `${startMonth} ${startDay} - ${endMonth} ${endDay}`;
+  }
+}
 
 export default function AttorneyPage() {
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(
+    getWeekStart(new Date())
+  );
   const [selectedSlot, setSelectedSlot] = useState<{
     attorney: string;
     slot: TimeSlot;
+    date: Date;
   } | null>(null);
+
+  const goToPreviousWeek = () => {
+    const newDate = new Date(currentWeekStart);
+    newDate.setDate(currentWeekStart.getDate() - 7);
+    setCurrentWeekStart(newDate);
+  };
+
+  const goToNextWeek = () => {
+    const newDate = new Date(currentWeekStart);
+    newDate.setDate(currentWeekStart.getDate() + 7);
+    setCurrentWeekStart(newDate);
+  };
 
   const sarahTimeSlots: TimeSlot[] = [
     { id: "sj-1", time: "Mon 9:00 AM", duration: "30 minutes" },
@@ -44,8 +81,12 @@ export default function AttorneyPage() {
     { id: "mc-8", time: "Thu 12:30 PM", duration: "30 minutes" },
   ];
 
-  const handleSlotSelect = (attorney: string, slot: TimeSlot) => {
-    setSelectedSlot({ attorney, slot });
+  const handleSlotSelect = (attorney: string, slot: TimeSlot, dayOfWeek: number) => {
+    // Calculate the actual date based on the selected week and day
+    const appointmentDate = new Date(currentWeekStart);
+    appointmentDate.setDate(currentWeekStart.getDate() + dayOfWeek);
+
+    setSelectedSlot({ attorney, slot, date: appointmentDate });
   };
 
   const handleFormSubmit = (data: any) => {
@@ -101,6 +142,9 @@ export default function AttorneyPage() {
               timeSlots={sarahTimeSlots}
               onSelectSlot={handleSlotSelect}
               selectedSlotId={selectedSlot?.slot.id}
+              weekRange={formatWeekRange(currentWeekStart)}
+              onPreviousWeek={goToPreviousWeek}
+              onNextWeek={goToNextWeek}
             />
             <AttorneyCard
               initials="MC"
@@ -110,6 +154,9 @@ export default function AttorneyPage() {
               timeSlots={michaelTimeSlots}
               onSelectSlot={handleSlotSelect}
               selectedSlotId={selectedSlot?.slot.id}
+              weekRange={formatWeekRange(currentWeekStart)}
+              onPreviousWeek={goToPreviousWeek}
+              onNextWeek={goToNextWeek}
             />
           </div>
 
@@ -120,7 +167,16 @@ export default function AttorneyPage() {
             </div>
             <div>
               <AppointmentSummary
-                date={selectedSlot ? "December 10, 2024" : "-"}
+                date={
+                  selectedSlot
+                    ? selectedSlot.date.toLocaleDateString("en-US", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : "-"
+                }
                 time={selectedSlot?.slot.time || "-"}
                 attorney={selectedSlot?.attorney || "-"}
                 duration={selectedSlot?.slot.duration || "-"}
@@ -131,47 +187,6 @@ export default function AttorneyPage() {
         </div>
       </section>
 
-      {/* Footer (from homepage) */}
-      <footer className="w-full bg-[#382450] relative pt-16 pb-8 px-0 mt-auto">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-white text-lg font-kanit mb-6">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><a href="#" className="text-white/80 hover:text-white font-kanit text-base">Elections</a></li>
-              <li><a href="#" className="text-white/80 hover:text-white font-kanit text-base">Live Stream</a></li>
-              <li><a href="#" className="text-white/80 hover:text-white font-kanit text-base">Contact</a></li>
-              <li><a href="#" className="text-white/80 hover:text-white font-kanit text-base">State-Wide Government</a></li>
-            </ul>
-          </div>
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-white text-lg font-kanit mb-6">Contact Info</h3>
-            <ul className="space-y-2 text-white/80 font-kanit text-base">
-              <li>MSU Student Center, Room 204</li>
-              <li>1400 Highway 14 West</li>
-              <li>Mankato, MN 56001</li>
-              <li>(507) 389-2611</li>
-              <li>studentgov@mnsu.edu</li>
-            </ul>
-          </div>
-          {/* Follow Us */}
-          <div>
-            <h3 className="text-white text-lg font-kanit mb-6">Follow Us</h3>
-            <div className="flex gap-4">
-              <a href="https://www.facebook.com/mnsustudentgovernment/" target="_blank" rel="noopener noreferrer" className="bg-[#febd11] rounded-full w-12 h-12 flex items-center justify-center hover:bg-[#e6a900] transition">
-                <img src={imgFrame6} alt="Facebook" className="w-6 h-6 object-contain" />
-              </a>
-              <a href="https://www.instagram.com/mnsustudentgovernment/" target="_blank" rel="noopener noreferrer" className="bg-[#febd11] rounded-full w-12 h-12 flex items-center justify-center hover:bg-[#e6a900] transition">
-                <img src={imgFrame7} alt="Instagram" className="w-6 h-6 object-contain" />
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-[#febd11] mt-12 pt-6">
-          <p className="text-center text-white/80 font-kanit text-base">© Minnesota State Student Government 2025</p>
-        </div>
-      </footer>
     </div>
   );
 }
