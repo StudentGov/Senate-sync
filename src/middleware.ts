@@ -1,9 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-// 🚧 DEVELOPMENT MODE: Clerk authentication is temporarily disabled
-// TODO: Re-enable before merging to main
-const DISABLE_AUTH_FOR_DEV = true;
+// 🚧 DEVELOPMENT MODE: Control Clerk authentication via environment variable
+// Set DISABLE_AUTH_FOR_DEV=true in .env.local to disable auth in development
+const DISABLE_AUTH_FOR_DEV = process.env.DISABLE_AUTH_FOR_DEV === 'true';
 
 // Define protected routes using route matcher
 // These routes require authentication and role-based authorization
