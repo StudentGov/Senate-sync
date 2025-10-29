@@ -18,22 +18,29 @@ export default function Navbar() {
   const isAdmin = userRole === "admin";
 
   return (
-  <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-6 md:px-12 relative z-50">
+    <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-6 md:px-12 relative z-50">
+      {/* Logo Section */}
       <div className="flex items-center h-16">
         <a href="/">
           <img
             alt="MSU Logo"
-            className="h-10 w-auto object-contain"
+            className="h-10 w-auto object-contain cursor-pointer"
             src="/images/MSU Logo.png"
           />
-      <Image src={isHome? whiteLogo: purpleLogo} alt="MNSU Logo" className={styles.img} onClick={() => router.push('/')}/>
-      <div className={styles.links}>
-        <button className={styles.linkBtn} onClick={() => router.push('/calendar')}>Calendar</button>
+        </a>
       </div>
-      {/* Profile Section at Bottom  */}
-      <div className={styles.profileSection}>
+
+      {/* Navigation Links */}
+      <nav className="flex gap-10 text-white font-kanit text-base">
+        <a href="/calendar" className={`hover:text-[#febd11] ${pathname === '/calendar' ? 'text-[#febd11]' : ''}`}>Calendar</a>
+        <a href="/attorney" className={`hover:text-[#febd11] ${pathname === '/attorney' ? 'text-[#febd11]' : ''}`}>Attorney</a>
+        <a href="/resources" className={`hover:text-[#febd11] ${pathname === '/resources' ? 'text-[#febd11]' : ''}`}>Resources</a>
+        <a href="/archives" className={`hover:text-[#febd11] ${pathname === '/archives' ? 'text-[#febd11]' : ''}`}>Archives</a>
+      </nav>
+
+      {/* Auth Section */}
+      <div className="flex items-center gap-4">
         <SignedIn>
-          <p>Welcome, {user?.firstName}.</p>
           <UserButton 
             afterSignOutUrl="/"
             appearance={{
@@ -74,21 +81,16 @@ export default function Navbar() {
           </UserButton>
         </SignedIn>
         <SignedOut>
-          {showButton && (<button className={styles.loginBtn} onClick={() => router.push("/auth/sign-in")}>Sign In</button>)}
+          {showButton && (
+            <a
+              href="/auth/sign-in"
+              className="bg-[#febd11] text-white rounded-lg px-6 py-2 font-kanit hover:bg-[#e6a900] transition"
+            >
+              Sign In
+            </a>
+          )}
         </SignedOut>
       </div>
-      <nav className="flex gap-10 text-white font-kanit text-base">
-        <a href="#calendar" className={`hover:text-[#febd11] ${pathname === '/calendar' ? 'text-[#febd11]' : ''}`}>Calendar</a>
-        <a href="/attorney" className={`hover:text-[#febd11] ${pathname === '/attorney' ? 'text-[#febd11]' : ''}`}>Attorney</a>
-        <a href="#resources" className={`hover:text-[#febd11] ${pathname === '/resources' ? 'text-[#febd11]' : ''}`}>Resources</a>
-        <a href="/archives" className={`hover:text-[#febd11] ${pathname === '/archives' ? 'text-[#febd11]' : ''}`}>Archives</a>
-      </nav>
-      <a
-        href="/auth/sign-in"
-        className="bg-[#febd11] text-white rounded-lg px-6 py-2 font-kanit hover:bg-[#e6a900] transition"
-      >
-        Sign In
-      </a>
     </header>
   );
 }
