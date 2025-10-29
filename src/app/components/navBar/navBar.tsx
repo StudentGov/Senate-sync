@@ -6,16 +6,10 @@ import { usePathname } from "next/navigation";
 export default function NavBar() {
   const pathname = usePathname();
 
-  // Helper function to determine if a link is active
-  const isActive = (path: string) => {
-    if (path === "/") return pathname === "/";
-    return pathname.startsWith(path);
-  };
-
   return (
-    <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-6 md:px-12 relative z-50">
+  <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-6 md:px-12 relative z-50">
       <div className="flex items-center h-16">
-        <a href="/" className="flex items-center">
+        <a href="/">
           <img
             alt="MSU Logo"
             className="h-10 w-auto object-contain"
@@ -24,30 +18,10 @@ export default function NavBar() {
         </a>
       </div>
       <nav className="flex gap-10 text-white font-kanit text-base">
-        <a
-          href="/calendar"
-          className={`hover:text-[#febd11] transition-colors ${isActive("/calendar") ? "text-[#febd11]" : ""}`}
-        >
-          Calendar
-        </a>
-        <a
-          href="/attorney"
-          className={`hover:text-[#febd11] transition-colors ${isActive("/attorney") ? "text-[#febd11]" : ""}`}
-        >
-          Attorney
-        </a>
-        <a
-          href="/resources"
-          className={`hover:text-[#febd11] transition-colors ${isActive("/resources") ? "text-[#febd11]" : ""}`}
-        >
-          Resources
-        </a>
-        <a
-          href="/archive"
-          className={`hover:text-[#febd11] transition-colors ${isActive("/archive") ? "text-[#febd11]" : ""}`}
-        >
-          Archive
-        </a>
+        <a href="#calendar" className={`hover:text-[#febd11] ${pathname === '/calendar' ? 'text-[#febd11]' : ''}`}>Calendar</a>
+        <a href="/attorney" className={`hover:text-[#febd11] ${pathname === '/attorney' ? 'text-[#febd11]' : ''}`}>Attorney</a>
+        <a href="#resources" className={`hover:text-[#febd11] ${pathname === '/resources' ? 'text-[#febd11]' : ''}`}>Resources</a>
+        <a href="/archives" className={`hover:text-[#febd11] ${pathname === '/archives' ? 'text-[#febd11]' : ''}`}>Archives</a>
       </nav>
       <a
         href="/auth/sign-in"
