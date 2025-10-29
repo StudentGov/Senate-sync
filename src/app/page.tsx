@@ -1,5 +1,5 @@
 // Local image assets (from public/images)
-const imgCampusClockTower1 = "/images/campus_clock_tower 1.png";
+const imgCampusClockTower1 = "/images/campus_clock_tower_1.png";
 // Person/team avatars - use uploaded photos from public/images
 const imgImages2 = "/images/Student_President_Andrew_Colleran.png";
 const imgWillSmithCHfpa20161 = "/images/Vice_President_Sneha_Kafle.jpg";
@@ -164,16 +164,16 @@ export default function HomePage() {
                   <p className="text-white/90">Room 204, 620 West 5 Rd</p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <img src="/svg_icons/phone_symbol.svg" alt="" className="w-4 h-4 mt-1 flex-shrink-0" />
+                  <img src="/svg_icons/phone_symbol.svg" alt="Phone" className="mt-1 flex-shrink-0" style={{ width: '20px', height: '20px' }} />
                   <p className="text-white/90">(507) 389-2611</p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <img src="/svg_icons/mail_symbol.svg" alt="" className="w-4 h-4 mt-1 flex-shrink-0" />
+                  <img src="/svg_icons/mail_symbol.svg" alt="Email" className="w-4 h-4 mt-1 flex-shrink-0" />
                   <p className="text-white/90">studentgov@mnsu.edu</p>
                 </div>
               </div>
             </div>
-          </div>
+          </div> 
         </div>
       </section>
 
