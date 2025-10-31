@@ -174,6 +174,7 @@ export default function UserTable({ users }: UserTableProps) {
             <button
               onClick={handleCancelChanges}
               disabled={isSaving}
+              className="transition-all duration-300 hover:bg-gray-100 hover:border-[#febd11]"
               style={{
                 padding: "0.5rem 1rem",
                 borderRadius: "6px",
@@ -188,6 +189,7 @@ export default function UserTable({ users }: UserTableProps) {
             <button
               onClick={handleSaveChanges}
               disabled={isSaving}
+              className="transition-all duration-300 hover:bg-[#febd11] hover:shadow-lg"
               style={{
                 padding: "0.5rem 1rem",
                 borderRadius: "6px",
