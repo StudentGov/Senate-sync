@@ -41,21 +41,21 @@ export default function HomePage() {
           </div>
           <div className="flex flex-col md:flex-row gap-8 justify-center">
             {/* Andrew Colleran */}
-            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center">
+            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(254,189,17,0.4)] cursor-pointer border-2 border-transparent hover:border-[#febd11]">
               <img src={imgImages2} alt="Andrew Colleran" className="rounded-full w-20 h-20 object-cover mb-4" />
               <h3 className="text-xl font-kanit text-[#49306e]">Andrew Colleran</h3>
               <p className="text-[#febd11] font-kanit">President</p>
               <p className="text-gray-600 text-center mt-2">Leading initiatives for student welfare, campus improvements, and academic advocacy.</p>
             </div>
             {/* Sneha Kafle */}
-            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center">
+            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(254,189,17,0.4)] cursor-pointer border-2 border-transparent hover:border-[#febd11]">
               <img src={imgWillSmithCHfpa20161} alt="Sneha Kafle" className="rounded-full w-20 h-20 object-cover mb-4" />
               <h3 className="text-xl font-kanit text-[#49306e]">Sneha Kafle</h3>
               <p className="text-[#febd11] font-kanit">Vice President</p>
               <p className="text-gray-600 text-center mt-2">Representing student voices in university policies and budget allocation decisions.</p>
             </div>
             {/* Dikshyant Thapa */}
-            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center">
+            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(254,189,17,0.4)] cursor-pointer border-2 border-transparent hover:border-[#febd11]">
               <img src={imgW65Td5ShV2ZUJxmYfoYeV9V9MsrIzSydCdZtO2RrZIc1} alt="Dikshyant Thapa" className="rounded-full w-20 h-20 object-cover mb-4" />
               <h3 className="text-xl font-kanit text-[#49306e]">Dikshyant Thapa</h3>
               <p className="text-[#febd11] font-kanit">Speaker</p>
@@ -74,32 +74,29 @@ export default function HomePage() {
           </div>
           <div className="flex flex-col md:flex-row gap-8 justify-center">
             {/* Students */}
-            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center">
+            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(254,189,17,0.4)] cursor-pointer border-2 border-transparent hover:border-[#febd11]">
               <div className="bg-[#49306e] rounded-full w-16 h-16 flex items-center justify-center mb-4">
                 {/* Students icon (inline) */}
                   <img src={imgFrame} alt="Students Icon" className="w-8 h-8 object-contain" />
               </div>
               <h3 className="text-2xl font-kanit text-[#49306e] mb-2">Students</h3>
-              <p className="text-gray-600 text-center mb-4">Academic advocacy, campus life improvements, and direct representation in university decisions.</p>
-              <a href="#resources" className="bg-[#febd11] text-white rounded-lg px-8 py-2 font-kanit hover:bg-[#e6a900] transition">Get Started</a>
+              <p className="text-gray-600 text-center">Academic advocacy, campus life improvements, and direct representation in university decisions.</p>
             </div>
             {/* Legal Support */}
-            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center">
+            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(254,189,17,0.4)] cursor-pointer border-2 border-transparent hover:border-[#febd11]">
               <div className="bg-[#49306e] rounded-full w-16 h-16 flex items-center justify-center mb-4">
                 <img src={imgFrame1} alt="Legal Support Icon" className="w-8 h-8 object-contain" />
               </div>
               <h3 className="text-2xl font-kanit text-[#49306e] mb-2">Legal Support</h3>
-              <p className="text-gray-600 text-center mb-4">Free legal consultation and support for student-related issues and campus concerns.</p>
-              <a href="#attorney" className="bg-[#febd11] text-white rounded-lg px-8 py-2 font-kanit hover:bg-[#e6a900] transition">Get Started</a>
+              <p className="text-gray-600 text-center">Free legal consultation and support for student-related issues and campus concerns.</p>
             </div>
             {/* Senate */}
-            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center">
+            <div className="bg-white rounded-xl shadow-lg p-8 flex-1 flex flex-col items-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(254,189,17,0.4)] cursor-pointer border-2 border-transparent hover:border-[#febd11]">
               <div className="bg-[#49306e] rounded-full w-16 h-16 flex items-center justify-center mb-4">
                 <img src={imgFrame2} alt="Senate Icon" className="w-8 h-8 object-contain" />
               </div>
               <h3 className="text-2xl font-kanit text-[#49306e] mb-2">Senate</h3>
-              <p className="text-gray-600 text-center mb-4">Participate in student governance, policy-making, and represent your fellow students' interests.</p>
-              <a href="#archive" className="bg-[#febd11] text-white rounded-lg px-8 py-2 font-kanit hover:bg-[#e6a900] transition">Get Started</a>
+              <p className="text-gray-600 text-center">Participate in student governance, policy-making, and represent your fellow students' interests.</p>
             </div>
           </div>
         </div>

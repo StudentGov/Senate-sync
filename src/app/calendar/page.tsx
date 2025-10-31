@@ -7,7 +7,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { EventClickArg, CalendarApi } from "@fullcalendar/core";
 
-import StudentGovernmentFooter from "@/app/components/footer";
 import AddEventModal from "@/app/components/add-event-modal";
 import { EventDetails, CalendarEvent } from "@/types/calendar";
 import "./calendar.css";
@@ -299,8 +298,6 @@ export default function CalendarPage() {
         onClose={() => setIsAddEventModalOpen(false)}
         onEventAdded={fetchEvents}
       />
-
-      <StudentGovernmentFooter />
     </main>
   );
 }

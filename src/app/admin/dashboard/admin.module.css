@@ -60,6 +60,17 @@
     align-items: center;
     border-bottom: 1px solid #ddd;
     padding: 1rem;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    border: 2px solid transparent;
+  }
+
+  .userRow:hover {
+    background-color: #fffbf0;
+    border: 2px solid #febd11;
+    box-shadow: 0 4px 12px rgba(254, 189, 17, 0.2);
+    transform: translateY(-1px);
   }
   
   .userInfo {
@@ -97,10 +108,13 @@
     padding: 0.4rem 0.8rem;
     border-radius: 8px;
     cursor: pointer;
+    transition: all 0.3s ease;
   }
-  
+
   .deleteButton:hover {
-    background-color: #e74c3c;
+    background-color: #febd11;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(254, 189, 17, 0.3);
   }
 
 /* Admin Dashboard Styles */
@@ -132,7 +146,8 @@
 }
 
 .tab:hover {
-  color: #374151;
+  color: #febd11;
+  border-bottom-color: #febd11;
 }
 
 .activeTab {
