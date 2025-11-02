@@ -41,6 +41,13 @@ export default function Navbar() {
       {/* Auth Section */}
       <div className="flex items-center gap-4">
         <SignedIn>
+          {/* Dashboard shortcut button (visible to all signed-in users) */}
+          <button
+            onClick={() => router.push('/student/dashboard')}
+            className="bg-white text-purple-700 rounded-md px-3 py-2 font-medium hover:bg-gray-100"
+          >
+            Dashboard
+          </button>
           <UserButton 
             afterSignOutUrl="/"
             appearance={{

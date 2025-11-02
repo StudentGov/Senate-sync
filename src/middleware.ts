@@ -28,7 +28,7 @@ export default clerkMiddleware(async (auth, req) => {
   }
   const { userId, sessionClaims, redirectToSignIn } = await auth();
   // Public paths that should bypass Clerk protections (e.g. onboarding pages)
-  const publicPaths = ["/senate/log-hours"];
+  const publicPaths = ["/senate/log-hours", "/api/voting"];
 
   // If the request is for a public path, skip protection and allow next()
   if (publicPaths.some((p) => req.nextUrl.pathname.startsWith(p))) {
