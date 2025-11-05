@@ -78,11 +78,11 @@ export default function ResourcesPage() {
             {RESOURCES.map((resource) => (
               <div
                 key={resource.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer flex flex-col"
                 style={{ width: '604px', height: '728px' }}
               >
                 {/* Image Section */}
-                <div className="relative bg-white flex items-center justify-center p-8" style={{ height: '520px' }}>
+                <div className="relative bg-white flex items-center justify-center p-8" style={{ height: '500px' }}>
                   <Image
                     src={resource.imageUrl}
                     alt={resource.title}
@@ -93,7 +93,7 @@ export default function ResourcesPage() {
                 </div>
 
                 {/* Card Footer - Yellow Section */}
-                <div className="bg-[#FFCC33] p-6">
+                <div className="bg-[#FFCC33] p-6 mt-auto">
                   <h3 
                     className="text-black mb-2 line-clamp-2"
                     style={{ 
