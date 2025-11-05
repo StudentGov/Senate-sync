@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     const eventType: EventType = event_type || "misc";
     if (!isValidEventType(eventType)) {
       return NextResponse.json(
-        { error: `Invalid event type. Must be one of: senate_meeting, committee_meeting, office_hours, administrative_meeting, misc` },
+        { error: `Invalid event type. Must be one of: senate_meeting, committee_meeting, office_hours, administrator, misc` },
         { status: 400 }
       );
     }
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: "Event added successfully", eventId: result.lastInsertRowid },
+      { message: "Event added successfully", eventId: String(result.lastInsertRowid) },
       { status: 201 }
     );
   } catch (error) {
