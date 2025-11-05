@@ -7,7 +7,7 @@ export type EventType =
   | "senate_meeting"
   | "committee_meeting" 
   | "office_hours"
-  | "administrative_meeting"
+  | "administrator"
   | "misc";
 
 export interface EventTypeConfig {
@@ -36,8 +36,8 @@ export const EVENT_TYPE_CONFIG: Record<EventType, EventTypeConfig> = {
     borderColor: "#FFBF00",      // Medium yellow/gold
     textColor: "#000000",        // Black text
   },
-  administrative_meeting: {
-    label: "Administrative Meeting",
+  administrator: {
+    label: "Administrator",
     backgroundColor: "#FF6B6B", // Light Red
     borderColor: "#FF3A3A",      // Medium red
     textColor: "#000000",        // Black text
