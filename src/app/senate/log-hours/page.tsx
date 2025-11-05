@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useUser } from '@clerk/nextjs'
 import Image from 'next/image';
 import binIcon from '../../assets/bin.png';
 
@@ -15,20 +16,48 @@ type Log = {
 };
 
 export default function SenateHourLoggingPage() {
+  const { user, isSignedIn } = useUser()
   const [segments, setSegments] = useState<Array<{ date: string; start: string; end: string }>>(() => [
     { date: new Date().toISOString().slice(0, 10), start: "", end: "" },
   ]);
   const [notes, setNotes] = useState("");
   const [logs, setLogs] = useState<Log[]>([]);
   const [saving, setSaving] = useState(false);
+  const [showReport, setShowReport] = useState(false)
+  const [periodKey, setPeriodKey] = useState(() => Math.floor(Date.now() / (14 * 24 * 60 * 60 * 1000)))
 
   useEffect(() => {
     // load recent logs (best-effort)
+    if (!isSignedIn) return // don't fetch if not signed in
     fetch("/api/senate/log-hours")
       .then((r) => r.json())
       .then((d) => setLogs(d?.logs || []))
       .catch(() => {});
-  }, []);
+  }, [isSignedIn]);
+
+  // Reset the report view when the 2-week period changes
+  useEffect(() => {
+    const id = setInterval(() => {
+      const key = Math.floor(Date.now() / (14 * 24 * 60 * 60 * 1000))
+      setPeriodKey((prev) => {
+        if (prev !== key) {
+          // period rolled over
+          setShowReport(false)
+          return key
+        }
+        return prev
+      })
+    }, 60 * 60 * 1000) // check hourly
+    return () => clearInterval(id)
+  }, [])
+
+  // Also hide report when logs change such that there are no rows
+  useEffect(() => {
+    if (!showReport) return
+    if (!logs || logs.length === 0) {
+      setShowReport(false)
+    }
+  }, [logs, showReport])
 
   function minutesBetween(start: string, end: string) {
     if (!start || !end) return 0;
@@ -52,6 +81,11 @@ export default function SenateHourLoggingPage() {
     e?.preventDefault();
     setSaving(true);
     try {
+      if (!isSignedIn) {
+        alert('Please sign in to log hours')
+        setSaving(false)
+        return
+      }
       // validation: notes required
       if (!notes || notes.trim().length === 0) {
         alert('Please add comments/notes (required)');
@@ -69,7 +103,7 @@ export default function SenateHourLoggingPage() {
       const payload = {
         // use first segment date as the entry date
         date: segments[0]?.date || new Date().toISOString().slice(0, 10),
-        senatorName: '',
+        senatorName: user?.fullName || (user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.primaryEmailAddress?.emailAddress) || '',
         hours: totalHours,
         activity: notes.slice(0, 200),
         notes,
@@ -124,22 +158,106 @@ export default function SenateHourLoggingPage() {
     }
   }
 
+  // --- Period helpers (Chicago timezone) ---
+  const PERIOD_MS = 14 * 24 * 60 * 60 * 1000
+
+  function parseTzOffsetFromName(tzName: string) {
+    const m = String(tzName).match(/GMT\s*([+-]?\d{1,2})(?::(\d{2}))?/i)
+    if (m) {
+      const h = Number(m[1]) || 0
+      const mmins = Number(m[2] || 0) || 0
+      return (h * 60 + mmins) * 60 * 1000
+    }
+    if (/CDT/i.test(tzName)) return -5 * 60 * 60 * 1000
+    if (/CST/i.test(tzName)) return -6 * 60 * 60 * 1000
+    return -6 * 60 * 60 * 1000
+  }
+
+  function getChicagoParts(dt: Date) {
+    const fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Chicago',
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+    })
+    const parts = fmt.formatToParts(dt).reduce((acc: any, p: any) => { if (p.type !== 'literal') acc[p.type] = p.value; return acc }, {})
+    return {
+      year: Number(parts.year),
+      month: Number(parts.month),
+      day: Number(parts.day),
+      hour: Number(parts.hour),
+      minute: Number(parts.minute),
+      second: Number(parts.second),
+    }
+  }
+
+  function getChicagoOffsetMs(dt: Date) {
+    const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', timeZoneName: 'shortOffset' })
+    const parts = fmt.formatToParts(dt)
+    const tzPart = parts.find((p: any) => p.type === 'timeZoneName')?.value
+    if (tzPart) return parseTzOffsetFromName(tzPart)
+    const fmt2 = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', timeZoneName: 'short' })
+    const parts2 = fmt2.formatToParts(dt)
+    const tzAbbrev = parts2.find((p: any) => p.type === 'timeZoneName')?.value || ''
+    return parseTzOffsetFromName(tzAbbrev)
+  }
+
+  function daysLeftInCurrentPeriod() {
+    try {
+      const now = new Date()
+      const cp = getChicagoParts(now)
+      const weekdayStr = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', weekday: 'short' }).format(now)
+      const weekdayMap: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }
+      const dayOfWeek = weekdayMap[weekdayStr as keyof typeof weekdayMap] ?? 0
+      const daysSinceThursday = (dayOfWeek - 4 + 7) % 7
+
+      // Chicago midnight UTC ms for the local Chicago date
+      const offsetMs = getChicagoOffsetMs(new Date(Date.UTC(cp.year, cp.month - 1, cp.day, 12, 0, 0)))
+      const chicagoMidnightUtcMs = Date.UTC(cp.year, cp.month - 1, cp.day, 0, 0, 0) - offsetMs
+
+      const thursdayMs = chicagoMidnightUtcMs - daysSinceThursday * 24 * 60 * 60 * 1000
+      const periodEndMs = thursdayMs + PERIOD_MS - 1
+      const diffMs = periodEndMs - Date.now()
+      if (diffMs <= 0) return 0
+      return Math.ceil(diffMs / (24 * 60 * 60 * 1000))
+    } catch (e) {
+      return 0
+    }
+  }
+
+  function periodEndLocalString() {
+    try {
+      const now = new Date()
+      const cp = getChicagoParts(now)
+      const weekdayStr = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', weekday: 'short' }).format(now)
+      const weekdayMap: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }
+      const dayOfWeek = weekdayMap[weekdayStr as keyof typeof weekdayMap] ?? 0
+      const daysSinceThursday = (dayOfWeek - 4 + 7) % 7
+      const offsetMs = getChicagoOffsetMs(new Date(Date.UTC(cp.year, cp.month - 1, cp.day, 12, 0, 0)))
+      const chicagoMidnightUtcMs = Date.UTC(cp.year, cp.month - 1, cp.day, 0, 0, 0) - offsetMs
+      const thursdayMs = chicagoMidnightUtcMs - daysSinceThursday * 24 * 60 * 60 * 1000
+      const periodEndMs = thursdayMs + PERIOD_MS - 1
+      return new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', month: '2-digit', day: '2-digit', year: 'numeric', weekday: 'short' }).format(new Date(periodEndMs))
+    } catch (e) {
+      return ''
+    }
+  }
+
   // Colors from design
   const yellow = "#F7BF17";
-  const purple = "#4B285F";
+  const purple = "#6B3B88"; // slightly lighter purple for better contrast
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main className="min-h-screen bg-white">
       {/* Top hero banner */}
-      <div className="w-full" style={{ background: yellow }}>
+      <div className="w-full">
         <div className="max-w-7xl mx-auto px-6 py-12 text-center">
-          <h1 className="text-4xl font-extrabold text-purple-700">Senator Hours Logging</h1>
+          <h1 className="text-4xl font-extrabold text-purple-700">Hour Logging</h1>
           <p className="mt-2 text-purple-800/80">Track your contributions and stay accountable</p>
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* Main content (purple background behind white cards) */}
+      <div className="w-full" style={{ background: purple }}>
+        <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* left large card */}
         <div className="lg:col-span-8">
           <div className="bg-white rounded-xl shadow-lg p-8">
@@ -206,6 +324,8 @@ export default function SenateHourLoggingPage() {
                 const remaining = Math.max(0, 6 - logged);
                 const remainingAfter = Math.max(0, 6 - (logged + draft));
                 const progressPct = Math.min(100, Math.round(((logged + draft) / 6) * 100));
+                const daysLeft = daysLeftInCurrentPeriod();
+                const periodEnd = periodEndLocalString();
                 return (
                   <>
                     <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
@@ -228,14 +348,57 @@ export default function SenateHourLoggingPage() {
                       <div className="h-3 bg-yellow-500" style={{ width: `${progressPct}%` }} />
                     </div>
 
+                    <div className="mt-2 p-2 bg-indigo-50 rounded text-sm text-indigo-700">
+                      <strong>{daysLeft} day{daysLeft === 1 ? '' : 's'} left</strong> — ends {periodEnd} (Chicago)
+                    </div>
+
                     <div className="text-sm text-gray-600">Draft hours: {draft} hrs</div>
-                    <button className="mt-2 w-full py-2 rounded-md border-2 border-yellow-500 text-yellow-700 font-medium">View Full Report</button>
+                    <button onClick={() => setShowReport(true)} className="mt-2 w-full py-2 rounded-md border-2 border-yellow-500 text-yellow-700 font-medium">View Full Report</button>
                   </>
                 );
               })()}
             </div>
           </div>
+          {showReport && (
+            <div className="mt-4 bg-white p-4 rounded shadow">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-lg font-semibold">Full Report — by date</h4>
+                <button className="text-sm text-gray-500" onClick={() => setShowReport(false)}>Close</button>
+              </div>
+              {logs.length === 0 ? (
+                <div className="text-sm text-gray-600">No logged entries found.</div>
+              ) : (
+                (() => {
+                  // group by date
+                  const grouped: Record<string, { total: number; count: number }> = {}
+                  logs.forEach((l) => {
+                    const d = l.date || new Date(l.createdAt || Date.now()).toISOString().slice(0,10)
+                    grouped[d] = grouped[d] || { total: 0, count: 0 }
+                    grouped[d].total += Number(l.hours || 0)
+                    grouped[d].count += 1
+                  })
+                  const rows = Object.entries(grouped).sort((a,b) => b[0].localeCompare(a[0]))
+                  return (
+                    <div className="space-y-2">
+                      <div className="max-h-64 overflow-y-auto">
+                        {rows.map(([date, meta]) => (
+                          <div key={date} className="flex justify-between items-center p-2 border rounded mb-2">
+                            <div>
+                              <div className="font-medium">{date}</div>
+                              <div className="text-sm text-gray-500">{meta.count} entr{meta.count === 1 ? 'y' : 'ies'}</div>
+                            </div>
+                            <div className="text-sm font-semibold">{Math.round(meta.total * 100) / 100} hrs</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })()
+              )}
+            </div>
+          )}
         </aside>
+        </div>
       </div>
     </main>
   );

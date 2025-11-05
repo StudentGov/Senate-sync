@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./admin.module.css";
 import UserTable from "../../components/UserTable";
 import CreateUserForm from "../../components/CreateUserForm";
+import AdminHourLogClient from "../components/AdminHourLogClient";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
@@ -17,7 +18,7 @@ export default function AdminDashboard() {
   const router = useRouter();
   const { user, isSignedIn, isLoaded } = useUser();
   const [users, setUsers] = useState([]);
-  const [activeTab, setActiveTab] = useState<"users" | "create">("users");
+  const [activeTab, setActiveTab] = useState<"users" | "create" | "hours">("users");
 
   /**
    * Function to fetch all users from the backend API.
@@ -98,11 +99,18 @@ export default function AdminDashboard() {
         >
           Create New User
         </button>
+        <button
+          className={`${styles.tab} ${activeTab === "hours" ? styles.activeTab : ""}`}
+          onClick={() => setActiveTab("hours")}
+        >
+          Hour Log
+        </button>
       </div>
 
       <div className={styles.tabContent}>
         {activeTab === "users" && <UserTable users={users} />}
         {activeTab === "create" && <CreateUserForm onUserCreated={handleUserCreated} />}
+        {activeTab === "hours" && <AdminHourLogClient />}
       </div>
     </div>
   );

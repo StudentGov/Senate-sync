@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { auth } from '@clerk/nextjs/server'
 
 const LOG_FILE = path.join(process.cwd(), 'src', 'app', 'senate', 'logs.json');
 
@@ -26,12 +27,23 @@ function writeLogs(logs: any[]) {
 }
 
 export async function GET() {
-  const logs = readLogs();
-  return NextResponse.json({ success: true, logs });
+  try {
+    const { userId } = await auth()
+    if (!userId) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+    const logs = readLogs();
+    const userLogs = logs.filter((l: any) => String(l.userId) === String(userId))
+    return NextResponse.json({ success: true, logs: userLogs });
+  } catch (e) {
+    console.error('Auth error', e)
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+  }
 }
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth()
+    if (!userId) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+
     const body = await req.json();
     const { senatorName, date, hours, activity, notes } = body;
 
@@ -42,6 +54,7 @@ export async function POST(req: Request) {
     const logs = readLogs();
     const newEntry = {
       id: Date.now().toString(),
+      userId,
       senatorName: senatorName || 'Unknown',
       date,
       hours: Number(hours),
