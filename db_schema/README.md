@@ -73,6 +73,53 @@ CREATE TABLE Hours (
 
 ---
 
+### Availability
+
+Stores attorney availability time slots for appointment scheduling.
+
+```sql
+CREATE TABLE Availability (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  attorney_id TEXT NOT NULL,         -- Clerk user ID (references Users table)
+  attorney_name TEXT NOT NULL,       -- Cached for performance (can be fetched from Users/Clerk)
+  date DATE NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  is_booked BOOLEAN DEFAULT FALSE,
+  booked_by_student_id TEXT,         -- Clerk user ID (references Users table)
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (attorney_id) REFERENCES Users(id) ON DELETE CASCADE,
+  FOREIGN KEY (booked_by_student_id) REFERENCES Users(id) ON DELETE SET NULL
+);
+```
+
+**Fields:**
+
+- `attorney_id` - Clerk user ID of the attorney offering the time slot
+- `attorney_name` - Cached attorney name for performance optimization
+- `date` - Date of the availability slot
+- `start_time` - Start time of the availability slot
+- `end_time` - End time of the availability slot
+- `is_booked` - Boolean flag indicating if the slot has been booked
+- `booked_by_student_id` - Clerk user ID of the student who booked the slot (NULL if not booked)
+- `created_at` - Timestamp when the availability slot was created
+
+**Foreign Keys:**
+
+- `attorney_id` → `Users(id)` ON DELETE CASCADE (removes availability when attorney is deleted)
+- `booked_by_student_id` → `Users(id)` ON DELETE SET NULL (preserves booking if student is deleted)
+
+---
+
+### Appointments
+
+Stores booked appointments between students and attorneys.
+
+```sql
+CREATE TABLE Appointments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id TEXT NOT NULL,            -- Clerk user ID (references Users table)
+  student_name TEXT NOT NULL,          -- Cached for performance (can be fetched from Users/
 ## Relationships
 
 ```
