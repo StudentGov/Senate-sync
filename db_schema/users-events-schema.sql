@@ -2,11 +2,11 @@
 -- Central user management table with role-based access control
 -- Uses Clerk user ID as primary key for consistency with existing tables
 CREATE TABLE IF NOT EXISTS Users (
-  id TEXT PRIMARY KEY,  -- Clerk user ID
-  username VARCHAR(50) UNIQUE NOT NULL,
-  role TEXT NOT NULL CHECK (role IN ('admin','senator','coordinator','attorney')),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  id TEXT PRIMARY KEY,                    -- Clerk user ID (primary key)
+  username VARCHAR(50) UNIQUE NOT NULL,   -- Username extracted from email
+  role TEXT NOT NULL CHECK (role IN ('admin','senator','coordinator','attorney')), -- User role for access control
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp when user was created
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Timestamp when user was last updated
 );
 
 -- Events table

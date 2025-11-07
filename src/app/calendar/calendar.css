@@ -1,13 +1,14 @@
 /* FullCalendar Custom Styling */
 
 /* Calendar Container */
-.calendar-container {
+.full-calendar-wrapper-container {
   min-height: 70vh;
   height: auto;
 }
 
 .fc {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", sans-serif;
 }
 
 /* Minimal all-day section in week view */
@@ -343,7 +344,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .calendar-container {
+  .full-calendar-wrapper-container {
     min-height: 50vh;
   }
 
@@ -351,33 +352,33 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .fc .fc-toolbar-title {
     font-size: 1.25rem;
   }
-  
+
   .fc .fc-daygrid-day-frame {
     min-height: 6vh;
   }
-  
+
   .fc-event {
     font-size: 0.75rem;
   }
-  
+
   .fc-timeGridWeek-view .fc-scroller {
     max-height: 50vh;
   }
 }
 
 @media (min-width: 1440px) {
-  .calendar-container {
+  .full-calendar-wrapper-container {
     min-height: 70vh;
   }
 
   .fc .fc-daygrid-day-frame {
     min-height: 10vh;
   }
-  
+
   .fc-timeGridWeek-view .fc-scroller {
     max-height: 60vh;
   }
@@ -392,4 +393,3 @@
   overflow-x: hidden !important;
   overflow-y: auto;
 }
-

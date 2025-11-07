@@ -1,4 +1,4 @@
-.formContainer {
+.create-user-form-container {
   max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
@@ -7,40 +7,40 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.formContainer h2 {
+.create-user-form-container h2 {
   margin-bottom: 1.5rem;
   color: #333;
   font-size: 1.5rem;
   font-weight: 600;
 }
 
-.form {
+.create-user-form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-.formGroup {
+.create-user-form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.formGroup label {
+.create-user-form-group label {
   font-weight: 500;
   color: #333;
   font-size: 0.95rem;
 }
 
-.optional {
+.create-user-optional-label {
   font-weight: 400;
   font-size: 0.85rem;
   color: #666;
   font-style: italic;
 }
 
-.input,
-.select {
+.create-user-input,
+.create-user-select {
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -48,19 +48,19 @@
   transition: border-color 0.2s;
 }
 
-.input:focus,
-.select:focus {
+.create-user-input:focus,
+.create-user-select:focus {
   outline: none;
   border-color: #7c3aed;
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
-.select {
+.create-user-select {
   cursor: pointer;
   background-color: white;
 }
 
-.submitButton {
+.create-user-submit-button {
   padding: 0.875rem 1.5rem;
   background-color: #7c3aed;
   color: white;
@@ -73,16 +73,16 @@
   margin-top: 0.5rem;
 }
 
-.submitButton:hover:not(:disabled) {
+.create-user-submit-button:hover:not(:disabled) {
   background-color: #6d28d9;
 }
 
-.submitButton:disabled {
+.create-user-submit-button:disabled {
   background-color: #9ca3af;
   cursor: not-allowed;
 }
 
-.error {
+.create-user-error-message {
   padding: 0.875rem;
   background-color: #fee2e2;
   border: 1px solid #ef4444;
@@ -91,7 +91,7 @@
   font-size: 0.95rem;
 }
 
-.success {
+.create-user-success-message {
   padding: 0.875rem;
   background-color: #d1fae5;
   border: 1px solid #10b981;
@@ -100,7 +100,7 @@
   font-size: 0.95rem;
 }
 
-.infoBox {
+.create-user-info-box {
   margin-top: 2rem;
   padding: 1rem;
   background-color: #f3f4f6;
@@ -108,13 +108,13 @@
   border-left: 4px solid #7c3aed;
 }
 
-.infoBox h3 {
+.create-user-info-box h3 {
   margin: 0 0 0.75rem 0;
   font-size: 1rem;
   color: #333;
 }
 
-.infoBox ul {
+.create-user-info-box ul {
   margin: 0;
   padding-left: 1.5rem;
   color: #555;
@@ -122,22 +122,21 @@
   line-height: 1.6;
 }
 
-.infoBox li {
+.create-user-info-box li {
   margin-bottom: 0.5rem;
 }
 
-.infoBox li:last-child {
+.create-user-info-box li:last-child {
   margin-bottom: 0;
 }
 
 @media (max-width: 640px) {
-  .formContainer {
+  .create-user-form-container {
     margin: 1rem;
     padding: 1.5rem;
   }
 
-  .formContainer h2 {
+  .create-user-form-container h2 {
     font-size: 1.25rem;
   }
 }
-

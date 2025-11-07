@@ -80,7 +80,7 @@
   }
 
   /* Specific elements */
-  .page {
+  .centered-page-container {
     justify-self: center;
   }
 
@@ -90,13 +90,20 @@
 }
 
 /* Fix stray seams between header and hero */
-.hero-section { margin: 0; }
-.hero-bg { display: block; }
+.homepage-hero-section-container {
+  margin: 0;
+}
+.hero-section-background-image {
+  display: block;
+}
 
-header { border-bottom: 0 !important; box-shadow: none !important; }
+header {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
 /* Nudge image up 1px to hide baked-in seam */
 /* seam fixed by cropping the source image; no CSS nudge needed */
-/*.hero-bg { transform: translateY(-1px); }
+/*.hero-section-background-image { transform: translateY(-1px); }
 
 /* Animations */
 @keyframes fadeIn {
@@ -110,7 +117,7 @@ header { border-bottom: 0 !important; box-shadow: none !important; }
   }
 }
 
-.animate-fadeIn {
+.fade-in-up-animation {
   animation: fadeIn 0.3s ease-out forwards;
 }
 

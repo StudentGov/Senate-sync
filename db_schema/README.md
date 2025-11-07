@@ -5,6 +5,7 @@ This directory contains the SQL schema definitions for the application's databas
 ## Tables
 
 ### Users
+
 Stores user account information with role-based access control.
 
 ```sql
@@ -18,6 +19,7 @@ CREATE TABLE Users (
 ```
 
 **Roles:**
+
 - `admin` - Full system access
 - `senator` - Senate member access
 - `coordinator` - Coordination privileges
@@ -25,6 +27,7 @@ CREATE TABLE Users (
 ---
 
 ### Events
+
 Stores calendar events created by users.
 
 ```sql
@@ -45,9 +48,11 @@ CREATE TABLE Events (
 ```
 
 **Fields:**
+
 - `location` - Optional event location (venue name, address, or "Online/Virtual")
 
 **Color Format:**
+
 - Must be a hex color string
 - Supports 6-digit format: `#93C5FD`
 - Supports 8-digit format (with alpha): `#93C5FD80`
@@ -55,6 +60,7 @@ CREATE TABLE Events (
 ---
 
 ### Hours
+
 Tracks time/hours logged by users, optionally linked to events.
 
 ```sql
@@ -119,7 +125,38 @@ Stores booked appointments between students and attorneys.
 CREATE TABLE Appointments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   student_id TEXT NOT NULL,            -- Clerk user ID (references Users table)
-  student_name TEXT NOT NULL,          -- Cached for performance (can be fetched from Users/
+  student_name TEXT NOT NULL,          -- Cached for performance (can be fetched from Users/Clerk)
+  student_email TEXT NOT NULL,         -- Cached for performance (can be fetched from Users/Clerk)
+  star_id TEXT NOT NULL,
+  tech_id TEXT NOT NULL,
+  description TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  slot_id INTEGER,
+  FOREIGN KEY (student_id) REFERENCES Users(id) ON DELETE CASCADE,
+  FOREIGN KEY (slot_id) REFERENCES Availability(id)
+);
+```
+
+**Fields:**
+
+- `student_id` - Clerk user ID of the student who booked the appointment
+- `student_name` - Cached student name for performance optimization
+- `student_email` - Cached student email for performance optimization
+- `star_id` - Student's STAR ID number
+- `tech_id` - Student's Tech ID number
+- `description` - Description or reason for the appointment
+- `created_at` - Timestamp when the appointment was created
+- `slot_id` - Reference to the Availability slot that was booked
+
+**Foreign Keys:**
+
+- `student_id` → `Users(id)` ON DELETE CASCADE (removes appointment when student is deleted)
+- `slot_id` → `Availability(id)` (links to the availability slot)
+
+**Note:** Student name and email are cached to reduce Clerk API calls and improve query performance.
+
+---
+
 ## Relationships
 
 ```
@@ -128,6 +165,16 @@ Users (1) ─────< (many) Events
 
 Users (1) ─────< (many) Hours
   └─── user_id
+
+Users (1) ─────< (many) Availability
+  └─── attorney_id
+  └─── booked_by_student_id (nullable)
+
+Users (1) ─────< (many) Appointments
+  └─── student_id
+
+Availability (1) ─────< (many) Appointments
+  └─── slot_id
 ```
 
 ## Schema Files
@@ -152,11 +199,13 @@ Users (1) ─────< (many) Hours
 All tables now use Clerk user IDs (TEXT) with foreign key constraints to the Users table:
 
 **Users Table (Central):**
+
 - `Users.id TEXT PRIMARY KEY` - Clerk user ID
 - `Users.username VARCHAR(50)` - Extracted from email
 - `Users.role TEXT` - Source of truth for user roles
 
 **Foreign Key References:**
+
 - ✅ `Events.created_by` → `Users(id)` ON DELETE CASCADE
 - ✅ `Hours.user_id` → `Users(id)` ON DELETE CASCADE
 - ✅ `Agendas.speaker_id` → `Users(id)` ON DELETE CASCADE
@@ -166,6 +215,7 @@ All tables now use Clerk user IDs (TEXT) with foreign key constraints to the Use
 - ✅ `Appointments.student_id` → `Users(id)` ON DELETE CASCADE
 
 **Benefits:**
+
 - ✅ Referential integrity enforced at database level
 - ✅ Automatic cascade deletes for data consistency
 - ✅ Database as source of truth for roles
@@ -183,4 +233,3 @@ See `CLERK_DATABASE_INTEGRATION.md` and `MIGRATION_GUIDE.md` for complete docume
 - Default timestamps automatically track record creation/updates
 - `ON DELETE CASCADE` ensures related records are cleaned up
 - `ON DELETE SET NULL` preserves hours when events are deleted
-
