@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 import styles from "./CreateUserForm.module.css";
@@ -44,7 +44,7 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
           role: "senator",
           password: "",
         });
-        
+
         // Notify parent component
         if (onUserCreated) {
           onUserCreated();
@@ -60,7 +60,9 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -68,10 +70,10 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
   };
 
   return (
-    <div className={styles.formContainer}>
+    <div className={styles.createUserFormContainer}>
       <h2>Create New User</h2>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.formGroup}>
+      <form onSubmit={handleSubmit} className={styles.createUserForm}>
+        <div className={styles.createUserFormGroup}>
           <label htmlFor="firstName">First Name *</label>
           <input
             type="text"
@@ -80,11 +82,11 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
             value={formData.firstName}
             onChange={handleChange}
             required
-            className={styles.input}
+            className={styles.createUserInput}
           />
         </div>
 
-        <div className={styles.formGroup}>
+        <div className={styles.createUserFormGroup}>
           <label htmlFor="lastName">Last Name *</label>
           <input
             type="text"
@@ -93,11 +95,11 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
             value={formData.lastName}
             onChange={handleChange}
             required
-            className={styles.input}
+            className={styles.createUserInput}
           />
         </div>
 
-        <div className={styles.formGroup}>
+        <div className={styles.createUserFormGroup}>
           <label htmlFor="email">Email *</label>
           <input
             type="email"
@@ -106,12 +108,12 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
             value={formData.email}
             onChange={handleChange}
             required
-            className={styles.input}
+            className={styles.createUserInput}
             placeholder="user@mnsu.edu"
           />
         </div>
 
-        <div className={styles.formGroup}>
+        <div className={styles.createUserFormGroup}>
           <label htmlFor="role">Role *</label>
           <select
             id="role"
@@ -119,7 +121,7 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
             value={formData.role}
             onChange={handleChange}
             required
-            className={styles.select}
+            className={styles.createUserSelect}
           >
             <option value="senator">Senator</option>
             <option value="coordinator">Coordinator</option>
@@ -128,10 +130,14 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
           </select>
         </div>
 
-        <div className={styles.formGroup}>
+        <div className={styles.createUserFormGroup}>
           <label htmlFor="password">
             Password
-            <span className={styles.optional}> (optional - user will be prompted to set password on first login if left empty)</span>
+            <span className={styles.createUserOptionalLabel}>
+              {" "}
+              (optional - user will be prompted to set password on first login
+              if left empty)
+            </span>
           </label>
           <input
             type="password"
@@ -139,34 +145,43 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className={styles.input}
+            className={styles.createUserInput}
             placeholder="Leave empty to require password reset"
             minLength={8}
           />
         </div>
 
-        {error && <div className={styles.error}>{error}</div>}
-        {success && <div className={styles.success}>{success}</div>}
+        {error && <div className={styles.createUserErrorMessage}>{error}</div>}
+        {success && (
+          <div className={styles.createUserSuccessMessage}>{success}</div>
+        )}
 
         <button
           type="submit"
           disabled={loading}
-          className={styles.submitButton}
+          className={styles.createUserSubmitButton}
         >
           {loading ? "Creating..." : "Create User"}
         </button>
       </form>
 
-      <div className={styles.infoBox}>
+      <div className={styles.createUserInfoBox}>
         <h3>Important Notes:</h3>
         <ul>
           <li>Users created will receive an email notification from Clerk</li>
-          <li>If no password is set, users will be prompted to create one on first login</li>
-          <li>You can change user roles later from the user management table</li>
-          <li>All accounts are created through Clerk and automatically synced to the database</li>
+          <li>
+            If no password is set, users will be prompted to create one on first
+            login
+          </li>
+          <li>
+            You can change user roles later from the user management table
+          </li>
+          <li>
+            All accounts are created through Clerk and automatically synced to
+            the database
+          </li>
         </ul>
       </div>
     </div>
   );
 }
-
