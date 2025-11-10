@@ -73,6 +73,54 @@ CREATE TABLE Hours (
 
 ---
 
+### Resources
+Stores links to helpful resources with metadata.
+
+```sql
+CREATE TABLE Resources (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_by TEXT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  link TEXT NOT NULL,
+  image_url TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (created_by) REFERENCES Users(id) ON DELETE CASCADE
+);
+```
+
+**Fields:**
+- `link` - URL to the resource (required)
+- `image_url` - Optional image/thumbnail URL
+
+---
+
+### Archives
+Stores historical documents and records.
+
+```sql
+CREATE TABLE Archives (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_by TEXT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  link TEXT NOT NULL,
+  image_url TEXT,
+  archive_type TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (created_by) REFERENCES Users(id) ON DELETE CASCADE
+);
+```
+
+**Fields:**
+- `link` - URL to the archived document (required)
+- `image_url` - Optional image/thumbnail URL
+- `archive_type` - Category (video, meeting_minutes, document, misc)
+
+---
+
 ## Relationships
 
 ```
@@ -81,6 +129,12 @@ Users (1) ─────< (many) Events
 
 Users (1) ─────< (many) Hours
   └─── user_id
+
+Users (1) ─────< (many) Resources
+  └─── created_by
+
+Users (1) ─────< (many) Archives
+  └─── created_by
 ```
 
 ## Schema Files
@@ -88,6 +142,7 @@ Users (1) ─────< (many) Hours
 - `users-events-schema.sql` - User management (with Clerk integration), calendar events, and hours tracking
 - `Schedule-schema.sql` - Attorney appointment scheduling tables (with foreign keys to Users)
 - `voting-schema.sql` - Senate voting system tables (with foreign keys to Users)
+- `resources-archives-schema.sql` - Resources and archives management tables (with foreign keys to Users)
 - `migration-add-user-fks.sql` - Migration script for existing databases
 - `migration-add-location.sql` - Migration to add location column to Events table
 - `MIGRATION_GUIDE.md` - Step-by-step migration instructions
@@ -112,6 +167,8 @@ All tables now use Clerk user IDs (TEXT) with foreign key constraints to the Use
 **Foreign Key References:**
 - ✅ `Events.created_by` → `Users(id)` ON DELETE CASCADE
 - ✅ `Hours.user_id` → `Users(id)` ON DELETE CASCADE
+- ✅ `Resources.created_by` → `Users(id)` ON DELETE CASCADE
+- ✅ `Archives.created_by` → `Users(id)` ON DELETE CASCADE
 - ✅ `Agendas.speaker_id` → `Users(id)` ON DELETE CASCADE
 - ✅ `Votes.voter_id` → `Users(id)` ON DELETE CASCADE
 - ✅ `Availability.attorney_id` → `Users(id)` ON DELETE CASCADE

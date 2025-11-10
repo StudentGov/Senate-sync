@@ -1,113 +1,100 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Plus, Play, ChevronLeft, ChevronRight, FileText, X, Check, Edit, Trash2, ClipboardList, FolderOpen } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight, ExternalLink, X, Check, Edit, Trash2, BookOpen } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 
-interface Archive {
+interface Resource {
   id: number;
   created_by: string;
   title: string;
   description: string | null;
   link: string;
   image_url: string | null;
-  archive_type: string;
   created_at: string;
   updated_at: string;
   creator_username: string | null;
 }
 
-const ARCHIVE_TYPES = [
-  { id: "all", label: "All Archives" },
-  { id: "video", label: "Videos" },
-  { id: "meeting_minutes", label: "Meeting Minutes" },
-  { id: "document", label: "Documents" },
-  { id: "misc", label: "Misc" },
-];
-
-export default function ArchivesPage() {
+export default function ResourcesPage() {
   const { user } = useUser();
-  const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [archiveType, setArchiveType] = useState("document");
-  const [archives, setArchives] = useState<Archive[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [editingArchive, setEditingArchive] = useState<Archive | null>(null);
+  const [editingResource, setEditingResource] = useState<Resource | null>(null);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [descriptionPopup, setDescriptionPopup] = useState<{id: number, title: string, description: string} | null>(null);
 
   const itemsPerPage = 12;
 
   useEffect(() => {
-    fetchArchives();
-  }, [activeTab]);
+    fetchResources();
+  }, []);
 
-  const fetchArchives = async () => {
+  const fetchResources = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/get-archives?archive_type=${activeTab}`);
+      const response = await fetch(`/api/get-resources`);
       if (response.ok) {
         const data = await response.json();
-        setArchives(data.archives);
+        setResources(data.resources);
       } else {
-        console.error("Failed to fetch archives");
+        console.error("Failed to fetch resources");
       }
     } catch (error) {
-      console.error("Error fetching archives:", error);
+      console.error("Error fetching resources:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleAddFile = () => {
-    setEditingArchive(null);
+  const handleAddResource = () => {
+    setEditingResource(null);
     resetForm();
     setIsModalOpen(true);
   };
 
-  const handleEditArchive = (archive: Archive) => {
-    setEditingArchive(archive);
-    setTitle(archive.title);
-    setLink(archive.link);
-    setDescription(archive.description || "");
-    setImageUrl(archive.image_url || "");
-    setArchiveType(archive.archive_type);
+  const handleEditResource = (resource: Resource) => {
+    setEditingResource(resource);
+    setTitle(resource.title);
+    setLink(resource.link);
+    setDescription(resource.description || "");
+    setImageUrl(resource.image_url || "");
     setIsModalOpen(true);
   };
 
-  const handleDeleteArchive = async (archiveId: number) => {
-    if (!confirm("Are you sure you want to delete this archive?")) {
+  const handleDeleteResource = async (resourceId: number) => {
+    if (!confirm("Are you sure you want to delete this resource?")) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/delete-archive?id=${archiveId}`, {
+      const response = await fetch(`/api/delete-resource?id=${resourceId}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
-        alert("Archive deleted successfully!");
-        fetchArchives();
+        alert("Resource deleted successfully!");
+        fetchResources();
       } else {
         const error = await response.json();
-        alert(`Failed to delete archive: ${error.error || "Unknown error"}`);
+        alert(`Failed to delete resource: ${error.error || "Unknown error"}`);
       }
     } catch (error) {
-      console.error("Error deleting archive:", error);
-      alert("Failed to delete archive. Please try again.");
+      console.error("Error deleting resource:", error);
+      alert("Failed to delete resource. Please try again.");
     }
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     resetForm();
-    setEditingArchive(null);
+    setEditingResource(null);
   };
 
   const resetForm = () => {
@@ -115,12 +102,11 @@ export default function ArchivesPage() {
     setLink("");
     setDescription("");
     setImageUrl("");
-    setArchiveType("document");
   };
 
   const handleConfirm = async () => {
-    if (!title || !link || !archiveType) {
-      alert("Please fill in all required fields (Title, Link, and Type)");
+    if (!title || !link) {
+      alert("Please fill in all required fields (Title and Link)");
       return;
     }
 
@@ -130,18 +116,17 @@ export default function ArchivesPage() {
         link,
         description,
         image_url: imageUrl,
-        archive_type: archiveType,
       };
 
       let response;
-      if (editingArchive) {
-        response = await fetch("/api/update-archive", {
+      if (editingResource) {
+        response = await fetch("/api/update-resource", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...payload, id: editingArchive.id }),
+          body: JSON.stringify({ ...payload, id: editingResource.id }),
         });
       } else {
-        response = await fetch("/api/add-archive", {
+        response = await fetch("/api/add-resource", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -149,28 +134,23 @@ export default function ArchivesPage() {
       }
 
       if (response.ok) {
-        alert(`Archive ${editingArchive ? "updated" : "added"} successfully!`);
+        alert(`Resource ${editingResource ? "updated" : "added"} successfully!`);
         handleCloseModal();
-        fetchArchives();
+        fetchResources();
       } else {
         const error = await response.json();
-        alert(`Failed to ${editingArchive ? "update" : "add"} archive: ${error.error || "Unknown error"}`);
+        alert(`Failed to ${editingResource ? "update" : "add"} resource: ${error.error || "Unknown error"}`);
       }
     } catch (error) {
-      console.error("Error saving archive:", error);
-      alert("Failed to save archive. Please try again.");
+      console.error("Error saving resource:", error);
+      alert("Failed to save resource. Please try again.");
     }
   };
 
-  const filteredArchives = archives.filter((archive) =>
-    archive.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (archive.description && archive.description.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
-  const totalPages = Math.ceil(filteredArchives.length / itemsPerPage);
+  const totalPages = Math.ceil(resources.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentArchives = filteredArchives.slice(startIndex, endIndex);
+  const currentResources = resources.slice(startIndex, endIndex);
 
   const formatUrl = (url: string) => {
     // If URL already has protocol, use it as is
@@ -181,51 +161,6 @@ export default function ArchivesPage() {
     return `https://${url}`;
   };
 
-  const getYouTubeThumbnail = (url: string) => {
-    try {
-      const formattedUrl = formatUrl(url);
-      const urlObj = new URL(formattedUrl);
-      let videoId = null;
-
-      // Handle different YouTube URL formats
-      if (urlObj.hostname.includes('youtube.com')) {
-        videoId = urlObj.searchParams.get('v');
-      } else if (urlObj.hostname.includes('youtu.be')) {
-        videoId = urlObj.pathname.slice(1);
-      }
-
-      if (videoId) {
-        // Use hqdefault.jpg which is always available (480x360)
-        return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-      }
-    } catch (e) {
-      return null;
-    }
-    return null;
-  };
-
-  const getImageUrl = (item: Archive) => {
-    if (item.image_url) return item.image_url;
-    
-    // Try to get YouTube thumbnail if it's a video type
-    if (item.archive_type === 'video') {
-      const ytThumbnail = getYouTubeThumbnail(item.link);
-      if (ytThumbnail) return ytThumbnail;
-    }
-    
-    return null;
-  };
-
-  const getCounts = () => {
-    const counts: Record<string, number> = { all: archives.length };
-    archives.forEach((archive) => {
-      counts[archive.archive_type] = (counts[archive.archive_type] || 0) + 1;
-    });
-    return counts;
-  };
-
-  const counts = getCounts();
-
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-1 bg-gray-50 py-12">
@@ -233,67 +168,22 @@ export default function ArchivesPage() {
           {/* Title and Description */}
           <div className="text-center mb-8">
             <h1 className="font-bold text-3xl md:text-4xl text-[#49306e] mb-4 font-kanit">
-              Student Government Archives
+              Student Government Resources
             </h1>
             <p className="text-gray-600 max-w-2xl mx-auto font-kanit">
-              Access historical documents, meeting recordings, and important resources from
-              Minnesota State University Student Government.
+              Helpful guides, tools, and resources to support students at Minnesota State University.
             </p>
           </div>
 
-          {/* Search Bar */}
-          <div className="max-w-3xl mx-auto mb-8">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search through our archives..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
-              />
-            </div>
-          </div>
-
-          {/* Tabs and Add File Button */}
-          <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-            <div className="flex gap-2 flex-wrap justify-center sm:justify-start">
-              {ARCHIVE_TYPES.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    setActiveTab(tab.id);
-                    setCurrentPage(1);
-                  }}
-                  className={`px-4 py-2 rounded-md font-medium transition-colors font-kanit text-sm sm:text-base ${
-                    activeTab === tab.id
-                      ? "bg-[#49306e] text-white"
-                      : "text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  {tab.label}{" "}
-                  <span
-                    className={`ml-1 px-2 py-0.5 rounded-full text-xs sm:text-sm ${
-                      activeTab === tab.id
-                        ? "bg-white/20"
-                        : "bg-gray-300"
-                    }`}
-                  >
-                    {counts[tab.id] || 0}
-                  </span>
-                </button>
-              ))}
-            </div>
+          {/* Add Resource Button */}
+          <div className="flex justify-end mb-8">
             {user && (
               <button
-                onClick={handleAddFile}
+                onClick={handleAddResource}
                 className="bg-[#49306e] hover:bg-[#49306e]/90 text-white font-semibold px-6 py-2 rounded-md flex items-center gap-2 transition-colors font-kanit"
               >
                 <Plus className="w-5 h-5" />
-                Add Archive
+                Add Resource
               </button>
             )}
           </div>
@@ -343,21 +233,21 @@ export default function ArchivesPage() {
             </div>
           )}
 
-          {/* Archive Items Grid */}
+          {/* Resource Items Grid */}
           {isLoading ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 font-kanit">Loading archives...</p>
+              <p className="text-gray-500 font-kanit">Loading resources...</p>
             </div>
-          ) : currentArchives.length === 0 ? (
+          ) : currentResources.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 font-kanit">No archives found.</p>
+              <p className="text-gray-500 font-kanit">No resources found.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {currentArchives.map((item) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+              {currentResources.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer relative"
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer relative group"
                   onMouseEnter={() => setHoveredCard(item.id)}
                   onMouseLeave={() => setHoveredCard(null)}
                   onClick={() => window.open(formatUrl(item.link), "_blank")}
@@ -368,7 +258,7 @@ export default function ArchivesPage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleEditArchive(item);
+                          handleEditResource(item);
                         }}
                         className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors"
                       >
@@ -377,7 +267,7 @@ export default function ArchivesPage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteArchive(item.id);
+                          handleDeleteResource(item.id);
                         }}
                         className="p-2 bg-white rounded-full shadow-lg hover:bg-red-50 transition-colors"
                       >
@@ -387,38 +277,30 @@ export default function ArchivesPage() {
                   )}
 
                   {/* Thumbnail/Preview */}
-                  <div className="relative aspect-video bg-[#8b6ba8] flex items-center justify-center">
-                    {getImageUrl(item) ? (
-                      <img src={getImageUrl(item)!} alt={item.title} className="w-full h-full object-cover" />
-                    ) : item.archive_type === "video" ? (
-                      <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
-                        <Play className="w-8 h-8 text-[#49306e] ml-1" fill="currentColor" />
-                      </div>
-                    ) : item.archive_type === "meeting_minutes" ? (
-                      <ClipboardList className="w-16 h-16 text-[#febd11] opacity-80" />
-                    ) : item.archive_type === "document" ? (
-                      <FileText className="w-16 h-16 text-[#febd11] opacity-80" />
+                  <div className="relative h-40 bg-gradient-to-br from-[#49306e] to-[#8b6ba8] flex items-center justify-center">
+                    {item.image_url ? (
+                      <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
                     ) : (
-                      <FolderOpen className="w-16 h-16 text-[#febd11] opacity-80" />
+                      <BookOpen className="w-12 h-12 text-white/90" />
                     )}
-                    {/* Type Badge */}
-                    <div className="absolute top-3 right-3 bg-[#febd11] text-[#49306e] font-semibold px-2 py-1 rounded text-xs font-kanit">
-                      {item.archive_type.charAt(0).toUpperCase() + item.archive_type.slice(1).replace('_', ' ')}
+                    {/* External Link Badge */}
+                    <div className="absolute top-3 right-3 bg-[#febd11] p-1.5 rounded-full">
+                      <ExternalLink className="w-3 h-3 text-[#49306e]" />
                     </div>
                   </div>
 
                   {/* Card Content */}
-                  <div className="bg-[#febd11] p-4 h-[160px] flex flex-col">
-                    <h3 className="font-semibold text-[#49306e] mb-1 line-clamp-2 font-kanit">
+                  <div className="p-4 h-[160px] flex flex-col">
+                    <h3 className="font-semibold text-[#49306e] mb-2 line-clamp-2 font-kanit">
                       {item.title}
                     </h3>
-                    <div className="flex-1 mb-2">
+                    <div className="flex-1">
                       {item.description && (
                         <>
-                          <p className="text-sm text-[#49306e]/70 font-kanit line-clamp-2">
+                          <p className="text-sm text-gray-600 font-kanit line-clamp-3">
                             {item.description}
                           </p>
-                          {item.description.length > 100 && (
+                          {item.description.length > 120 && (
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -436,9 +318,6 @@ export default function ArchivesPage() {
                         </>
                       )}
                     </div>
-                    <p className="text-xs text-[#49306e]/60 font-kanit mt-auto">
-                      {new Date(item.created_at).toLocaleDateString()}
-                    </p>
                   </div>
                 </div>
               ))}
@@ -516,7 +395,7 @@ export default function ArchivesPage() {
         </div>
       )}
 
-      {/* Add/Edit Archive Modal */}
+      {/* Add/Edit Resource Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Backdrop with blur */}
@@ -528,7 +407,7 @@ export default function ArchivesPage() {
           {/* Modal */}
           <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 p-8 max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-[#49306e] mb-6 font-kanit">
-              {editingArchive ? "Edit Archive" : "Add Archive"}
+              {editingResource ? "Edit Resource" : "Add Resource"}
             </h2>
             
             {/* Form Fields */}
@@ -540,29 +419,11 @@ export default function ArchivesPage() {
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter archive title"
+                  placeholder="Enter resource title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
                 />
-              </div>
-
-              {/* Archive Type */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
-                  Archive Type <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={archiveType}
-                  onChange={(e) => setArchiveType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
-                >
-                  {ARCHIVE_TYPES.filter(type => type.id !== "all").map((type) => (
-                    <option key={type.id} value={type.id}>
-                      {type.label}
-                    </option>
-                  ))}
-                </select>
               </div>
 
               {/* Link */}
@@ -572,7 +433,7 @@ export default function ArchivesPage() {
                 </label>
                 <input
                   type="url"
-                  placeholder="https://example.com/document.pdf"
+                  placeholder="https://example.com"
                   value={link}
                   onChange={(e) => setLink(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
@@ -599,7 +460,7 @@ export default function ArchivesPage() {
                   Description
                 </label>
                 <textarea
-                  placeholder="Provide details about this archive..."
+                  placeholder="Provide details about this resource..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   maxLength={500}
@@ -623,7 +484,7 @@ export default function ArchivesPage() {
                   className="flex-1 px-6 py-3 bg-[#49306e] hover:bg-[#49306e]/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 font-kanit"
                 >
                   <Check className="w-4 h-4" />
-                  {editingArchive ? "Update" : "Confirm"}
+                  {editingResource ? "Update" : "Confirm"}
                 </button>
               </div>
             </div>
