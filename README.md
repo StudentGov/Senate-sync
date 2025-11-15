@@ -138,14 +138,12 @@ Sync-Government/
 ├── src/
 │   ├── app/
 │   │   ├── api/                 # Next.js API routes
-│   │   │   ├── assign-default-role/  # User sync endpoint
-│   │   │   ├── update-user-role/     # Role management
+│   │   │   ├── create-user/         # Admin creates user accounts
+│   │   │   ├── update-user-role/    # Role management
 │   │   │   └── ...
 │   │   ├── auth/                # Authentication pages
 │   │   ├── calendar/            # Calendar page and components
 │   │   ├── components/          # Reusable React components
-│   │   └── hooks/
-│   │       └── useAssignRole.ts # Auto-assign role hook
 │   ├── middleware.ts            # Route protection
 │   └── db.js                    # Database connection setup
 ├── IMPLEMENTATION_SUMMARY.md    # Clerk + Database integration guide
