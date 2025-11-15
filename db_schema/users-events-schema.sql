@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS Events (
       'senate_meeting',
       'committee_meeting',
       'office_hours',
-      'administrative_meeting',
+      'administrator',
       'misc'
     )
   ),

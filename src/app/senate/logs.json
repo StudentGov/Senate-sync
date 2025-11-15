@@ -1,5 +1,25 @@
 [
   {
+    "id": "1762359589919",
+    "userId": "user_34WKRvyndz2amTHIAsBlkNL6J1j",
+    "senatorName": "Michael Wohlman",
+    "date": "2025-11-03",
+    "hours": 1,
+    "activity": "Office Hours",
+    "notes": "Office Hours",
+    "createdAt": "2025-11-05T16:19:49.919Z"
+  },
+  {
+    "id": "1762359176214",
+    "userId": "user_34WKRvyndz2amTHIAsBlkNL6J1j",
+    "senatorName": "Michael Wohlman",
+    "date": "2025-11-04",
+    "hours": 1,
+    "activity": "Office Hours",
+    "notes": "Office Hours",
+    "createdAt": "2025-11-05T16:12:56.214Z"
+  },
+  {
     "id": "1761753736763",
     "senatorName": "Unknown",
     "date": "2025-10-29",
