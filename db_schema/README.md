@@ -5,6 +5,7 @@ This directory contains the SQL schema definitions for the application's databas
 ## Tables
 
 ### Users
+
 Stores user account information with role-based access control.
 
 ```sql
@@ -18,6 +19,7 @@ CREATE TABLE Users (
 ```
 
 **Roles:**
+
 - `admin` - Full system access
 - `senator` - Senate member access
 - `coordinator` - Coordination privileges
@@ -25,6 +27,7 @@ CREATE TABLE Users (
 ---
 
 ### Events
+
 Stores calendar events created by users.
 
 ```sql
@@ -45,9 +48,11 @@ CREATE TABLE Events (
 ```
 
 **Fields:**
+
 - `location` - Optional event location (venue name, address, or "Online/Virtual")
 
 **Color Format:**
+
 - Must be a hex color string
 - Supports 6-digit format: `#93C5FD`
 - Supports 8-digit format (with alpha): `#93C5FD80`
@@ -55,6 +60,7 @@ CREATE TABLE Events (
 ---
 
 ### Hours
+
 Tracks time/hours logged by users, optionally linked to events.
 
 ```sql
@@ -160,11 +166,13 @@ Users (1) ─────< (many) Archives
 All tables now use Clerk user IDs (TEXT) with foreign key constraints to the Users table:
 
 **Users Table (Central):**
+
 - `Users.id TEXT PRIMARY KEY` - Clerk user ID
 - `Users.username VARCHAR(50)` - Extracted from email
 - `Users.role TEXT` - Source of truth for user roles
 
 **Foreign Key References:**
+
 - ✅ `Events.created_by` → `Users(id)` ON DELETE CASCADE
 - ✅ `Hours.user_id` → `Users(id)` ON DELETE CASCADE
 - ✅ `Resources.created_by` → `Users(id)` ON DELETE CASCADE
@@ -176,6 +184,7 @@ All tables now use Clerk user IDs (TEXT) with foreign key constraints to the Use
 - ✅ `Appointments.student_id` → `Users(id)` ON DELETE CASCADE
 
 **Benefits:**
+
 - ✅ Referential integrity enforced at database level
 - ✅ Automatic cascade deletes for data consistency
 - ✅ Database as source of truth for roles
@@ -193,4 +202,3 @@ See `CLERK_DATABASE_INTEGRATION.md` and `MIGRATION_GUIDE.md` for complete docume
 - Default timestamps automatically track record creation/updates
 - `ON DELETE CASCADE` ensures related records are cleaned up
 - `ON DELETE SET NULL` preserves hours when events are deleted
-
