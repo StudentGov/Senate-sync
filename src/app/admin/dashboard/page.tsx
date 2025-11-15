@@ -41,10 +41,10 @@ export default function AdminDashboard() {
     // Don't do anything until user data is loaded
     if (!isSignedIn) return;
     if (!user) return;
-
+    
     const userRole = user?.publicMetadata?.role as string;
     console.log("Admin Dashboard - User Role:", userRole); // Debug log
-
+    
     // Check if the user has admin access
     if (userRole !== "admin") {
       console.log("Access denied - redirecting to unauthorized"); // Debug log
@@ -83,35 +83,31 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className={styles.adminDashboardPage}>
+    <div className={styles['admin-dashboard-page']}>
       <h1>Admin Dashboard</h1>
-
-      <div className={styles.adminTabs}>
+      
+      <div className={styles['admin-tabs']}>
         <button
-          className={`${styles.adminTab} ${
-            activeTab === "users" ? styles.adminActiveTab : ""
-          }`}
+          className={`${styles['admin-tab']} ${activeTab === "users" ? styles['admin-active-tab'] : ""}`}
           onClick={() => setActiveTab("users")}
         >
           Manage Users ({users.length})
         </button>
         <button
-          className={`${styles.adminTab} ${
-            activeTab === "create" ? styles.adminActiveTab : ""
-          }`}
+          className={`${styles['admin-tab']} ${activeTab === "create" ? styles['admin-active-tab'] : ""}`}
           onClick={() => setActiveTab("create")}
         >
           Create New User
         </button>
         <button
-          className={`${styles.tab} ${activeTab === "hours" ? styles.activeTab : ""}`}
+          className={`${styles['admin-tab']} ${activeTab === "hours" ? styles['admin-active-tab'] : ""}`}
           onClick={() => setActiveTab("hours")}
         >
           Hour Log
         </button>
       </div>
 
-      <div className={styles.adminTabContent}>
+      <div className={styles['admin-tab-content']}>
         {activeTab === "users" && <UserTable users={users} />}
         {activeTab === "create" && <CreateUserForm onUserCreated={handleUserCreated} />}
         {activeTab === "hours" && <AdminHourLogClient />}

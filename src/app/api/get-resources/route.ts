@@ -19,7 +19,10 @@ export async function GET(req: Request) {
       ORDER BY r.created_at DESC
     `;
 
-    const result = await turso.execute({ sql });
+    const result = await turso.execute({
+      sql,
+      args: [],
+    });
 
     const resources = result.rows.map((row) => ({
       id: row.id,
