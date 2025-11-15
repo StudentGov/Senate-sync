@@ -153,9 +153,9 @@ export default function UserTable({ users }: UserTableProps) {
   const hasChanges = Object.keys(pendingChanges).length > 0;
 
   return (
-    <div className={styles.adminMainContainer}>
-      <div className={styles.adminTopBar}>
-        <div className={styles.adminSearchSortContainer}>
+    <div className={styles['admin-main-container']}>
+      <div className={styles['admin-top-bar']}>
+        <div className={styles['admin-search-sort-container']}>
           <SearchBar onSearch={(query) => setSearchQuery(query)} />
           <DropDownOptions
             options={[
@@ -231,15 +231,15 @@ export default function UserTable({ users }: UserTableProps) {
         Showing {filteredUsers.length} of {users.length} users
       </div>
 
-      <div className={styles.adminLabelsRow}>
+      <div className={styles['admin-labels-row']}>
         <label>Name</label>
-        <div className={styles.adminRightLabels}>
+        <div className={styles['admin-right-labels']}>
           <label>Role</label>
           <label>Actions</label>
         </div>
       </div>
 
-      <div className={styles.adminScrollArea}>
+      <div className={styles['admin-scroll-area']}>
         {filteredUsers.length === 0 ? (
           <div
             style={{
@@ -255,15 +255,15 @@ export default function UserTable({ users }: UserTableProps) {
           </div>
         ) : (
           filteredUsers.map((user) => (
-            <div key={user.id} className={styles.adminUserRow}>
-              <div className={styles.adminUserInfo}>
-                <div className={styles.adminUserName}>
+            <div key={user.id} className={styles['admin-user-row']}>
+              <div className={styles['admin-user-info']}>
+                <div className={styles['admin-user-name']}>
                   {user.firstName} {user.lastName}
                 </div>
-                <div className={styles.adminUserEmail}>{user.email}</div>
+                <div className={styles['admin-user-email']}>{user.email}</div>
               </div>
-              <div className={styles.adminUserActions}>
-                <div className={styles.adminActions}>
+              <div className={styles['admin-user-actions']}>
+                <div className={styles['admin-actions']}>
                   <select
                     value={pendingChanges[user.id] || user.role}
                     onChange={(e) => handleRoleChange(user.id, e.target.value)}
@@ -294,7 +294,7 @@ export default function UserTable({ users }: UserTableProps) {
                         `${user.firstName} ${user.lastName}`
                       )
                     }
-                    className={styles.adminDeleteButton}
+                    className={styles['admin-delete-button']}
                     title="Delete this user permanently"
                   >
                     Delete
