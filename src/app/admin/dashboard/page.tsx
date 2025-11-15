@@ -41,10 +41,10 @@ export default function AdminDashboard() {
     // Don't do anything until user data is loaded
     if (!isSignedIn) return;
     if (!user) return;
-    
+
     const userRole = user?.publicMetadata?.role as string;
     console.log("Admin Dashboard - User Role:", userRole); // Debug log
-    
+
     // Check if the user has admin access
     if (userRole !== "admin") {
       console.log("Access denied - redirecting to unauthorized"); // Debug log
@@ -83,18 +83,22 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className={styles.adminPage}>
+    <div className={styles.adminDashboardPage}>
       <h1>Admin Dashboard</h1>
-      
-      <div className={styles.tabs}>
+
+      <div className={styles.adminTabs}>
         <button
-          className={`${styles.tab} ${activeTab === "users" ? styles.activeTab : ""}`}
+          className={`${styles.adminTab} ${
+            activeTab === "users" ? styles.adminActiveTab : ""
+          }`}
           onClick={() => setActiveTab("users")}
         >
           Manage Users ({users.length})
         </button>
         <button
-          className={`${styles.tab} ${activeTab === "create" ? styles.activeTab : ""}`}
+          className={`${styles.adminTab} ${
+            activeTab === "create" ? styles.adminActiveTab : ""
+          }`}
           onClick={() => setActiveTab("create")}
         >
           Create New User
@@ -107,7 +111,7 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      <div className={styles.tabContent}>
+      <div className={styles.adminTabContent}>
         {activeTab === "users" && <UserTable users={users} />}
         {activeTab === "create" && <CreateUserForm onUserCreated={handleUserCreated} />}
         {activeTab === "hours" && <AdminHourLogClient />}

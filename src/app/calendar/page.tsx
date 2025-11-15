@@ -38,7 +38,7 @@ export default function CalendarPage() {
     const jsEvent = clickInfo.jsEvent;
     const calendarApi = clickInfo.view.calendar;
     const currentView = calendarApi.view.type;
-    
+
     console.log("Event clicked:", event.title);
     console.log("Extended props:", event.extendedProps);
     console.log("Location:", event.extendedProps.location);
@@ -56,16 +56,21 @@ export default function CalendarPage() {
     
     setSelectedEvent({
       title: event.title,
-      start: event.allDay ? "All day" : (event.start ? event.start.toLocaleString() : ""),
-      end: event.allDay ? "" : (event.end ? event.end.toLocaleString() : ""),
-      description: event.extendedProps.description || "No description available",
+      start: event.allDay
+        ? "All day"
+        : event.start
+        ? event.start.toLocaleString()
+        : "",
+      end: event.allDay ? "" : event.end ? event.end.toLocaleString() : "",
+      description:
+        event.extendedProps.description || "No description available",
       location: event.extendedProps.location || "No location specified",
     });
 
     // Position the popover based on the view
     const rect = (jsEvent.target as HTMLElement).getBoundingClientRect();
-    
-    if (currentView === 'timeGridWeek') {
+
+    if (currentView === "timeGridWeek") {
       // For weekly view, position to the right of the event
       setPopoverPosition({
         top: rect.top + window.scrollY,
@@ -78,7 +83,7 @@ export default function CalendarPage() {
         left: rect.left + window.scrollX,
       });
     }
-    
+
     setIsPopoverOpen(true);
     setShowEventMenu(false);
   };
@@ -151,7 +156,10 @@ export default function CalendarPage() {
   // Close popover when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(event.target as Node)
+      ) {
         setIsPopoverOpen(false);
       }
     };
@@ -179,10 +187,13 @@ export default function CalendarPage() {
             </button>
           )}
         </div>
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 calendar-container">
+
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 full-calendar-wrapper-container">
           {loading ? (
-            <div className="flex justify-center items-center" style={{ minHeight: '60vh' }}>
+            <div
+              className="flex justify-center items-center"
+              style={{ minHeight: "60vh" }}
+            >
               <p className="text-gray-500">Loading events...</p>
             </div>
           ) : (
@@ -211,16 +222,16 @@ export default function CalendarPage() {
               dayMaxEventRows={2}
               nowIndicator={true}
               eventTimeFormat={{
-                hour: 'numeric',
-                minute: '2-digit',
-                meridiem: 'short',
-                hour12: true
+                hour: "numeric",
+                minute: "2-digit",
+                meridiem: "short",
+                hour12: true,
               }}
               slotLabelFormat={{
-                hour: 'numeric',
-                minute: '2-digit',
-                meridiem: 'short',
-                hour12: true
+                hour: "numeric",
+                minute: "2-digit",
+                meridiem: "short",
+                hour12: true,
               }}
               events={events}
               eventContent={(eventInfo) => {
@@ -228,7 +239,9 @@ export default function CalendarPage() {
                   <div className="fc-event-main-frame">
                     <div className="fc-event-time">{eventInfo.timeText}</div>
                     <div className="fc-event-title-container">
-                      <div className="fc-event-title fc-sticky">{eventInfo.event.title}</div>
+                      <div className="fc-event-title fc-sticky">
+                        {eventInfo.event.title}
+                      </div>
                     </div>
                   </div>
                 );
@@ -358,7 +371,9 @@ export default function CalendarPage() {
                     d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                <p className="text-sm text-gray-700">{selectedEvent.location}</p>
+                <p className="text-sm text-gray-700">
+                  {selectedEvent.location}
+                </p>
               </div>
             )}
 
@@ -378,7 +393,9 @@ export default function CalendarPage() {
                     d="M4 6h16M4 12h16M4 18h7"
                   />
                 </svg>
-                <p className="text-sm text-gray-700">{selectedEvent.description}</p>
+                <p className="text-sm text-gray-700">
+                  {selectedEvent.description}
+                </p>
               </div>
             )}
           </div>

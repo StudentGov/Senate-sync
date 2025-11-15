@@ -1,15 +1,16 @@
 /**
  * Role Synchronization Script
  * Ensures Clerk and database roles are in sync.
- * 
+ *
  * Usage:
  *   npm run sync-roles           # Check for issues (dry-run)
  *   npm run sync-roles:fix       # Fix all issues
  *   npm run sync-roles:clerk     # Use Clerk as source of truth
- * 
+ *
  * See CURSOR_UPDATES.md for full documentation
  */
 
+// Delete this file before code review #2
 import { createClient } from "@libsql/client";
 import { clerkClient } from "@clerk/clerk-sdk-node";
 import dotenv from "dotenv";
@@ -50,14 +51,20 @@ const shouldFix = args.includes("--fix");
 const useClerkAsSource = args.includes("--clerk");
 const sourceOfTruth = useClerkAsSource ? "Clerk" : "Database";
 
-console.log("\n╔═══════════════════════════════════════════════════════════════╗");
+console.log(
+  "\n╔═══════════════════════════════════════════════════════════════╗"
+);
 console.log("║           ROLE SYNCHRONIZATION SCRIPT                        ║");
-console.log("╚═══════════════════════════════════════════════════════════════╝\n");
+console.log(
+  "╚═══════════════════════════════════════════════════════════════╝\n"
+);
 console.log(`Mode: ${shouldFix ? "FIX" : "DRY-RUN (report only)"}`);
 console.log(`Source of Truth: ${sourceOfTruth}\n`);
 
 if (!shouldFix) {
-  console.log("💡 Running in DRY-RUN mode. Use --fix to automatically fix issues.\n");
+  console.log(
+    "💡 Running in DRY-RUN mode. Use --fix to automatically fix issues.\n"
+  );
 }
 
 /**
@@ -68,14 +75,14 @@ async function syncRoles() {
     mismatches: [],
     dbOnly: [],
     clerkOnly: [],
-    errors: []
+    errors: [],
   };
 
   let fixedCount = 0;
 
   try {
     console.log("📊 Step 1: Fetching all users from database...\n");
-    
+
     // Fetch all users from database
     const dbResult = await turso.execute({
       sql: "SELECT id, username, role FROM Users",
@@ -85,7 +92,7 @@ async function syncRoles() {
     console.log(`   Found ${dbUsers.length} users in database\n`);
 
     console.log("📊 Step 2: Fetching all users from Clerk...\n");
-    
+
     // Fetch all users from Clerk (with pagination)
     let clerkUsers = [];
     let offset = 0;
@@ -101,17 +108,17 @@ async function syncRoles() {
       offset += limit;
       hasMore = response.data.length === limit;
     }
-    
+
     console.log(`   Found ${clerkUsers.length} users in Clerk\n`);
 
     // Create maps for quick lookup
     const dbUserMap = new Map();
-    dbUsers.forEach(user => {
+    dbUsers.forEach((user) => {
       dbUserMap.set(user.id, user);
     });
 
     const clerkUserMap = new Map();
-    clerkUsers.forEach(user => {
+    clerkUsers.forEach((user) => {
       clerkUserMap.set(user.id, user);
     });
 
@@ -133,7 +140,7 @@ async function syncRoles() {
       } else {
         // User exists in both - check for role mismatch
         const dbRole = dbUser.role;
-        
+
         if (clerkRole !== dbRole) {
           issues.mismatches.push({
             userId,
@@ -158,9 +165,13 @@ async function syncRoles() {
     }
 
     // Report findings
-    console.log("═══════════════════════════════════════════════════════════════\n");
+    console.log(
+      "═══════════════════════════════════════════════════════════════\n"
+    );
     console.log("📋 SYNC REPORT\n");
-    console.log("═══════════════════════════════════════════════════════════════\n");
+    console.log(
+      "═══════════════════════════════════════════════════════════════\n"
+    );
 
     // Report role mismatches
     if (issues.mismatches.length > 0) {
@@ -170,7 +181,11 @@ async function syncRoles() {
         console.log(`      User ID: ${issue.userId}`);
         console.log(`      Clerk Role: ${issue.clerkRole}`);
         console.log(`      Database Role: ${issue.dbRole}`);
-        console.log(`      → Will sync to: ${useClerkAsSource ? issue.clerkRole : issue.dbRole}\n`);
+        console.log(
+          `      → Will sync to: ${
+            useClerkAsSource ? issue.clerkRole : issue.dbRole
+          }\n`
+        );
       });
 
       if (shouldFix) {
@@ -181,19 +196,28 @@ async function syncRoles() {
               // Update database to match Clerk
               await turso.execute({
                 sql: "UPDATE Users SET role = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
-                args: [issue.clerkRole === "NOT SET" ? null : issue.clerkRole, issue.userId],
+                args: [
+                  issue.clerkRole === "NOT SET" ? null : issue.clerkRole,
+                  issue.userId,
+                ],
               });
-              console.log(`   ✅ Updated database role for ${issue.email}: ${issue.clerkRole}`);
+              console.log(
+                `   ✅ Updated database role for ${issue.email}: ${issue.clerkRole}`
+              );
             } else {
               // Update Clerk to match database
               await clerkClient.users.updateUser(issue.userId, {
                 publicMetadata: { role: issue.dbRole },
               });
-              console.log(`   ✅ Updated Clerk role for ${issue.email}: ${issue.dbRole}`);
+              console.log(
+                `   ✅ Updated Clerk role for ${issue.email}: ${issue.dbRole}`
+              );
             }
             fixedCount++;
           } catch (error) {
-            console.error(`   ❌ Failed to fix ${issue.email}: ${error.message}`);
+            console.error(
+              `   ❌ Failed to fix ${issue.email}: ${error.message}`
+            );
             issues.errors.push({ user: issue.email, error: error.message });
           }
         }
@@ -205,7 +229,9 @@ async function syncRoles() {
 
     // Report users in Clerk but not in database
     if (issues.clerkOnly.length > 0) {
-      console.log(`⚠️  USERS IN CLERK BUT NOT IN DATABASE (${issues.clerkOnly.length}):\n`);
+      console.log(
+        `⚠️  USERS IN CLERK BUT NOT IN DATABASE (${issues.clerkOnly.length}):\n`
+      );
       issues.clerkOnly.forEach((issue, index) => {
         console.log(`   ${index + 1}. ${issue.email}`);
         console.log(`      User ID: ${issue.userId}`);
@@ -218,8 +244,9 @@ async function syncRoles() {
           try {
             const email = issue.email;
             const username = email.split("@")[0];
-            const role = issue.clerkRole === "NOT SET" ? "senator" : issue.clerkRole;
-            
+            const role =
+              issue.clerkRole === "NOT SET" ? "senator" : issue.clerkRole;
+
             await turso.execute({
               sql: `INSERT INTO Users (id, username, role, created_at, updated_at) 
                     VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
@@ -228,7 +255,9 @@ async function syncRoles() {
             console.log(`   ✅ Added ${email} to database with role: ${role}`);
             fixedCount++;
           } catch (error) {
-            console.error(`   ❌ Failed to add ${issue.email}: ${error.message}`);
+            console.error(
+              `   ❌ Failed to add ${issue.email}: ${error.message}`
+            );
             issues.errors.push({ user: issue.email, error: error.message });
           }
         }
@@ -240,7 +269,9 @@ async function syncRoles() {
 
     // Report users in database but not in Clerk
     if (issues.dbOnly.length > 0) {
-      console.log(`⚠️  USERS IN DATABASE BUT NOT IN CLERK (${issues.dbOnly.length}):\n`);
+      console.log(
+        `⚠️  USERS IN DATABASE BUT NOT IN CLERK (${issues.dbOnly.length}):\n`
+      );
       console.log("   These are orphaned database records.\n");
       issues.dbOnly.forEach((issue, index) => {
         console.log(`   ${index + 1}. ${issue.username}`);
@@ -249,27 +280,35 @@ async function syncRoles() {
       });
 
       if (shouldFix) {
-        console.log("   ⚠️  Skipping orphaned database records (manual review recommended)\n");
-        console.log("   💡 You may want to delete these records manually if they're not needed.\n");
+        console.log(
+          "   ⚠️  Skipping orphaned database records (manual review recommended)\n"
+        );
+        console.log(
+          "   💡 You may want to delete these records manually if they're not needed.\n"
+        );
       }
     } else {
       console.log("✅ No orphaned database records!\n");
     }
 
     // Summary
-    console.log("═══════════════════════════════════════════════════════════════\n");
+    console.log(
+      "═══════════════════════════════════════════════════════════════\n"
+    );
     console.log("📊 SUMMARY\n");
-    console.log("═══════════════════════════════════════════════════════════════\n");
+    console.log(
+      "═══════════════════════════════════════════════════════════════\n"
+    );
     console.log(`   Total Users in Clerk: ${clerkUsers.length}`);
     console.log(`   Total Users in Database: ${dbUsers.length}`);
     console.log(`   Role Mismatches: ${issues.mismatches.length}`);
     console.log(`   Clerk-Only Users: ${issues.clerkOnly.length}`);
     console.log(`   Database-Only Users: ${issues.dbOnly.length}`);
-    
+
     if (shouldFix) {
       console.log(`   \n   ✅ Fixed: ${fixedCount}`);
       console.log(`   ❌ Errors: ${issues.errors.length}\n`);
-      
+
       if (issues.errors.length > 0) {
         console.log("   Errors encountered:");
         issues.errors.forEach((err, index) => {
@@ -281,13 +320,16 @@ async function syncRoles() {
       console.log(`\n   💡 Run with --fix to automatically sync roles\n`);
     }
 
-    console.log("═══════════════════════════════════════════════════════════════\n");
+    console.log(
+      "═══════════════════════════════════════════════════════════════\n"
+    );
 
     // Exit with appropriate code
-    const hasIssues = issues.mismatches.length > 0 || 
-                      issues.clerkOnly.length > 0 || 
-                      issues.errors.length > 0;
-    
+    const hasIssues =
+      issues.mismatches.length > 0 ||
+      issues.clerkOnly.length > 0 ||
+      issues.errors.length > 0;
+
     if (!shouldFix && hasIssues) {
       console.log("⚠️  Issues found. Run with --fix to resolve them.\n");
       process.exit(1);
@@ -298,7 +340,6 @@ async function syncRoles() {
       console.log("✅ All systems in sync!\n");
       process.exit(0);
     }
-
   } catch (error) {
     console.error("\n❌ Fatal error:", error.message);
     console.error(error);
@@ -308,4 +349,3 @@ async function syncRoles() {
 
 // Run the sync
 syncRoles();
-
