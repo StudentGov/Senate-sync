@@ -1,9 +1,8 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-// 🚧 DEVELOPMENT MODE: Control Clerk authentication via environment variable
-// Set DISABLE_AUTH_FOR_DEV=true in .env.local to disable auth in development
-const DISABLE_AUTH_FOR_DEV = process.env.DISABLE_AUTH_FOR_DEV === 'true';
+// Set DISABLE_AUTH_FOR_DEV=true to disable auth in development
+const DISABLE_AUTH_FOR_DEV = false;
 
 // ============================================
 // PUBLIC ROUTES - No authentication required
@@ -12,7 +11,6 @@ const DISABLE_AUTH_FOR_DEV = process.env.DISABLE_AUTH_FOR_DEV === 'true';
 /**
  * Public Page Routes
  * These pages are accessible to everyone (authenticated or not)
- * Student routes are public - there is no "student" role
  */
 const PUBLIC_PAGE_ROUTES = [
   "/",
@@ -21,6 +19,7 @@ const PUBLIC_PAGE_ROUTES = [
   "/archives",
   "/voting",
   "/student(.*)",
+  "/attorney",
   "/unauthorized",
   "/auth/sign-in",
   "/auth/sign-up",
@@ -58,14 +57,14 @@ const PROTECTED_PAGE_ROUTES: Record<string, string[]> = {
   admin: [
     "/admin(.*)",
     "/senate(.*)",
-    "/attorney(.*)",
+    "/attorney/dashboard(.*)", // Only dashboard is protected, not /attorney itself
     "/coordinator(.*)",
   ],
   senator: [
     "/senate(.*)",
   ],
   attorney: [
-    "/attorney(.*)",
+    "/attorney/dashboard(.*)", // Only dashboard is protected, not /attorney itself
   ],
   coordinator: [
     "/senate(.*)", // Coordinators have same page access as senators
@@ -177,14 +176,13 @@ Object.keys(PROTECTED_API_ROUTES).forEach((role) => {
   protectedApiRouteMatchers[role] = createRouteMatcher(PROTECTED_API_ROUTES[role]);
 });
 
-// General protected route matcher (any route that requires auth)
-// Note: /student routes are public - there is no "student" role
-// Note: /coordinator routes don't exist - coordinators use /senate routes
-const isProtectedRoute = createRouteMatcher([
-  "/admin(.*)",
-  "/senate(.*)",
-  "/attorney(.*)",
-]);
+// General protected route matcher: any route that appears in any role's allowed routes
+// This collects all protected routes from PROTECTED_PAGE_ROUTES
+const allProtectedRoutes = new Set<string>();
+Object.values(PROTECTED_PAGE_ROUTES).forEach((routes) => {
+  routes.forEach((route) => allProtectedRoutes.add(route));
+});
+const isProtectedRoute = createRouteMatcher(Array.from(allProtectedRoutes));
 
 // ============================================
 // MIDDLEWARE LOGIC

@@ -40,7 +40,9 @@ CREATE TABLE IF NOT EXISTS Hours (
   user_id TEXT NOT NULL,  -- Clerk user ID
   start_time TIMESTAMP NOT NULL,
   end_time TIMESTAMP NOT NULL,
+  activity TEXT,
   comments TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
