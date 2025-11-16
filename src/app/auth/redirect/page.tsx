@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 
 /**
  * Component to handle user redirection based on role after login.
  * This ensures users are redirected to the appropriate dashboard
- * depending on their assigned role in Clerk's publicMetadata.
+ * depending on their assigned role in Clerk's sessionClaims.
  */
 export default function RedirectPage() {
   const router = useRouter();
-  const { user, isSignedIn } = useUser();
+  const { sessionClaims, isSignedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
 
   /**
@@ -19,9 +19,9 @@ export default function RedirectPage() {
    * Executes once user authentication status is determined.
    */
   useEffect(() => {
-    if (isSignedIn && user) {
-      // Fetch the user's role from Clerk's publicMetadata
-      const userRole = user.publicMetadata?.role;
+    if (isSignedIn && sessionClaims) {
+      // Fetch the user's role from Clerk's sessionClaims
+      const userRole = sessionClaims?.role;
 
       // Redirect users to their respective dashboards based on role
       switch (userRole) {
@@ -42,7 +42,7 @@ export default function RedirectPage() {
           router.replace("/unauthorized"); // Redirect if no valid role is found
       }
     }
-  }, [isSignedIn, user, router]);
+  }, [isSignedIn, sessionClaims, router]);
 
   /**
    * useEffect to handle a loading delay to ensure

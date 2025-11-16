@@ -5,7 +5,7 @@ import styles from './attorneySideBar.module.css'
 import { useRouter } from "next/navigation";
 import Logo from '../../assets/menu.png'
 import Image from 'next/image'
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { useClerk } from '@clerk/clerk-react';
 
 interface SideBarProps {
@@ -15,16 +15,16 @@ interface SideBarProps {
 
 export default function SideBar({collapsed, setCollapsed}: SideBarProps) {
   const router = useRouter();
-  const { user, isSignedIn } = useUser();
+  const { sessionClaims, isSignedIn } = useAuth();
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false);
   const { openUserProfile, signOut } = useClerk();
 
   useEffect(() => {
-    if (isSignedIn && user?.publicMetadata?.role === "super_admin") {
+    if (isSignedIn && sessionClaims?.role === "super_admin") {
         setIsSuperAdmin(true);
     }
 
-    }, [isSignedIn, user]);
+    }, [isSignedIn, sessionClaims]);
 
     
     const handleProfileClick = () => {

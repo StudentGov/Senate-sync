@@ -1,4 +1,4 @@
-.create-user-form-container {
+.createUserFormContainer {
   max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
@@ -7,40 +7,40 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.create-user-form-container h2 {
+.createUserFormContainer h2 {
   margin-bottom: 1.5rem;
   color: #333;
   font-size: 1.5rem;
   font-weight: 600;
 }
 
-.create-user-form {
+.createUserForm {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-.create-user-form-group {
+.createUserFormGroup {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.create-user-form-group label {
+.createUserFormGroup label {
   font-weight: 500;
   color: #333;
   font-size: 0.95rem;
 }
 
-.create-user-optional-label {
+.createUserOptionalLabel {
   font-weight: 400;
   font-size: 0.85rem;
   color: #666;
   font-style: italic;
 }
 
-.create-user-input,
-.create-user-select {
+.createUserInput,
+.createUserSelect {
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -48,19 +48,19 @@
   transition: border-color 0.2s;
 }
 
-.create-user-input:focus,
-.create-user-select:focus {
+.createUserInput:focus,
+.createUserSelect:focus {
   outline: none;
   border-color: #7c3aed;
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
-.create-user-select {
+.createUserSelect {
   cursor: pointer;
   background-color: white;
 }
 
-.create-user-submit-button {
+.createUserSubmitButton {
   padding: 0.875rem 1.5rem;
   background-color: #7c3aed;
   color: white;
@@ -73,16 +73,16 @@
   margin-top: 0.5rem;
 }
 
-.create-user-submit-button:hover:not(:disabled) {
+.createUserSubmitButton:hover:not(:disabled) {
   background-color: #6d28d9;
 }
 
-.create-user-submit-button:disabled {
+.createUserSubmitButton:disabled {
   background-color: #9ca3af;
   cursor: not-allowed;
 }
 
-.create-user-error-message {
+.createUserErrorMessage {
   padding: 0.875rem;
   background-color: #fee2e2;
   border: 1px solid #ef4444;
@@ -91,7 +91,7 @@
   font-size: 0.95rem;
 }
 
-.create-user-success-message {
+.createUserSuccessMessage {
   padding: 0.875rem;
   background-color: #d1fae5;
   border: 1px solid #10b981;
@@ -100,7 +100,7 @@
   font-size: 0.95rem;
 }
 
-.create-user-info-box {
+.createUserInfoBox {
   margin-top: 2rem;
   padding: 1rem;
   background-color: #f3f4f6;
@@ -108,13 +108,13 @@
   border-left: 4px solid #7c3aed;
 }
 
-.create-user-info-box h3 {
+.createUserInfoBox h3 {
   margin: 0 0 0.75rem 0;
   font-size: 1rem;
   color: #333;
 }
 
-.create-user-info-box ul {
+.createUserInfoBox ul {
   margin: 0;
   padding-left: 1.5rem;
   color: #555;
@@ -122,21 +122,21 @@
   line-height: 1.6;
 }
 
-.create-user-info-box li {
+.createUserInfoBox li {
   margin-bottom: 0.5rem;
 }
 
-.create-user-info-box li:last-child {
+.createUserInfoBox li:last-child {
   margin-bottom: 0;
 }
 
 @media (max-width: 640px) {
-  .create-user-form-container {
+  .createUserFormContainer {
     margin: 1rem;
     padding: 1.5rem;
   }
 
-  .create-user-form-container h2 {
+  .createUserFormContainer h2 {
     font-size: 1.25rem;
   }
 }

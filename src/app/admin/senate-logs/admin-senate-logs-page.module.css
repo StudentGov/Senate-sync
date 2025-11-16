@@ -1,0 +1,178 @@
+/* Admin Senate Logs Page Styles */
+
+/* Main page container */
+.pageContainer {
+  min-height: 100vh;
+  background-color: #f9fafb;
+  padding: 2rem;
+}
+
+/* Content wrapper */
+.contentWrapper {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+/* Header section */
+.headerSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.headerInfo {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+/* Empty state */
+.emptyState {
+  color: #4b5563;
+}
+
+/* Period section */
+.periodSection {
+  margin-bottom: 2rem;
+  background-color: white;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+}
+
+.periodTitle {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.periodEmpty {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+/* Table */
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  font-size: 0.875rem;
+  color: #4b5563;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tableHeaderCell {
+  padding: 0.5rem 0.75rem;
+}
+
+.tableRow {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tableCell {
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+  font-size: 0.875rem;
+}
+
+.tableCellName {
+  font-size: 0.875rem;
+}
+
+.tableCellHours {
+  font-size: 0.875rem;
+}
+
+.statusMet {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.statusMissing {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+/* Details */
+.details {
+  font-size: 0.875rem;
+}
+
+.detailsSummary {
+  cursor: pointer;
+}
+
+.detailsContent {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.entryCard {
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  background-color: #f9fafb;
+}
+
+.entryDate {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.entryActivity {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.entryNotes {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.segmentsContainer {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+
+.segmentsList {
+  list-style-type: disc;
+  margin-left: 1.25rem;
+}
+
+/* Not found page */
+.notFoundContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notFoundContent {
+  text-align: center;
+}
+
+.notFoundTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.notFoundDescription {
+  margin-top: 0.5rem;
+  color: #4b5563;
+}
+

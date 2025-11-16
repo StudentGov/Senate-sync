@@ -1,20 +1,10 @@
-import fs from 'fs/promises'
-import path from 'path'
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { turso } from '@/db'
+import { clerkClient } from '@clerk/clerk-sdk-node'
 
-const LOG_FILE = path.join(process.cwd(), 'src', 'app', 'senate', 'logs.json')
 const PERIOD_MS = 14 * 24 * 60 * 60 * 1000
 const TARGET_HOURS = 6
-
-async function readLogs() {
-  try {
-    const raw = await fs.readFile(LOG_FILE, 'utf-8')
-    return JSON.parse(raw || '[]')
-  } catch (e) {
-    return []
-  }
-}
 
 function parseTzOffsetFromName(tzName: string) {
   // tzName might be like 'GMT-5' or 'GMT-6' (shortOffset) or abbreviations like 'CST'/'CDT'.
@@ -90,21 +80,113 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const logs = await readLogs()
+  try {
+    // Fetch all hour entries from database
+    const result = await turso.execute({
+      sql: `
+        SELECT 
+          h.id,
+          h.user_id,
+          h.activity,
+          h.comments,
+          h.start_time,
+          h.end_time,
+          h.created_at
+        FROM Hours h
+        ORDER BY h.created_at DESC, h.start_time DESC
+      `,
+      args: []
+    })
 
-  const periods: Record<string, Record<string, { total: number; name?: string; entries: any[] }>> = {}
-  for (const l of logs) {
-    const uid = String((l as any).userId || 'unknown')
-    const dateStr = (l as any).date || (l as any).createdAt || new Date().toISOString()
-    const key = String(getPeriodKey(dateStr))
-    periods[key] = periods[key] || {}
-    periods[key][uid] = periods[key][uid] || { total: 0, name: (l as any).senatorName || '', entries: [] }
-    periods[key][uid].total += Number((l as any).hours || 0)
-    periods[key][uid].entries.push(l)
-    if (!periods[key][uid].name && (l as any).senatorName) periods[key][uid].name = (l as any).senatorName
+    // Get user names from Clerk (cache to avoid repeated calls)
+    const userNamesCache = new Map<string, string>()
+    
+    const getUserName = async (uid: string): Promise<string> => {
+      if (userNamesCache.has(uid)) {
+        return userNamesCache.get(uid)!
+      }
+      try {
+        const user = await clerkClient.users.getUser(uid)
+        const name = user.fullName || 
+          (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : 
+          user.emailAddresses[0]?.emailAddress || 'Unknown')
+        userNamesCache.set(uid, name)
+        return name
+      } catch (e) {
+        console.warn(`Failed to fetch user ${uid} from Clerk:`, e)
+        return 'Unknown'
+      }
+    }
+
+    // Group entries by created_at (same submission) and by user
+    const entriesByUserAndTime = new Map<string, Map<string, any>>()
+    
+    for (const row of result.rows) {
+      const uid = row.user_id as string
+      const createdAt = (row.created_at as string) || new Date().toISOString()
+      const entryKey = `${uid}_${createdAt}`
+      
+      if (!entriesByUserAndTime.has(uid)) {
+        entriesByUserAndTime.set(uid, new Map())
+      }
+      
+      const userEntries = entriesByUserAndTime.get(uid)!
+      
+      if (!userEntries.has(entryKey)) {
+        const startTime = new Date(row.start_time as string)
+        userEntries.set(entryKey, {
+          id: `entry_${row.id}`,
+          userId: uid,
+          date: startTime.toISOString().split('T')[0],
+          hours: 0,
+          activity: (row.activity as string) || '',
+          notes: (row.comments as string) || '',
+          createdAt,
+          segments: []
+        })
+      }
+      
+      const entry = userEntries.get(entryKey)!
+      const startTime = new Date(row.start_time as string)
+      const endTime = new Date(row.end_time as string)
+      const hours = (endTime.getTime() - startTime.getTime()) / (1000 * 60 * 60)
+      
+      entry.hours += hours
+      entry.segments.push({
+        date: startTime.toISOString().split('T')[0],
+        start: startTime.toTimeString().slice(0, 5),
+        end: endTime.toTimeString().slice(0, 5)
+      })
+    }
+
+    // Organize by periods
+    const periods: Record<string, Record<string, { total: number; name?: string; entries: any[] }>> = {}
+    
+    // Process all entries and organize by period
+    for (const [uid, userEntries] of entriesByUserAndTime.entries()) {
+      const userName = await getUserName(uid)
+      
+      for (const entry of userEntries.values()) {
+        const dateStr = entry.date || entry.createdAt || new Date().toISOString()
+        const key = String(getPeriodKey(dateStr))
+        periods[key] = periods[key] || {}
+        periods[key][uid] = periods[key][uid] || { total: 0, name: userName, entries: [] }
+        
+        const roundedHours = Math.round(entry.hours * 100) / 100
+        periods[key][uid].total += roundedHours
+        periods[key][uid].entries.push({
+          ...entry,
+          hours: roundedHours,
+          senatorName: userName
+        })
+      }
+    }
+
+    const sortedPeriodKeys = Object.keys(periods).sort((a,b) => Number(b) - Number(a))
+
+    return NextResponse.json({ periods, sortedPeriodKeys, TARGET_HOURS })
+  } catch (error) {
+    console.error('Error fetching hour logs:', error)
+    return NextResponse.json({ error: 'Failed to fetch hour logs' }, { status: 500 })
   }
-
-  const sortedPeriodKeys = Object.keys(periods).sort((a,b) => Number(b) - Number(a))
-
-  return NextResponse.json({ periods, sortedPeriodKeys, TARGET_HOURS })
 }

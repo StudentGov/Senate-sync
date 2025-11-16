@@ -131,22 +131,15 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
         </div>
 
         <div className={styles.createUserFormGroup}>
-          <label htmlFor="password">
-            Password
-            <span className={styles.createUserOptionalLabel}>
-              {" "}
-              (optional - user will be prompted to set password on first login
-              if left empty)
-            </span>
-          </label>
+          <label htmlFor="password">Password *</label>
           <input
             type="password"
             id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
+            required
             className={styles.createUserInput}
-            placeholder="Leave empty to require password reset"
             minLength={8}
           />
         </div>
@@ -164,24 +157,6 @@ export default function CreateUserForm({ onUserCreated }: CreateUserFormProps) {
           {loading ? "Creating..." : "Create User"}
         </button>
       </form>
-
-      <div className={styles.createUserInfoBox}>
-        <h3>Important Notes:</h3>
-        <ul>
-          <li>Users created will receive an email notification from Clerk</li>
-          <li>
-            If no password is set, users will be prompted to create one on first
-            login
-          </li>
-          <li>
-            You can change user roles later from the user management table
-          </li>
-          <li>
-            All accounts are created through Clerk and automatically synced to
-            the database
-          </li>
-        </ul>
-      </div>
     </div>
   );
 }

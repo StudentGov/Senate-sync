@@ -1,0 +1,468 @@
+/* Home Page Styles */
+
+/* Main page container */
+.pageContainer {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Hero Section */
+.heroSection {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  overflow: hidden;
+}
+
+.heroBackgroundImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.5), transparent);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  max-width: 56rem;
+  margin-left: 3rem;
+  padding-top: 6rem;
+  padding-bottom: 2rem;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-family: 'Kanit', sans-serif;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .heroTitle {
+    font-size: 3.75rem;
+  }
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+  max-width: 36rem;
+  font-family: 'Kanit', sans-serif;
+}
+
+.heroButtonGroup {
+  display: flex;
+  gap: 1rem;
+}
+
+.heroButtonPrimary {
+  background-color: #febd11;
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.75rem 2rem;
+  font-family: 'Kanit', sans-serif;
+  font-size: 1.125rem;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.heroButtonPrimary:hover {
+  background-color: #e6a900;
+}
+
+.heroButtonSecondary {
+  border: 2px solid white;
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.75rem 2rem;
+  font-family: 'Kanit', sans-serif;
+  font-size: 1.125rem;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.heroButtonSecondary:hover {
+  background-color: white;
+  color: #49306e;
+}
+
+/* Team Section */
+.teamSection {
+  width: 100%;
+  background-color: white;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.sectionContainer {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  font-size: 2.25rem;
+  font-family: 'Kanit', sans-serif;
+  color: #49306e;
+  margin-bottom: 0.5rem;
+}
+
+.sectionSubtitle {
+  font-size: 1.125rem;
+  color: #4b5563;
+}
+
+.teamCardGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .teamCardGrid {
+    flex-direction: row;
+  }
+}
+
+.teamCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.teamCard:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 8px 30px rgba(254, 189, 17, 0.4);
+  border-color: #febd11;
+}
+
+.teamCardImage {
+  border-radius: 50%;
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+
+.teamCardName {
+  font-size: 1.25rem;
+  font-family: 'Kanit', sans-serif;
+  color: #49306e;
+}
+
+.teamCardRole {
+  color: #febd11;
+  font-family: 'Kanit', sans-serif;
+}
+
+.teamCardDescription {
+  color: #4b5563;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* Offerings Section */
+.offeringsSection {
+  width: 100%;
+  background-color: #f9fafb;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.offeringsCardGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .offeringsCardGrid {
+    flex-direction: row;
+  }
+}
+
+.offeringCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.offeringCard:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 8px 30px rgba(254, 189, 17, 0.4);
+  border-color: #febd11;
+}
+
+.offeringIconContainer {
+  background-color: #49306e;
+  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.offeringIcon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.offeringTitle {
+  font-size: 1.5rem;
+  font-family: 'Kanit', sans-serif;
+  color: #49306e;
+  margin-bottom: 0.5rem;
+}
+
+.offeringDescription {
+  color: #4b5563;
+  text-align: center;
+}
+
+/* Contact Section */
+.contactSection {
+  width: 100%;
+  background-color: #49306e;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.contactContainer {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.contactTitle {
+  font-size: 2.25rem;
+  font-family: 'Kanit', sans-serif;
+  font-weight: 400;
+  color: white;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.contactSubtitle {
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  margin-bottom: 3rem;
+  font-family: 'Kanit', sans-serif;
+  font-size: 1.125rem;
+}
+
+.contactContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: stretch;
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .contactContent {
+    flex-direction: row;
+  }
+}
+
+.contactFormContainer {
+  flex: 1;
+  padding-right: 0;
+}
+
+@media (min-width: 768px) {
+  .contactFormContainer {
+    padding-right: 3rem;
+  }
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  display: block;
+  color: white;
+  font-family: 'Kanit', sans-serif;
+  margin-bottom: 0.5rem;
+}
+
+.formInput {
+  width: 100%;
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-family: 'Kanit', sans-serif;
+  border: none;
+  outline: none;
+}
+
+.formInput:focus {
+  outline: 2px solid #febd11;
+  outline-offset: 2px;
+}
+
+.formTextarea {
+  width: 100%;
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  height: 8rem;
+  resize: none;
+  font-family: 'Kanit', sans-serif;
+  border: none;
+  outline: none;
+}
+
+.formTextarea:focus {
+  outline: 2px solid #febd11;
+  outline-offset: 2px;
+}
+
+.formSubmitButton {
+  width: 100%;
+  background-color: #febd11;
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.75rem 2rem;
+  font-family: 'Kanit', sans-serif;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.formSubmitButton:hover {
+  background-color: #e6a900;
+}
+
+.contactDivider {
+  display: none;
+  width: 2px;
+  background-color: #febd11;
+  margin: 0 2rem;
+  align-self: stretch;
+}
+
+@media (min-width: 768px) {
+  .contactDivider {
+    display: block;
+  }
+}
+
+.officeInfoContainer {
+  flex: 1;
+  color: white;
+  font-family: 'Kanit', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-left: 0;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .officeInfoContainer {
+    padding-left: 1rem;
+    margin-top: 0;
+  }
+}
+
+.officeInfoTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+.officeInfoList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.officeInfoItem {
+  display: flex;
+  align-items: start;
+  gap: 0.75rem;
+}
+
+.officeInfoIcon {
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+
+.locationIcon {
+  width: 0.75rem;
+  height: 1rem;
+}
+
+.phoneIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.mailIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.officeInfoText {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.officeInfoTextBold {
+  font-weight: 400;
+}

@@ -6,7 +6,7 @@ import { useCollapsedContext } from "../../components/sideBar/sideBarContext";
 import SideBar from "../../components/sideBar/SideBar";
 import AgendaSection from "../../components/agendaSection/agendaSection";
 import AddAgenda from "../../components/addAgenda/addAgenda";
-import { useUser } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import pusherClient from "../../lib/pusher";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -42,6 +42,7 @@ export default function Agendas() {
   const { collapsed, setCollapsed } = useCollapsedContext();
   const { agendaType } = useAgendaStore();
   const { user, isSignedIn } = useUser();
+  const { sessionClaims } = useAuth();
 
   const [isMember, setIsMember] = useState(false);
   const [isSpeaker, setIsSpeaker] = useState(false);
@@ -119,11 +120,11 @@ export default function Agendas() {
 
   useEffect(() => {
     if (isSignedIn) {
-      const role = user?.publicMetadata?.role;
+      const role = sessionClaims?.role;
       if (role === "senate_member" || role === "super_admin") setIsMember(true);
       if (role === "senate_speaker" || role === "super_admin") setIsSpeaker(true);
     }
-  }, [isSignedIn, user]);
+  }, [isSignedIn, sessionClaims]);
 
   useEffect(() => {
     if (isSignedIn) {
