@@ -1,0 +1,268 @@
+/* Admin Hour Log Client Styles */
+
+/* Main container */
+.pageContainer {
+  padding: 1rem;
+}
+
+/* Header section */
+.headerSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.pageTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.headerInfo {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+/* Period selector */
+.periodSelectorSection {
+  margin-bottom: 1.5rem;
+}
+
+.periodSelectorLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.periodSelector {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background-color: white;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.periodSelector:focus {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+/* Search and Sort Section */
+.searchSortSection {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* User Count */
+.userCount {
+  padding: 0.5rem 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* Period section */
+.periodSection {
+  margin-bottom: 1.5rem;
+  background-color: white;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  padding: 0.75rem;
+}
+
+.periodTitle {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.periodEmpty {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+/* Table container */
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  font-size: 0.875rem;
+  color: #4b5563;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tableHeaderCell {
+  padding: 0.5rem 0.75rem;
+}
+
+.tableRow {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tableCell {
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+  font-size: 0.875rem;
+}
+
+.userNameCell {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableCellName {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.userEmail {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.125rem;
+}
+
+.userRole {
+  font-size: 0.875rem;
+  text-transform: capitalize;
+}
+
+.tableCellHours {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.noEntries {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Status badges */
+.statusBadge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.statusComplete {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.statusIncomplete {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Entries details */
+.entriesDetails {
+  font-size: 0.875rem;
+}
+
+.entriesSummary {
+  cursor: pointer;
+  color: #7c3aed;
+  font-weight: 500;
+  user-select: none;
+}
+
+.entriesSummary:hover {
+  text-decoration: underline;
+}
+
+.entriesContent {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.entryCard {
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  background-color: #f9fafb;
+}
+
+.entryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.entryDate {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.entryHours {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #7c3aed;
+}
+
+.entryActivity {
+  font-size: 0.875rem;
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+.entryNotes {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.segmentsContainer {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+
+.segmentsList {
+  list-style-type: disc;
+  margin-left: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.segmentItem {
+  margin-bottom: 0.125rem;
+}
+
+/* Loading and error states */
+.loadingState {
+  padding: 1rem;
+  color: #4b5563;
+}
+
+.errorState {
+  padding: 1rem;
+  color: #dc2626;
+}
+
+.emptyState {
+  padding: 1rem;
+  color: #4b5563;
+}
+

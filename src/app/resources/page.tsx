@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Plus, ChevronLeft, ChevronRight, ExternalLink, X, Check, Edit, Trash2, BookOpen } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
+import styles from './resources-page.module.css';
 
 interface Resource {
   id: number;
@@ -162,27 +163,27 @@ export default function ResourcesPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
+    <div className={styles.pageContainer}>
+      <main className={styles.mainContent}>
+        <div className={styles.contentWrapper}>
           {/* Title and Description */}
-          <div className="text-center mb-8">
-            <h1 className="font-bold text-3xl md:text-4xl text-[#49306e] mb-4 font-kanit">
+          <div className={styles.pageHeader}>
+            <h1 className={styles.pageTitle}>
               Student Government Resources
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto font-kanit">
+            <p className={styles.pageDescription}>
               Helpful guides, tools, and resources to support students at Minnesota State University.
             </p>
           </div>
 
           {/* Add Resource Button */}
-          <div className="flex justify-end mb-8">
+          <div className={styles.addResourceSection}>
             {user && (
               <button
                 onClick={handleAddResource}
-                className="bg-[#49306e] hover:bg-[#49306e]/90 text-white font-semibold px-6 py-2 rounded-md flex items-center gap-2 transition-colors font-kanit"
+                className={styles.addResourceButton}
               >
-                <Plus className="w-5 h-5" />
+                <Plus className={styles.addResourceButtonIcon} />
                 Add Resource
               </button>
             )}
@@ -190,13 +191,13 @@ export default function ResourcesPage() {
 
           {/* Pagination Top */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mb-8">
+            <div className={styles.pagination}>
               <button
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="p-2 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={styles.paginationButton}
               >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
+                <ChevronLeft className={styles.paginationButtonIcon} />
               </button>
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 let pageNum;
@@ -213,10 +214,10 @@ export default function ResourcesPage() {
                   <button
                     key={i}
                     onClick={() => setCurrentPage(pageNum)}
-                    className={`w-10 h-10 rounded-md font-medium transition-colors font-kanit ${
+                    className={`${styles.paginationPageButton} ${
                       currentPage === pageNum
-                        ? "bg-[#49306e] text-white"
-                        : "text-gray-600 hover:bg-gray-200"
+                        ? styles.paginationPageButtonActive
+                        : styles.paginationPageButtonInactive
                     }`}
                   >
                     {pageNum}
@@ -226,78 +227,78 @@ export default function ResourcesPage() {
               <button
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="p-2 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={styles.paginationButton}
               >
-                <ChevronRight className="w-5 h-5 text-gray-600" />
+                <ChevronRight className={styles.paginationButtonIcon} />
               </button>
             </div>
           )}
 
           {/* Resource Items Grid */}
           {isLoading ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 font-kanit">Loading resources...</p>
+            <div className={styles.loadingState}>
+              <p className={styles.loadingText}>Loading resources...</p>
             </div>
           ) : currentResources.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 font-kanit">No resources found.</p>
+            <div className={styles.emptyState}>
+              <p className={styles.emptyText}>No resources found.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+            <div className={styles.resourcesGrid}>
               {currentResources.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer relative group"
+                  className={styles.resourceCard}
                   onMouseEnter={() => setHoveredCard(item.id)}
                   onMouseLeave={() => setHoveredCard(null)}
                   onClick={() => window.open(formatUrl(item.link), "_blank")}
                 >
                   {/* Edit/Delete Buttons */}
                   {user && user.id === item.created_by && hoveredCard === item.id && (
-                    <div className="absolute top-2 right-2 flex gap-2 z-10">
+                    <div className={styles.cardActions}>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleEditResource(item);
                         }}
-                        className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+                        className={styles.cardActionButton}
                       >
-                        <Edit className="w-4 h-4 text-[#49306e]" />
+                        <Edit className={`${styles.cardActionIcon} ${styles.cardActionIconEdit}`} />
                       </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteResource(item.id);
                         }}
-                        className="p-2 bg-white rounded-full shadow-lg hover:bg-red-50 transition-colors"
+                        className={`${styles.cardActionButton} ${styles.cardActionButtonDelete}`}
                       >
-                        <Trash2 className="w-4 h-4 text-red-600" />
+                        <Trash2 className={`${styles.cardActionIcon} ${styles.cardActionIconDelete}`} />
                       </button>
                     </div>
                   )}
 
                   {/* Thumbnail/Preview */}
-                  <div className="relative h-40 bg-gradient-to-br from-[#49306e] to-[#8b6ba8] flex items-center justify-center">
+                  <div className={styles.cardThumbnail}>
                     {item.image_url ? (
-                      <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
+                      <img src={item.image_url} alt={item.title} className={styles.cardThumbnailImage} />
                     ) : (
-                      <BookOpen className="w-12 h-12 text-white/90" />
+                      <BookOpen className={styles.cardThumbnailIcon} />
                     )}
                     {/* External Link Badge */}
-                    <div className="absolute top-3 right-3 bg-[#febd11] p-1.5 rounded-full">
-                      <ExternalLink className="w-3 h-3 text-[#49306e]" />
+                    <div className={styles.cardThumbnailBadge}>
+                      <ExternalLink className={styles.cardThumbnailBadgeIcon} />
                     </div>
                   </div>
 
                   {/* Card Content */}
-                  <div className="p-4 h-[160px] flex flex-col">
-                    <h3 className="font-semibold text-[#49306e] mb-2 line-clamp-2 font-kanit">
+                  <div className={styles.cardContent}>
+                    <h3 className={styles.cardTitle}>
                       {item.title}
                     </h3>
-                    <div className="flex-1">
+                    <div className={styles.cardDescriptionContainer}>
                       {item.description && (
                         <>
-                          <p className="text-sm text-gray-600 font-kanit line-clamp-3">
+                          <p className={styles.cardDescription}>
                             {item.description}
                           </p>
                           {item.description.length > 120 && (
@@ -310,7 +311,7 @@ export default function ResourcesPage() {
                                   description: item.description || ''
                                 });
                               }}
-                              className="text-xs text-[#49306e] font-semibold hover:underline mt-1 font-kanit"
+                              className={styles.cardReadMoreButton}
                             >
                               Read more
                             </button>
@@ -326,13 +327,13 @@ export default function ResourcesPage() {
 
           {/* Pagination Bottom */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2">
+            <div className={styles.pagination}>
               <button
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="p-2 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={styles.paginationButton}
               >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
+                <ChevronLeft className={styles.paginationButtonIcon} />
               </button>
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 let pageNum;
@@ -349,10 +350,10 @@ export default function ResourcesPage() {
                   <button
                     key={i}
                     onClick={() => setCurrentPage(pageNum)}
-                    className={`w-10 h-10 rounded-md font-medium transition-colors font-kanit ${
+                    className={`${styles.paginationPageButton} ${
                       currentPage === pageNum
-                        ? "bg-[#49306e] text-white"
-                        : "text-gray-600 hover:bg-gray-200"
+                        ? styles.paginationPageButtonActive
+                        : styles.paginationPageButtonInactive
                     }`}
                   >
                     {pageNum}
@@ -362,9 +363,9 @@ export default function ResourcesPage() {
               <button
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="p-2 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={styles.paginationButton}
               >
-                <ChevronRight className="w-5 h-5 text-gray-600" />
+                <ChevronRight className={styles.paginationButtonIcon} />
               </button>
             </div>
           )}
@@ -373,21 +374,21 @@ export default function ResourcesPage() {
 
       {/* Description Popup */}
       {descriptionPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className={styles.descriptionPopup}>
           <div 
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            className={styles.modalBackdrop}
             onClick={() => setDescriptionPopup(null)}
           />
-          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 p-6">
-            <h3 className="text-xl font-bold text-[#49306e] mb-3 font-kanit">
+          <div className={styles.modalContent}>
+            <h3 className={styles.modalTitle}>
               {descriptionPopup.title}
             </h3>
-            <p className="text-gray-700 font-kanit whitespace-pre-wrap">
+            <p className={styles.modalDescription}>
               {descriptionPopup.description}
             </p>
             <button
               onClick={() => setDescriptionPopup(null)}
-              className="mt-4 px-4 py-2 bg-[#49306e] hover:bg-[#49306e]/90 text-white rounded-lg font-kanit"
+              className={styles.modalCloseButton}
             >
               Close
             </button>
@@ -397,52 +398,52 @@ export default function ResourcesPage() {
 
       {/* Add/Edit Resource Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className={styles.resourceModal}>
           {/* Backdrop with blur */}
           <div 
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            className={styles.modalBackdrop}
             onClick={handleCloseModal}
           />
           
           {/* Modal */}
-          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 p-8 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold text-[#49306e] mb-6 font-kanit">
+          <div className={styles.largeModalContent}>
+            <h2 className={styles.modalFormTitle}>
               {editingResource ? "Edit Resource" : "Add Resource"}
             </h2>
             
             {/* Form Fields */}
-            <div className="space-y-6">
+            <div className={styles.formFields}>
               {/* Title */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
-                  Title <span className="text-red-500">*</span>
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
+                  Title <span className={styles.formRequired}>*</span>
                 </label>
                 <input
                   type="text"
                   placeholder="Enter resource title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                  className={styles.formInput}
                 />
               </div>
 
               {/* Link */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
-                  Link <span className="text-red-500">*</span>
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
+                  Link <span className={styles.formRequired}>*</span>
                 </label>
                 <input
                   type="url"
                   placeholder="https://example.com"
                   value={link}
                   onChange={(e) => setLink(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                  className={styles.formInput}
                 />
               </div>
 
               {/* Image URL */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
                   Image URL (optional)
                 </label>
                 <input
@@ -450,13 +451,13 @@ export default function ResourcesPage() {
                   placeholder="https://example.com/image.jpg"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                  className={styles.formInput}
                 />
               </div>
 
               {/* Description */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
                   Description
                 </label>
                 <textarea
@@ -465,25 +466,25 @@ export default function ResourcesPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   maxLength={500}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent resize-none font-kanit"
+                  className={styles.formTextarea}
                 />
-                <p className="text-sm text-gray-500 mt-2 font-kanit">Maximum 500 characters</p>
+                <p className={styles.formHelperText}>Maximum 500 characters</p>
               </div>
 
               {/* Buttons */}
-              <div className="flex gap-4 pt-2">
+              <div className={styles.formButtons}>
                 <button
                   onClick={handleCloseModal}
-                  className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 font-kanit"
+                  className={`${styles.formButton} ${styles.formButtonCancel}`}
                 >
-                  <X className="w-4 h-4" />
+                  <X className={styles.formButtonIcon} />
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="flex-1 px-6 py-3 bg-[#49306e] hover:bg-[#49306e]/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 font-kanit"
+                  className={`${styles.formButton} ${styles.formButtonSubmit}`}
                 >
-                  <Check className="w-4 h-4" />
+                  <Check className={styles.formButtonIcon} />
                   {editingResource ? "Update" : "Confirm"}
                 </button>
               </div>

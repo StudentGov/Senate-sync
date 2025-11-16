@@ -2,6 +2,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import React from 'react'
 import { auth } from '@clerk/nextjs/server'
+import styles from './admin-senate-logs-page.module.css'
 
 const LOG_FILE = path.join(process.cwd(), 'src', 'app', 'senate', 'logs.json')
 const PERIOD_MS = 14 * 24 * 60 * 60 * 1000
@@ -91,10 +92,10 @@ export default async function AdminSenateLogsPage() {
   const role = (sessionClaims as any)?.role
   if (!userId || role !== 'admin') {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold">Unauthorized</h1>
-          <p className="mt-2 text-gray-600">You must be an admin to view this page.</p>
+      <main className={styles.notFoundContainer}>
+        <div className={styles.notFoundContent}>
+          <h1 className={styles.notFoundTitle}>Unauthorized</h1>
+          <p className={styles.notFoundDescription}>You must be an admin to view this page.</p>
         </div>
       </main>
     )
@@ -118,52 +119,52 @@ export default async function AdminSenateLogsPage() {
   const sortedPeriodKeys = Object.keys(periods).sort((a,b) => Number(b) - Number(a))
 
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-semibold">Admin — Senate Hours Report</h1>
-          <div className="text-sm text-gray-600">Target per period: {TARGET_HOURS} hrs</div>
+    <main className={styles.pageContainer}>
+      <div className={styles.contentWrapper}>
+        <div className={styles.headerSection}>
+          <h1 className={styles.pageTitle}>Admin — Senate Hours Report</h1>
+          <div className={styles.headerInfo}>Target per period: {TARGET_HOURS} hrs</div>
         </div>
 
-        {sortedPeriodKeys.length === 0 && <div>No logs found.</div>}
+        {sortedPeriodKeys.length === 0 && <div className={styles.emptyState}>No logs found.</div>}
 
         {sortedPeriodKeys.map((pkey) => {
           const periodStartMs = Number(pkey) * PERIOD_MS
           const periodStart = new Date(periodStartMs).toISOString().slice(0,10)
           const users = Object.entries(periods[pkey]).sort((a,b) => b[1].total - a[1].total)
           return (
-            <section key={pkey} className="mb-8 bg-white rounded shadow p-4">
-              <h2 className="text-lg font-medium mb-3">Period starting {periodStart}</h2>
-              {users.length === 0 ? <div className="text-sm text-gray-600">No entries</div> : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left table-auto border-collapse">
+            <section key={pkey} className={styles.periodSection}>
+              <h2 className={styles.periodTitle}>Period starting {periodStart}</h2>
+              {users.length === 0 ? <div className={styles.periodEmpty}>No entries</div> : (
+                <div className={styles.tableContainer}>
+                  <table className={styles.table}>
                     <thead>
-                      <tr className="text-sm text-gray-600 border-b">
-                        <th className="py-2 px-3">Name</th>
-                        <th className="py-2 px-3">Hours</th>
-                        <th className="py-2 px-3">Status</th>
-                        <th className="py-2 px-3">Entries</th>
+                      <tr className={styles.tableHeader}>
+                        <th className={styles.tableHeaderCell}>Name</th>
+                        <th className={styles.tableHeaderCell}>Hours</th>
+                        <th className={styles.tableHeaderCell}>Status</th>
+                        <th className={styles.tableHeaderCell}>Entries</th>
                       </tr>
                     </thead>
                     <tbody>
                       {users.map(([uid, meta]) => (
-                        <tr key={uid} className="border-b">
-                          <td className="py-2 px-3 align-top text-sm">{meta.name || '—'}</td>
-                          <td className="py-2 px-3 align-top text-sm">{Math.round(meta.total * 100) / 100}</td>
-                          <td className="py-2 px-3 align-top text-sm">{meta.total >= TARGET_HOURS ? <span className="text-green-600 font-medium">Met</span> : <span className="text-red-600 font-medium">Missing</span>}</td>
-                          <td className="py-2 px-3 align-top text-sm">
-                            <details className="text-sm">
-                              <summary className="cursor-pointer">{meta.entries.length} entr{meta.entries.length === 1 ? 'y' : 'ies'}</summary>
-                              <div className="mt-2 space-y-2">
+                        <tr key={uid} className={styles.tableRow}>
+                          <td className={styles.tableCell}>{meta.name || '—'}</td>
+                          <td className={styles.tableCell}>{Math.round(meta.total * 100) / 100}</td>
+                          <td className={styles.tableCell}>{meta.total >= TARGET_HOURS ? <span className={styles.statusMet}>Met</span> : <span className={styles.statusMissing}>Missing</span>}</td>
+                          <td className={styles.tableCell}>
+                            <details className={styles.details}>
+                              <summary className={styles.detailsSummary}>{meta.entries.length} entr{meta.entries.length === 1 ? 'y' : 'ies'}</summary>
+                              <div className={styles.detailsContent}>
                                 {meta.entries.map((e: any) => (
-                                  <div key={e.id || e.createdAt} className="p-2 border rounded bg-gray-50">
-                                    <div className="text-sm font-medium">{(e.date || '').slice(0,10)} — {Number(e.hours || 0)} hrs</div>
-                                    {e.activity && <div className="text-sm text-gray-700">Activity: {String(e.activity).slice(0,200)}</div>}
-                                    {e.notes && <div className="text-sm text-gray-500">Notes: {String(e.notes).slice(0,300)}</div>}
+                                  <div key={e.id || e.createdAt} className={styles.entryCard}>
+                                    <div className={styles.entryDate}>{(e.date || '').slice(0,10)} — {Number(e.hours || 0)} hrs</div>
+                                    {e.activity && <div className={styles.entryActivity}>Activity: {String(e.activity).slice(0,200)}</div>}
+                                    {e.notes && <div className={styles.entryNotes}>Notes: {String(e.notes).slice(0,300)}</div>}
                                     {Array.isArray(e.segments) && e.segments.length > 0 && (
-                                      <div className="mt-2 text-xs text-gray-600">
+                                      <div className={styles.segmentsContainer}>
                                         Segments:
-                                        <ul className="list-disc ml-5">
+                                        <ul className={styles.segmentsList}>
                                           {e.segments.map((s: any, i: number) => (
                                             <li key={i}>{s.date} {s.start}–{s.end} ({segmentHours(s)} hrs)</li>
                                           ))}

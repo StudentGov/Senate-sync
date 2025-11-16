@@ -4,17 +4,17 @@ import styles from './navBar.module.css'
 import purpleLogo from '../../assets/purpleImage.png'
 import whiteLogo from '../../assets/whiteImage.png'
 import { useRouter, usePathname } from "next/navigation";
-import { useUser, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { useAuth, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname()
-  const { user } = useUser(); // Get user info from Clerk
+  const { sessionClaims } = useAuth(); // Get user info from Clerk
   const isHome = pathname === '/'
   const showButton = pathname !== '/auth/sign-in'
   
   // Check if user is an admin
-  const userRole = user?.publicMetadata?.role as string;
+  const userRole = sessionClaims?.role as string;
   const isAdmin = userRole === "admin";
 
   return (
@@ -43,7 +43,7 @@ export default function Navbar() {
         <SignedIn>
           {/* Dashboard shortcut button (visible to all signed-in users) */}
           <button
-            onClick={() => router.push('/student/dashboard')}
+            onClick={() => router.push('/senate/dashboard')}
             className="bg-white text-purple-700 rounded-md px-3 py-2 font-medium hover:bg-gray-100"
           >
             Dashboard

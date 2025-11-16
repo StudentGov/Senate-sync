@@ -5,6 +5,7 @@ import { AttorneyCard } from "../components/attorney-card";
 import { UserForm } from "../components/user-form";
 import { AppointmentSummary } from "../components/appointment-summary";
 import { MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import styles from './attorney-page.module.css';
 
 interface TimeSlot {
   id: string;
@@ -99,41 +100,41 @@ export default function AttorneyPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className={styles.pageContainer}>
       {/* Hero Section */}
-      <section className="bg-white py-12" id="attorney">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="font-bold text-3xl md:text-4xl text-gray-900 mb-4">
+      <section className={styles.heroSection} id="attorney">
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>
             Schedule Your Legal Consultation
           </h1>
-          <p className="text-gray-600 max-w-3xl mx-auto mb-2">
+          <p className={styles.heroDescription}>
             Connect with qualified student attorneys for free legal advice and guidance.
           </p>
-          <p className="text-gray-600 max-w-3xl mx-auto">
+          <p className={styles.heroDescription}>
             Our experienced law students provide professional consultation services under faculty supervision.
           </p>
         </div>
       </section>
 
       {/* Location Banner - Centered Box */}
-      <section className="py-6">
-        <div className="container mx-auto px-4 flex justify-center">
-          <div className="bg-[#febd11]/20 border-2 border-[#febd11] rounded-lg px-8 py-4 inline-flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-[#49306e]" />
-            <span className="font-semibold text-[#49306e]">Location: Student Government Office</span>
+      <section className={styles.locationBanner}>
+        <div className={styles.locationBannerContent}>
+          <div className={styles.locationBannerBox}>
+            <MapPin className={styles.locationBannerIcon} />
+            <span className={styles.locationBannerText}>Location: Student Government Office</span>
           </div>
         </div>
       </section>
 
       {/* Main Content */}
-      <section className="py-12 flex-1">
-        <div className="container mx-auto px-4">
-          <h2 className="font-bold text-2xl md:text-3xl text-gray-900 text-center mb-8">
+      <section className={styles.mainContent}>
+        <div className={styles.mainContentWrapper}>
+          <h2 className={styles.sectionTitle}>
             Select an Attorney and Time Slot
           </h2>
 
           {/* Attorney Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+          <div className={styles.attorneyCardsGrid}>
             <AttorneyCard
               initials="SJ"
               name="Sarah Johnson"
@@ -161,11 +162,11 @@ export default function AttorneyPage() {
           </div>
 
           {/* Form and Summary */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
+          <div className={styles.formAndSummaryGrid}>
+            <div className={styles.formColumn}>
               <UserForm onSubmit={handleFormSubmit} />
             </div>
-            <div>
+            <div className={styles.summaryColumn}>
               <AppointmentSummary
                 date={
                   selectedSlot

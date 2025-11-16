@@ -1,0 +1,234 @@
+/* Calendar Page Styles */
+
+/* Main page container */
+.pageContainer {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main section */
+.mainSection {
+  flex: 1;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 95rem;
+  padding: 2rem 1rem;
+}
+
+/* Header section */
+.headerSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.addEventButton {
+  padding: 0.5rem 1.5rem;
+  background-color: #facc15;
+  color: #111827;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.addEventButton:hover {
+  background-color: #eab308;
+}
+
+.addEventButtonIcon {
+  font-size: 1.125rem;
+}
+
+/* Calendar wrapper */
+.calendarWrapper {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .calendarWrapper {
+    padding: 1.5rem;
+  }
+}
+
+/* Loading state */
+.calendarContainer {
+  min-height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingText {
+  color: #6b7280;
+}
+
+/* Event Popover */
+.eventPopover {
+  position: absolute;
+  z-index: 1000;
+  width: 20rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e7eb;
+  padding: 1rem;
+}
+
+.popoverHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.popoverTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  padding-right: 0.5rem;
+}
+
+.popoverActions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.eventMenuButton {
+  color: #9ca3af;
+  transition: color 0.3s;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.eventMenuButton:hover {
+  color: #4b5563;
+  background-color: #f3f4f6;
+}
+
+.eventMenuIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.eventMenuDropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.25rem;
+  width: 8rem;
+  background-color: white;
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+  z-index: 10;
+}
+
+.eventMenuDropdownButton {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  transition: background-color 0.3s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.eventMenuDropdownButtonEdit {
+  color: #374151;
+  border-radius: 0.375rem 0.375rem 0 0;
+}
+
+.eventMenuDropdownButtonEdit:hover {
+  background-color: #f3f4f6;
+}
+
+.eventMenuDropdownButtonDelete {
+  color: #dc2626;
+  border-radius: 0 0 0.375rem 0.375rem;
+}
+
+.eventMenuDropdownButtonDelete:hover {
+  background-color: #f3f4f6;
+}
+
+.popoverCloseButton {
+  color: #9ca3af;
+  transition: color 0.3s;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.popoverCloseButton:hover {
+  color: #4b5563;
+}
+
+.popoverCloseIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Event Details */
+.eventDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.eventDetailItem {
+  display: flex;
+  align-items: start;
+}
+
+.eventDetailIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6b7280;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.eventDetailContent {
+  flex: 1;
+}
+
+.eventDetailText {
+  font-size: 0.875rem;
+  color: #111827;
+}
+
+.eventDetailTextSecondary {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.eventDetailTextDescription {
+  font-size: 0.875rem;
+  color: #374151;
+}

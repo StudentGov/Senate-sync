@@ -5,7 +5,7 @@ import styles from "./admin.module.css";
 import UserTable from "../../components/UserTable";
 import CreateUserForm from "../../components/CreateUserForm";
 import AdminHourLogClient from "../components/AdminHourLogClient";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 /**
@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
  */
 export default function AdminDashboard() {
   const router = useRouter();
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { sessionClaims, isSignedIn, isLoaded } = useAuth();
   const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState<"users" | "create" | "hours">("users");
 
@@ -40,9 +40,9 @@ export default function AdminDashboard() {
   useEffect(() => {
     // Don't do anything until user data is loaded
     if (!isSignedIn) return;
-    if (!user) return;
+    if (!sessionClaims) return;
     
-    const userRole = user?.publicMetadata?.role as string;
+    const userRole = sessionClaims?.role as string;
     console.log("Admin Dashboard - User Role:", userRole); // Debug log
     
     // Check if the user has admin access
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
     // Fetch users if the admin is signed in
     console.log("Admin access granted - fetching users"); // Debug log
     fetchUsers();
-  }, [isSignedIn, user, router]);
+  }, [isSignedIn, sessionClaims, router]);
 
   const handleUserCreated = () => {
     // Refresh the user list when a new user is created

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useUser } from '@clerk/nextjs'
 import Image from 'next/image';
 import binIcon from '../../assets/bin.png';
+import styles from './log-hours-page.module.css';
 
 type Log = {
   id: string;
@@ -25,6 +26,8 @@ export default function SenateHourLoggingPage() {
   const [saving, setSaving] = useState(false);
   const [showReport, setShowReport] = useState(false)
   const [periodKey, setPeriodKey] = useState(() => Math.floor(Date.now() / (14 * 24 * 60 * 60 * 1000)))
+  const [successMessage, setSuccessMessage] = useState("");
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     // load recent logs (best-effort)
@@ -110,14 +113,25 @@ export default function SenateHourLoggingPage() {
         segments,
       };
 
-      await fetch('/api/senate/log-hours', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const response = await fetch('/api/senate/log-hours', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const result = await response.json();
 
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Failed to save hours');
+      }
+
+      // Show success message before resetting form
+      setSuccessMessage(`Successfully logged ${totalHours} hours!`);
+      
       // refresh logs and reset segments
       const res = await fetch('/api/senate/log-hours');
       const data = await res.json();
       setLogs(data?.logs || []);
       setSegments([{ date: new Date().toISOString().slice(0, 10), start: '', end: '' }]);
       setNotes('');
+      
+      // Clear success message after 5 seconds
+      setTimeout(() => setSuccessMessage(''), 5000);
     } catch (err) {
       console.error(err);
       alert('Failed to save hours');
@@ -140,6 +154,37 @@ export default function SenateHourLoggingPage() {
 
   function removeSegment(idx: number) {
     setSegments((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  async function deleteEntry(entryId: string) {
+    if (!confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
+      return;
+    }
+
+    setDeleting(entryId);
+    try {
+      const response = await fetch('/api/senate/log-hours', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entryId })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Failed to delete entry');
+      }
+
+      // Refresh logs
+      const res = await fetch('/api/senate/log-hours');
+      const data = await res.json();
+      setLogs(data?.logs || []);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete entry');
+    } finally {
+      setDeleting(null);
+    }
   }
 
   function twoWeekLoggedHours() {
@@ -241,82 +286,83 @@ export default function SenateHourLoggingPage() {
     }
   }
 
-  // Colors from design
-  const yellow = "#F7BF17";
-  const purple = "#6B3B88"; // slightly lighter purple for better contrast
-
   return (
-    <main className="min-h-screen bg-white">
+    <main className={styles.pageContainer}>
       {/* Top hero banner */}
-      <div className="w-full">
-        <div className="max-w-7xl mx-auto px-6 py-12 text-center">
-          <h1 className="text-4xl font-extrabold text-purple-700">Hour Logging</h1>
-          <p className="mt-2 text-purple-800/80">Track your contributions and stay accountable</p>
+      <div className={styles.heroBanner}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>Hour Logging</h1>
+          <p className={styles.heroSubtitle}>Track your contributions and stay accountable</p>
         </div>
       </div>
 
       {/* Main content (purple background behind white cards) */}
-      <div className="w-full" style={{ background: purple }}>
-        <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className={`${styles.purpleSection}`}>
+        <div className={styles.mainContentGrid}>
         {/* left large card */}
-        <div className="lg:col-span-8">
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-semibold text-purple-700 text-center">Log Your Hours</h2>
+        <div className={styles.leftCard}>
+          <div className={styles.formCard}>
+            <h2 className={styles.formTitle}>Log Your Hours</h2>
 
-            <form onSubmit={submitHours} className="mt-8">
-              <div className="space-y-4">
+            <form onSubmit={submitHours} className={styles.formContainer}>
+              {successMessage && (
+                <div className={styles.successMessage}>
+                  {successMessage}
+                </div>
+              )}
+              <div className={styles.formFields}>
                 {segments.map((seg, idx) => (
-                  <div key={idx} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end bg-gray-50 p-3 rounded min-w-0">
-                    <div className="md:col-span-4 min-w-0">
-                      <label className="text-sm text-purple-700">Date</label>
-                      <input type="date" value={seg.date} onChange={(e) => updateSegment(idx, 'date', e.target.value)} className="w-full mt-2 border rounded px-3 py-2 min-w-0" />
+                  <div key={idx} className={styles.segmentRow}>
+                    <div className={styles.segmentDateField}>
+                      <label className={styles.segmentLabel}>Date</label>
+                      <input type="date" value={seg.date} onChange={(e) => updateSegment(idx, 'date', e.target.value)} className={styles.segmentInput} />
                     </div>
 
-                    <div className="min-w-0 md:col-span-3">
-                      <label className="text-sm text-purple-700">Start</label>
-                      <input type="time" value={seg.start} onChange={(e) => updateSegment(idx, 'start', e.target.value)} className="w-full mt-2 border rounded px-3 py-2 min-w-0" />
+                    <div className={styles.segmentTimeField}>
+                      <label className={styles.segmentLabel}>Start</label>
+                      <input type="time" value={seg.start} onChange={(e) => updateSegment(idx, 'start', e.target.value)} className={styles.segmentInput} />
                     </div>
 
-                    <div className="min-w-0 md:col-span-3">
-                      <label className="text-sm text-purple-700">End</label>
-                      <input type="time" value={seg.end} onChange={(e) => updateSegment(idx, 'end', e.target.value)} className="w-full mt-2 border rounded px-3 py-2 min-w-0" />
+                    <div className={styles.segmentTimeField}>
+                      <label className={styles.segmentLabel}>End</label>
+                      <input type="time" value={seg.end} onChange={(e) => updateSegment(idx, 'end', e.target.value)} className={styles.segmentInput} />
                     </div>
 
-                    <div className="flex items-center justify-end md:col-span-2">
-                      <div className="text-sm text-gray-700">{Math.round((minutesBetween(seg.start, seg.end) / 60) * 100) / 100} hrs</div>
-                      <button type="button" onClick={() => removeSegment(idx)} className="ml-3 p-1 text-red-600" aria-label="Remove segment">
+                    <div className={styles.segmentActions}>
+                      <div className={styles.segmentHours}>{Math.round((minutesBetween(seg.start, seg.end) / 60) * 100) / 100} hrs</div>
+                      <button type="button" onClick={() => removeSegment(idx)} className={styles.removeSegmentButton} aria-label="Remove segment">
                         <Image src={binIcon} alt="Remove" width={18} height={18} />
                       </button>
                     </div>
                   </div>
                 ))}
 
-                <div className="flex items-center space-x-3">
-                  <button type="button" onClick={addSegment} className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-dashed text-purple-700">
-                    <span className="text-2xl">+</span> Add segment
+                <div className={styles.addSegmentSection}>
+                  <button type="button" onClick={addSegment} className={styles.addSegmentButton}>
+                    <span className={styles.addSegmentButtonIcon}>+</span> Add segment
                   </button>
                 </div>
 
-                <div>
-                  <label className="text-sm text-purple-700">Comments/Notes <span className="text-gray-400">(Required)</span></label>
-                  <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full mt-2 border rounded p-4 min-h-[120px]" placeholder="Describe your activities and contributions..."></textarea>
+                <div className={styles.notesField}>
+                  <label className={styles.notesLabel}>Comments/Notes <span className={styles.notesLabelRequired}>(Required)</span></label>
+                  <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className={styles.notesTextarea} placeholder="Describe your activities and contributions..."></textarea>
                 </div>
               </div>
 
-              <div className="mt-8 flex items-center gap-4">
-                <button type="submit" disabled={saving} style={{ background: yellow }} className="flex-1 text-white py-3 rounded-md font-medium shadow">{saving ? 'Saving...' : 'Submit Hours'}</button>
-                <button type="button" className="px-6 py-3 rounded-md border-2 border-purple-700 text-purple-700 font-medium">Cancel</button>
+              <div className={styles.formButtons}>
+                <button type="submit" disabled={saving} className={styles.submitButton}>{saving ? 'Saving...' : 'Submit Hours'}</button>
+                <button type="button" className={styles.cancelButton}>Cancel</button>
               </div>
             </form>
           </div>
         </div>
 
         {/* right summary card */}
-        <aside className="lg:col-span-4">
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-800">Period Summary</h3>
+        <aside className={styles.rightCard}>
+          <div className={styles.summaryCard}>
+            <h3 className={styles.summaryTitle}>Period Summary</h3>
 
-            <div className="mt-4 space-y-3">
+            <div className={styles.summaryContent}>
               {/** compute values */}
               {(() => {
                 const logged = twoWeekLoggedHours();
@@ -328,72 +374,69 @@ export default function SenateHourLoggingPage() {
                 const periodEnd = periodEndLocalString();
                 return (
                   <>
-                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
-                      <div>
-                        <div className="text-sm text-gray-600">Logged (14 days)</div>
-                        <div className="text-xs text-gray-400">Includes saved entries</div>
+                    <div className={`${styles.summaryStatCard} ${styles.summaryStatCardGray}`}>
+                      <div className={styles.summaryStatContent}>
+                        <div className={styles.summaryStatLabel}>Logged (14 days)</div>
+                        <div className={styles.summaryStatSubtext}>Includes saved entries</div>
                       </div>
-                      <div className="text-sm font-semibold">{logged} hrs</div>
+                      <div className={styles.summaryStatValue}>{logged} hrs</div>
                     </div>
 
-                    <div className="flex justify-between items-center bg-yellow-50 p-3 rounded">
-                      <div>
-                        <div className="text-sm text-gray-600">Remaining (target 6 hrs)</div>
-                        <div className="text-xs text-gray-400">After current draft: {remainingAfter} hrs</div>
+                    <div className={`${styles.summaryStatCard} ${styles.summaryStatCardYellow}`}>
+                      <div className={styles.summaryStatContent}>
+                        <div className={styles.summaryStatLabel}>Remaining (target 6 hrs)</div>
+                        <div className={styles.summaryStatSubtext}>After current draft: {remainingAfter} hrs</div>
                       </div>
-                      <div className="text-sm font-semibold">{remaining} hrs</div>
+                      <div className={styles.summaryStatValue}>{remaining} hrs</div>
                     </div>
 
-                    <div className="w-full bg-gray-200 rounded h-3 overflow-hidden">
-                      <div className="h-3 bg-yellow-500" style={{ width: `${progressPct}%` }} />
+                    <div className={styles.progressBar}>
+                      <div className={styles.progressBarFill} style={{ width: `${progressPct}%` }} />
                     </div>
 
-                    <div className="mt-2 p-2 bg-indigo-50 rounded text-sm text-indigo-700">
+                    <div className={styles.periodInfo}>
                       <strong>{daysLeft} day{daysLeft === 1 ? '' : 's'} left</strong> — ends {periodEnd} (Chicago)
                     </div>
 
-                    <div className="text-sm text-gray-600">Draft hours: {draft} hrs</div>
-                    <button onClick={() => setShowReport(true)} className="mt-2 w-full py-2 rounded-md border-2 border-yellow-500 text-yellow-700 font-medium">View Full Report</button>
+                    <div className={styles.draftHours}>Draft hours: {draft} hrs</div>
+                    <button onClick={() => setShowReport(true)} className={styles.viewReportButton}>View Full Report</button>
                   </>
                 );
               })()}
             </div>
           </div>
           {showReport && (
-            <div className="mt-4 bg-white p-4 rounded shadow">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-lg font-semibold">Full Report — by date</h4>
-                <button className="text-sm text-gray-500" onClick={() => setShowReport(false)}>Close</button>
+            <div className={styles.reportCard}>
+              <div className={styles.reportHeader}>
+                <h4 className={styles.reportTitle}>Full Report — by date</h4>
+                <button className={styles.reportCloseButton} onClick={() => setShowReport(false)}>Close</button>
               </div>
               {logs.length === 0 ? (
-                <div className="text-sm text-gray-600">No logged entries found.</div>
+                <div className={styles.reportEmpty}>No logged entries found.</div>
               ) : (
-                (() => {
-                  // group by date
-                  const grouped: Record<string, { total: number; count: number }> = {}
-                  logs.forEach((l) => {
-                    const d = l.date || new Date(l.createdAt || Date.now()).toISOString().slice(0,10)
-                    grouped[d] = grouped[d] || { total: 0, count: 0 }
-                    grouped[d].total += Number(l.hours || 0)
-                    grouped[d].count += 1
-                  })
-                  const rows = Object.entries(grouped).sort((a,b) => b[0].localeCompare(a[0]))
-                  return (
-                    <div className="space-y-2">
-                      <div className="max-h-64 overflow-y-auto">
-                        {rows.map(([date, meta]) => (
-                          <div key={date} className="flex justify-between items-center p-2 border rounded mb-2">
-                            <div>
-                              <div className="font-medium">{date}</div>
-                              <div className="text-sm text-gray-500">{meta.count} entr{meta.count === 1 ? 'y' : 'ies'}</div>
-                            </div>
-                            <div className="text-sm font-semibold">{Math.round(meta.total * 100) / 100} hrs</div>
+                <div className={styles.reportContent}>
+                  <div className={styles.reportScrollContainer}>
+                    {logs.map((log) => (
+                      <div key={log.id} className={styles.reportRow}>
+                        <div className={styles.reportRowInfo}>
+                          <div className={styles.reportRowDate}>{log.date || new Date(log.createdAt || Date.now()).toISOString().slice(0,10)}</div>
+                          <div className={styles.reportRowMeta}>
+                            {Math.round((log.hours || 0) * 100) / 100} hrs
+                            {log.activity && <span className={styles.reportRowActivity}> • {log.activity}</span>}
                           </div>
-                        ))}
+                        </div>
+                        <button
+                          onClick={() => deleteEntry(log.id)}
+                          disabled={deleting === log.id}
+                          className={styles.deleteButton}
+                          title="Delete this entry"
+                        >
+                          {deleting === log.id ? 'Deleting...' : 'Delete'}
+                        </button>
                       </div>
-                    </div>
-                  )
-                })()
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           )}

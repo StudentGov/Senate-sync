@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Search, Plus, Play, ChevronLeft, ChevronRight, FileText, X, Check, Edit, Trash2, ClipboardList, FolderOpen } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
+import styles from './archives-page.module.css';
 
 interface Archive {
   id: number;
@@ -227,24 +228,24 @@ export default function ArchivesPage() {
   const counts = getCounts();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
+    <div className={styles.pageContainer}>
+      <main className={styles.mainContent}>
+        <div className={styles.contentWrapper}>
           {/* Title and Description */}
-          <div className="text-center mb-8">
-            <h1 className="font-bold text-3xl md:text-4xl text-[#49306e] mb-4 font-kanit">
+          <div className={styles.pageHeader}>
+            <h1 className={styles.pageTitle}>
               Student Government Archives
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto font-kanit">
+            <p className={styles.pageDescription}>
               Access historical documents, meeting recordings, and important resources from
               Minnesota State University Student Government.
             </p>
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-3xl mx-auto mb-8">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <div className={styles.searchSection}>
+            <div className={styles.searchContainer}>
+              <Search className={styles.searchIcon} />
               <input
                 type="text"
                 placeholder="Search through our archives..."
@@ -253,14 +254,14 @@ export default function ArchivesPage() {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                className={styles.searchInput}
               />
             </div>
           </div>
 
           {/* Tabs and Add File Button */}
-          <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-            <div className="flex gap-2 flex-wrap justify-center sm:justify-start">
+          <div className={styles.tabsAndAddSection}>
+            <div className={styles.tabsContainer}>
               {ARCHIVE_TYPES.map((tab) => (
                 <button
                   key={tab.id}
@@ -268,18 +269,18 @@ export default function ArchivesPage() {
                     setActiveTab(tab.id);
                     setCurrentPage(1);
                   }}
-                  className={`px-4 py-2 rounded-md font-medium transition-colors font-kanit text-sm sm:text-base ${
+                  className={`${styles.tabButton} ${
                     activeTab === tab.id
-                      ? "bg-[#49306e] text-white"
-                      : "text-gray-600 hover:bg-gray-200"
+                      ? styles.tabButtonActive
+                      : styles.tabButtonInactive
                   }`}
                 >
                   {tab.label}{" "}
                   <span
-                    className={`ml-1 px-2 py-0.5 rounded-full text-xs sm:text-sm ${
+                    className={`${styles.tabBadge} ${
                       activeTab === tab.id
-                        ? "bg-white/20"
-                        : "bg-gray-300"
+                        ? styles.tabBadgeActive
+                        : styles.tabBadgeInactive
                     }`}
                   >
                     {counts[tab.id] || 0}
@@ -290,9 +291,9 @@ export default function ArchivesPage() {
             {user && (
               <button
                 onClick={handleAddFile}
-                className="bg-[#49306e] hover:bg-[#49306e]/90 text-white font-semibold px-6 py-2 rounded-md flex items-center gap-2 transition-colors font-kanit"
+                className={styles.addArchiveButton}
               >
-                <Plus className="w-5 h-5" />
+                <Plus className={styles.addArchiveButtonIcon} />
                 Add Archive
               </button>
             )}
@@ -300,13 +301,13 @@ export default function ArchivesPage() {
 
           {/* Pagination Top */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mb-8">
+            <div className={styles.pagination}>
               <button
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="p-2 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={styles.paginationButton}
               >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
+                <ChevronLeft className={styles.paginationButtonIcon} />
               </button>
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 let pageNum;
@@ -323,10 +324,10 @@ export default function ArchivesPage() {
                   <button
                     key={i}
                     onClick={() => setCurrentPage(pageNum)}
-                    className={`w-10 h-10 rounded-md font-medium transition-colors font-kanit ${
+                    className={`${styles.paginationPageButton} ${
                       currentPage === pageNum
-                        ? "bg-[#49306e] text-white"
-                        : "text-gray-600 hover:bg-gray-200"
+                        ? styles.paginationPageButtonActive
+                        : styles.paginationPageButtonInactive
                     }`}
                   >
                     {pageNum}
@@ -336,86 +337,86 @@ export default function ArchivesPage() {
               <button
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="p-2 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={styles.paginationButton}
               >
-                <ChevronRight className="w-5 h-5 text-gray-600" />
+                <ChevronRight className={styles.paginationButtonIcon} />
               </button>
             </div>
           )}
 
           {/* Archive Items Grid */}
           {isLoading ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 font-kanit">Loading archives...</p>
+            <div className={styles.loadingState}>
+              <p className={styles.loadingText}>Loading archives...</p>
             </div>
           ) : currentArchives.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 font-kanit">No archives found.</p>
+            <div className={styles.emptyState}>
+              <p className={styles.emptyText}>No archives found.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className={styles.archivesGrid}>
               {currentArchives.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer relative"
+                  className={styles.archiveCard}
                   onMouseEnter={() => setHoveredCard(item.id)}
                   onMouseLeave={() => setHoveredCard(null)}
                   onClick={() => window.open(formatUrl(item.link), "_blank")}
                 >
                   {/* Edit/Delete Buttons */}
                   {user && user.id === item.created_by && hoveredCard === item.id && (
-                    <div className="absolute top-2 right-2 flex gap-2 z-10">
+                    <div className={styles.cardActions}>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleEditArchive(item);
                         }}
-                        className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+                        className={styles.cardActionButton}
                       >
-                        <Edit className="w-4 h-4 text-[#49306e]" />
+                        <Edit className={`${styles.cardActionIcon} ${styles.cardActionIconEdit}`} />
                       </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteArchive(item.id);
                         }}
-                        className="p-2 bg-white rounded-full shadow-lg hover:bg-red-50 transition-colors"
+                        className={`${styles.cardActionButton} ${styles.cardActionButtonDelete}`}
                       >
-                        <Trash2 className="w-4 h-4 text-red-600" />
+                        <Trash2 className={`${styles.cardActionIcon} ${styles.cardActionIconDelete}`} />
                       </button>
                     </div>
                   )}
 
                   {/* Thumbnail/Preview */}
-                  <div className="relative aspect-video bg-[#8b6ba8] flex items-center justify-center">
+                  <div className={styles.cardThumbnail}>
                     {getImageUrl(item) ? (
-                      <img src={getImageUrl(item)!} alt={item.title} className="w-full h-full object-cover" />
+                      <img src={getImageUrl(item)!} alt={item.title} className={styles.cardThumbnailImage} />
                     ) : item.archive_type === "video" ? (
-                      <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
-                        <Play className="w-8 h-8 text-[#49306e] ml-1" fill="currentColor" />
+                      <div className={styles.cardThumbnailIconVideo}>
+                        <Play className={styles.cardThumbnailIcon} fill="currentColor" />
                       </div>
                     ) : item.archive_type === "meeting_minutes" ? (
-                      <ClipboardList className="w-16 h-16 text-[#febd11] opacity-80" />
+                      <ClipboardList className={`${styles.cardThumbnailIcon} ${styles.cardThumbnailIconDefault}`} />
                     ) : item.archive_type === "document" ? (
-                      <FileText className="w-16 h-16 text-[#febd11] opacity-80" />
+                      <FileText className={`${styles.cardThumbnailIcon} ${styles.cardThumbnailIconDefault}`} />
                     ) : (
-                      <FolderOpen className="w-16 h-16 text-[#febd11] opacity-80" />
+                      <FolderOpen className={`${styles.cardThumbnailIcon} ${styles.cardThumbnailIconDefault}`} />
                     )}
                     {/* Type Badge */}
-                    <div className="absolute top-3 right-3 bg-[#febd11] text-[#49306e] font-semibold px-2 py-1 rounded text-xs font-kanit">
+                    <div className={styles.cardThumbnailTypeBadge}>
                       {item.archive_type.charAt(0).toUpperCase() + item.archive_type.slice(1).replace('_', ' ')}
                     </div>
                   </div>
 
                   {/* Card Content */}
-                  <div className="bg-[#febd11] p-4 h-[160px] flex flex-col">
-                    <h3 className="font-semibold text-[#49306e] mb-1 line-clamp-2 font-kanit">
+                  <div className={styles.cardContent}>
+                    <h3 className={styles.cardTitle}>
                       {item.title}
                     </h3>
-                    <div className="flex-1 mb-2">
+                    <div className={styles.cardDescriptionContainer}>
                       {item.description && (
                         <>
-                          <p className="text-sm text-[#49306e]/70 font-kanit line-clamp-2">
+                          <p className={styles.cardDescription}>
                             {item.description}
                           </p>
                           {item.description.length > 100 && (
@@ -428,7 +429,7 @@ export default function ArchivesPage() {
                                   description: item.description || ''
                                 });
                               }}
-                              className="text-xs text-[#49306e] font-semibold hover:underline mt-1 font-kanit"
+                              className={styles.cardReadMoreButton}
                             >
                               Read more
                             </button>
@@ -436,7 +437,7 @@ export default function ArchivesPage() {
                         </>
                       )}
                     </div>
-                    <p className="text-xs text-[#49306e]/60 font-kanit mt-auto">
+                    <p className={styles.cardDate}>
                       {new Date(item.created_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -447,13 +448,13 @@ export default function ArchivesPage() {
 
           {/* Pagination Bottom */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2">
+            <div className={styles.pagination}>
               <button
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="p-2 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={styles.paginationButton}
               >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
+                <ChevronLeft className={styles.paginationButtonIcon} />
               </button>
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 let pageNum;
@@ -470,10 +471,10 @@ export default function ArchivesPage() {
                   <button
                     key={i}
                     onClick={() => setCurrentPage(pageNum)}
-                    className={`w-10 h-10 rounded-md font-medium transition-colors font-kanit ${
+                    className={`${styles.paginationPageButton} ${
                       currentPage === pageNum
-                        ? "bg-[#49306e] text-white"
-                        : "text-gray-600 hover:bg-gray-200"
+                        ? styles.paginationPageButtonActive
+                        : styles.paginationPageButtonInactive
                     }`}
                   >
                     {pageNum}
@@ -483,9 +484,9 @@ export default function ArchivesPage() {
               <button
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="p-2 hover:bg-gray-200 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={styles.paginationButton}
               >
-                <ChevronRight className="w-5 h-5 text-gray-600" />
+                <ChevronRight className={styles.paginationButtonIcon} />
               </button>
             </div>
           )}
@@ -494,21 +495,21 @@ export default function ArchivesPage() {
 
       {/* Description Popup */}
       {descriptionPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className={styles.descriptionPopup}>
           <div 
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            className={styles.modalBackdrop}
             onClick={() => setDescriptionPopup(null)}
           />
-          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 p-6">
-            <h3 className="text-xl font-bold text-[#49306e] mb-3 font-kanit">
+          <div className={styles.modalContent}>
+            <h3 className={styles.modalTitle}>
               {descriptionPopup.title}
             </h3>
-            <p className="text-gray-700 font-kanit whitespace-pre-wrap">
+            <p className={styles.modalDescription}>
               {descriptionPopup.description}
             </p>
             <button
               onClick={() => setDescriptionPopup(null)}
-              className="mt-4 px-4 py-2 bg-[#49306e] hover:bg-[#49306e]/90 text-white rounded-lg font-kanit"
+              className={styles.modalCloseButton}
             >
               Close
             </button>
@@ -518,44 +519,44 @@ export default function ArchivesPage() {
 
       {/* Add/Edit Archive Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className={styles.archiveModal}>
           {/* Backdrop with blur */}
           <div 
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            className={styles.modalBackdrop}
             onClick={handleCloseModal}
           />
           
           {/* Modal */}
-          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 p-8 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold text-[#49306e] mb-6 font-kanit">
+          <div className={styles.largeModalContent}>
+            <h2 className={styles.modalFormTitle}>
               {editingArchive ? "Edit Archive" : "Add Archive"}
             </h2>
             
             {/* Form Fields */}
-            <div className="space-y-6">
+            <div className={styles.formFields}>
               {/* Title */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
-                  Title <span className="text-red-500">*</span>
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
+                  Title <span className={styles.formRequired}>*</span>
                 </label>
                 <input
                   type="text"
                   placeholder="Enter archive title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                  className={styles.formInput}
                 />
               </div>
 
               {/* Archive Type */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
-                  Archive Type <span className="text-red-500">*</span>
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
+                  Archive Type <span className={styles.formRequired}>*</span>
                 </label>
                 <select
                   value={archiveType}
                   onChange={(e) => setArchiveType(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                  className={styles.formSelect}
                 >
                   {ARCHIVE_TYPES.filter(type => type.id !== "all").map((type) => (
                     <option key={type.id} value={type.id}>
@@ -566,22 +567,22 @@ export default function ArchivesPage() {
               </div>
 
               {/* Link */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
-                  Link <span className="text-red-500">*</span>
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
+                  Link <span className={styles.formRequired}>*</span>
                 </label>
                 <input
                   type="url"
                   placeholder="https://example.com/document.pdf"
                   value={link}
                   onChange={(e) => setLink(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                  className={styles.formInput}
                 />
               </div>
 
               {/* Image URL */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
                   Image URL (optional)
                 </label>
                 <input
@@ -589,13 +590,13 @@ export default function ArchivesPage() {
                   placeholder="https://example.com/image.jpg"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                  className={styles.formInput}
                 />
               </div>
 
               {/* Description */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
                   Description
                 </label>
                 <textarea
@@ -604,25 +605,25 @@ export default function ArchivesPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   maxLength={500}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent resize-none font-kanit"
+                  className={styles.formTextarea}
                 />
-                <p className="text-sm text-gray-500 mt-2 font-kanit">Maximum 500 characters</p>
+                <p className={styles.formHelperText}>Maximum 500 characters</p>
               </div>
 
               {/* Buttons */}
-              <div className="flex gap-4 pt-2">
+              <div className={styles.formButtons}>
                 <button
                   onClick={handleCloseModal}
-                  className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 font-kanit"
+                  className={`${styles.formButton} ${styles.formButtonCancel}`}
                 >
-                  <X className="w-4 h-4" />
+                  <X className={styles.formButtonIcon} />
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="flex-1 px-6 py-3 bg-[#49306e] hover:bg-[#49306e]/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 font-kanit"
+                  className={`${styles.formButton} ${styles.formButtonSubmit}`}
                 >
-                  <Check className="w-4 h-4" />
+                  <Check className={styles.formButtonIcon} />
                   {editingArchive ? "Update" : "Confirm"}
                 </button>
               </div>

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import styles from './admin-votes-page.module.css'
 
 type VoteData = { id: number; value: number; label: string }
 
@@ -121,86 +122,86 @@ export default function AdminVotesPage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex items-center gap-4 mb-4">
-        <h1 className="text-2xl font-semibold">Admin: Manage Votes</h1>
-        <Link href="/voting" className="ml-auto inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-800 rounded-md border">
+    <div className={styles.pageContainer}>
+      <div className={styles.headerSection}>
+        <h1 className={styles.pageTitle}>Admin: Manage Votes</h1>
+        <Link href="/voting" className={styles.backLink}>
           ← Back to votes
         </Link>
       </div>
-      {error && <div className="text-red-600 mb-4">{error}</div>}
-      <section className="mb-6">
-        <form onSubmit={createVote} className="space-y-2">
-          <div className="flex gap-2 items-center">
-            <label className="text-sm w-20">Title <span className="text-red-600 ml-1">*</span></label>
-            <input aria-required className="border px-2 py-1 flex-1" placeholder="Vote title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
-            <label className="flex items-center gap-2 ml-4">
+      {error && <div className={styles.errorMessage}>{error}</div>}
+      <section className={styles.formSection}>
+        <form onSubmit={createVote} className={styles.form}>
+          <div className={styles.formRow}>
+            <label className={styles.formLabel}>Title <span className={styles.formLabelRequired}>*</span></label>
+            <input aria-required className={styles.formInput} placeholder="Vote title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
+            <label className={styles.formCheckboxLabel}>
               <input type="checkbox" checked={newRunning} onChange={(e) => setNewRunning(e.target.checked)} />
-              <span className="text-sm">Running</span>
+              <span className={styles.formCheckboxLabelText}>Running</span>
             </label>
           </div>
-          <div className="flex items-center gap-2">
-            <strong className="mr-2">New vote options</strong>
-            <button type="button" className="text-sm text-gray-500" onClick={addNewOption}>+ Add option</button>
+          <div className={styles.formOptionsHeader}>
+            <strong className={styles.formOptionsHeaderText}>New vote options</strong>
+            <button type="button" className={styles.addOptionButton} onClick={addNewOption}>+ Add option</button>
           </div>
-          <div className="space-y-2">
+          <div className={styles.formOptionsList}>
             {newOptions.map((opt, idx) => (
-              <div key={idx} className="flex gap-2 items-center">
-                <input className="border px-2 py-1 flex-1" placeholder={`Option ${idx + 1}`} value={opt} onChange={(e) => updateNewOption(idx, e.target.value)} />
-                {newOptions.length > 1 && <button type="button" className="px-2 py-1 border rounded text-red-600" onClick={() => removeNewOption(idx)}>Remove</button>}
+              <div key={idx} className={styles.formOptionRow}>
+                <input className={styles.formOptionInput} placeholder={`Option ${idx + 1}`} value={opt} onChange={(e) => updateNewOption(idx, e.target.value)} />
+                {newOptions.length > 1 && <button type="button" className={styles.removeOptionButton} onClick={() => removeNewOption(idx)}>Remove</button>}
               </div>
             ))}
           </div>
           <div>
-            <button className="bg-blue-600 text-white px-3 py-1 rounded" type="submit">Create vote</button>
+            <button className={styles.submitButton} type="submit">Create vote</button>
           </div>
         </form>
       </section>
 
       <section>
-        {loading ? <div>Loading...</div> : (
-          <div className="space-y-4">
-            {Object.keys(voting).length === 0 && <div>No votes found</div>}
+        {loading ? <div className={styles.loadingState}>Loading...</div> : (
+          <div className={styles.votesList}>
+            {Object.keys(voting).length === 0 && <div className={styles.emptyState}>No votes found</div>}
             {Object.entries(voting).map(([id, entry]) => (
-              <div key={id} className="border p-3 rounded">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <strong>{(entry as any).title ?? 'Untitled vote'}</strong>
-                      {(entry as any).running ? <span className="ml-2 text-sm text-green-600">● Running</span> : <span className="ml-2 text-sm text-red-600">● Closed</span>}
+              <div key={id} className={styles.voteCard}>
+                <div className={styles.voteCardHeader}>
+                  <div className={styles.voteCardInfo}>
+                    <div className={styles.voteCardTitleRow}>
+                      <strong className={styles.voteCardTitle}>{(entry as any).title ?? 'Untitled vote'}</strong>
+                      {(entry as any).running ? <span className={styles.voteCardStatusRunning}>● Running</span> : <span className={styles.voteCardStatusClosed}>● Closed</span>}
                     </div>
-                    <div className="text-sm text-gray-600">Options: {entry.data.map((d:any) => `${d.label} (${d.count ?? d.value ?? 0})`).join(', ')}</div>
+                    <div className={styles.voteCardOptions}>Options: {entry.data.map((d:any) => `${d.label} (${d.count ?? d.value ?? 0})`).join(', ')}</div>
                   </div>
-                  <div className="flex gap-2">
-                    <button className="px-2 py-1 border rounded" onClick={() => startEdit(id)}>Edit</button>
-                    <button className="px-2 py-1 border rounded text-red-600" onClick={() => deleteVote(id)}>Delete</button>
+                  <div className={styles.voteCardActions}>
+                    <button className={styles.voteCardButton} onClick={() => startEdit(id)}>Edit</button>
+                    <button className={`${styles.voteCardButton} ${styles.voteCardButtonDelete}`} onClick={() => deleteVote(id)}>Delete</button>
                   </div>
                 </div>
                 {editingId === id && (
-                  <div className="mt-3">
-                    <div className="space-y-2">
-                      <div className="flex gap-2 items-center">
-                        <label className="text-sm w-20">Title <span className="text-red-600 ml-1">*</span></label>
-                        <input aria-required className="border px-2 py-1 flex-1" value={editingTitle} onChange={(e) => setEditingTitle(e.target.value)} />
-                        <label className="flex items-center gap-2 ml-4">
+                  <div className={styles.editForm}>
+                    <div className={styles.editFormFields}>
+                      <div className={styles.editFormRow}>
+                        <label className={styles.editFormLabel}>Title <span className={styles.editFormLabelRequired}>*</span></label>
+                        <input aria-required className={styles.editFormInput} value={editingTitle} onChange={(e) => setEditingTitle(e.target.value)} />
+                        <label className={styles.editFormCheckboxLabel}>
                           <input type="checkbox" checked={editingRunning} onChange={(e) => setEditingRunning(e.target.checked)} />
-                          <span className="text-sm">Running</span>
+                          <span className={styles.editFormCheckboxLabelText}>Running</span>
                         </label>
                       </div>
                       {editingOptions.map((opt, idx) => (
-                        <div key={idx} className="flex gap-2 items-center">
-                          <input className="border px-2 py-1 flex-1" value={opt.label} onChange={(e) => updateEditingOption(idx, e.target.value)} />
-                          <input className="w-20 border px-2 py-1 text-center" value={String(opt.value ?? 0)} onChange={(e) => setEditingOptions(prev => prev.map((p,i)=> i===idx ? { ...p, value: Number(e.target.value) || 0 } : p))} />
-                          {editingOptions.length > 1 && <button type="button" className="px-2 py-1 border rounded text-red-600" onClick={() => removeEditingOption(idx)}>Remove</button>}
+                        <div key={idx} className={styles.editFormOptionRow}>
+                          <input className={styles.editFormOptionInput} value={opt.label} onChange={(e) => updateEditingOption(idx, e.target.value)} />
+                          <input className={styles.editFormOptionValueInput} value={String(opt.value ?? 0)} onChange={(e) => setEditingOptions(prev => prev.map((p,i)=> i===idx ? { ...p, value: Number(e.target.value) || 0 } : p))} />
+                          {editingOptions.length > 1 && <button type="button" className={styles.removeOptionButton} onClick={() => removeEditingOption(idx)}>Remove</button>}
                         </div>
                       ))}
                       <div>
-                        <button type="button" className="px-2 py-1 border rounded" onClick={addEditingOption}>+ Add option</button>
+                        <button type="button" className={styles.voteCardButton} onClick={addEditingOption}>+ Add option</button>
                       </div>
                     </div>
-                    <div className="flex gap-2 mt-2">
-                      <button className="bg-green-600 text-white px-3 py-1 rounded" onClick={() => saveEdit()}>Save</button>
-                      <button className="px-3 py-1 border rounded" onClick={() => { setEditingId(null); setEditingOptions([]) }}>Cancel</button>
+                    <div className={styles.editFormActions}>
+                      <button className={styles.editFormSaveButton} onClick={() => saveEdit()}>Save</button>
+                      <button className={styles.editFormCancelButton} onClick={() => { setEditingId(null); setEditingOptions([]) }}>Cancel</button>
                     </div>
                   </div>
                 )}
