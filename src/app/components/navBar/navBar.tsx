@@ -43,7 +43,7 @@ export default function Navbar() {
         <SignedIn>
           {/* Dashboard shortcut button (visible to all signed-in users) */}
           <button
-            onClick={() => router.push('/student/dashboard')}
+            onClick={() => router.push('/senate/dashboard')}
             className="bg-white text-purple-700 rounded-md px-3 py-2 font-medium hover:bg-gray-100"
           >
             Dashboard
