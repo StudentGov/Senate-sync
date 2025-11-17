@@ -91,7 +91,7 @@ export default function Navbar() {
           {showButton && (
             <a
               href="/auth/sign-in"
-              className="bg-[#febd11] text-white rounded-lg px-6 py-2 font-kanit hover:bg-[#e6a900] transition"
+              className="bg-[#febd11] text-black rounded-lg px-6 py-2 font-kanit hover:bg-[#e6a900] transition"
             >
               Sign In
             </a>

@@ -38,6 +38,7 @@ export default function ArchivesPage() {
   const [imageUrl, setImageUrl] = useState("");
   const [archiveType, setArchiveType] = useState("document");
   const [archives, setArchives] = useState<Archive[]>([]);
+  const [allArchives, setAllArchives] = useState<Archive[]>([]); // For calculating counts
   const [isLoading, setIsLoading] = useState(true);
   const [editingArchive, setEditingArchive] = useState<Archive | null>(null);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -52,12 +53,20 @@ export default function ArchivesPage() {
   const fetchArchives = async () => {
     setIsLoading(true);
     try {
+      // Fetch filtered archives for the current tab
       const response = await fetch(`/api/get-archives?archive_type=${activeTab}`);
       if (response.ok) {
         const data = await response.json();
         setArchives(data.archives);
       } else {
         console.error("Failed to fetch archives");
+      }
+
+      // Fetch all archives for counts (only if we don't have them yet or need to refresh)
+      const allResponse = await fetch(`/api/get-archives?archive_type=all`);
+      if (allResponse.ok) {
+        const allData = await allResponse.json();
+        setAllArchives(allData.archives);
       }
     } catch (error) {
       console.error("Error fetching archives:", error);
@@ -218,8 +227,8 @@ export default function ArchivesPage() {
   };
 
   const getCounts = () => {
-    const counts: Record<string, number> = { all: archives.length };
-    archives.forEach((archive) => {
+    const counts: Record<string, number> = { all: allArchives.length };
+    allArchives.forEach((archive) => {
       counts[archive.archive_type] = (counts[archive.archive_type] || 0) + 1;
     });
     return counts;
