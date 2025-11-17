@@ -10,7 +10,6 @@ import { useAuth } from "@clerk/nextjs";
 
 import AddEventModal from "@/app/components/add-event-modal";
 import { EventDetails, CalendarEvent } from "@/types/calendar";
-import "./calendar.css";
 import styles from "./calendar-page.module.css";
 
 interface PopoverPosition {
