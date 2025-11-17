@@ -204,16 +204,12 @@ export default clerkMiddleware(async (auth, req) => {
   const pathname = req.nextUrl.pathname;
   const isApiRoute = pathname.startsWith('/api');
 
-  // ============================================
   // STEP 1: Check if route is public
-  // ============================================
   if (isPublicPageRoute(req) || isPublicApiRoute(req)) {
     return NextResponse.next();
   }
 
-  // ============================================
   // STEP 2: Authentication check
-  // ============================================
   // If route is protected, user must be authenticated
   const needsAuth = isProtectedRoute(req) || (isApiRoute && !isPublicApiRoute(req));
 
@@ -232,9 +228,7 @@ export default clerkMiddleware(async (auth, req) => {
     return redirectToSignIn();
   }
 
-  // ============================================
   // STEP 3: Role-based authorization
-  // ============================================
   const userRole = sessionClaims?.role as string | undefined;
   console.log(`👤 User: ${userId?.slice(0, 8)}... | Role: ${userRole || 'none'} | Path: ${pathname}`);
 
@@ -244,9 +238,7 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  // ============================================
   // STEP 4: Check role-specific access
-  // ============================================
   if (!userRole) {
     console.log(`❌ No role assigned - ${pathname}`);
     if (isApiRoute) {
