@@ -17,7 +17,7 @@ const SignInButton = React.forwardRef<HTMLButtonElement, SignInButtonProps>(
           "w-[97px] h-[40px]",
           "px-[21px] py-[8px]",
           "bg-[#FEBD11]",
-          "text-white text-center",
+          "text-black text-center",
           "font-normal text-base leading-normal",
           "border-0",
           "transition-colors",

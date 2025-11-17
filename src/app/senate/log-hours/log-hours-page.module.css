@@ -1,0 +1,476 @@
+/* Senate Log Hours Page Styles */
+
+/* Main page container */
+.pageContainer {
+  min-height: 100vh;
+  background-color: white;
+}
+
+/* Hero banner section */
+.heroBanner {
+  width: 100%;
+}
+
+.heroContent {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #7c3aed;
+}
+
+.heroSubtitle {
+  margin-top: 0.5rem;
+  color: rgba(124, 58, 237, 0.8);
+}
+
+/* Purple section background */
+.purpleSection {
+  width: 100%;
+  background: #6B3B88;
+}
+
+/* Main content grid */
+.mainContentGrid {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .mainContentGrid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+/* Left card (form) */
+.leftCard {
+  grid-column: span 1;
+}
+
+@media (min-width: 1024px) {
+  .leftCard {
+    grid-column: span 8;
+  }
+}
+
+.formCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+}
+
+.formTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #7c3aed;
+  text-align: center;
+}
+
+.formContainer {
+  margin-top: 2rem;
+}
+
+.successMessage {
+  padding: 0.875rem;
+  background-color: #d1fae5;
+  border: 1px solid #10b981;
+  border-radius: 0.375rem;
+  color: #065f46;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Time segment row */
+.segmentRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  align-items: end;
+  background-color: #f9fafb;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .segmentRow {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+.segmentDateField {
+  grid-column: span 1;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .segmentDateField {
+    grid-column: span 4;
+  }
+}
+
+.segmentTimeField {
+  grid-column: span 1;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .segmentTimeField {
+    grid-column: span 3;
+  }
+}
+
+.segmentActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  grid-column: span 1;
+}
+
+@media (min-width: 768px) {
+  .segmentActions {
+    grid-column: span 2;
+  }
+}
+
+.segmentLabel {
+  font-size: 0.875rem;
+  color: #7c3aed;
+  display: block;
+}
+
+.segmentInput {
+  width: 100%;
+  margin-top: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  min-width: 0;
+}
+
+.segmentHours {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.removeSegmentButton {
+  margin-left: 0.75rem;
+  padding: 0.25rem;
+  color: #dc2626;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Add segment button */
+.addSegmentSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.addSegmentButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px dashed #7c3aed;
+  color: #7c3aed;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.addSegmentButtonIcon {
+  font-size: 1.5rem;
+}
+
+/* Notes field */
+.notesField {
+  display: flex;
+  flex-direction: column;
+}
+
+.notesLabel {
+  font-size: 0.875rem;
+  color: #7c3aed;
+}
+
+.notesLabelRequired {
+  color: #9ca3af;
+}
+
+.notesTextarea {
+  width: 100%;
+  margin-top: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  min-height: 7.5rem;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* Form buttons */
+.formButtons {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.submitButton {
+  flex: 1;
+  color: white;
+  padding: 0.75rem 0;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  background-color: #F7BF17;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  border: 2px solid #7c3aed;
+  color: #7c3aed;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Right card (summary) */
+.rightCard {
+  grid-column: span 1;
+}
+
+@media (min-width: 1024px) {
+  .rightCard {
+    grid-column: span 4;
+  }
+}
+
+.summaryCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.summaryTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.summaryContent {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Summary stat cards */
+.summaryStatCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+}
+
+.summaryStatCardGray {
+  background-color: #f9fafb;
+}
+
+.summaryStatCardYellow {
+  background-color: #fefce8;
+}
+
+.summaryStatContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.summaryStatLabel {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.summaryStatSubtext {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.summaryStatValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Progress bar */
+.progressBar {
+  width: 100%;
+  background-color: #e5e7eb;
+  border-radius: 0.375rem;
+  height: 0.75rem;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 0.75rem;
+  background-color: #eab308;
+}
+
+/* Period info */
+.periodInfo {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #eef2ff;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: #4338ca;
+}
+
+.draftHours {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.viewReportButton {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0;
+  border-radius: 0.375rem;
+  border: 2px solid #eab308;
+  color: #a16207;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Report section */
+.reportCard {
+  margin-top: 1rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.reportHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.reportTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.reportCloseButton {
+  font-size: 0.875rem;
+  color: #6b7280;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.reportEmpty {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.reportContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.reportScrollContainer {
+  max-height: 16rem;
+  overflow-y: auto;
+}
+
+.reportRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.25rem;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.reportRowInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.reportRowDate {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.reportRowMeta {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.reportRowActivity {
+  color: #9ca3af;
+  font-size: 0.8125rem;
+}
+
+.deleteButton {
+  padding: 0.375rem 0.75rem;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+.deleteButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}

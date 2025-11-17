@@ -1,318 +1,639 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Filter, Plus, Play, ChevronLeft, ChevronRight, FileText, X, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Plus, Play, ChevronLeft, ChevronRight, FileText, X, Check, Edit, Trash2, ClipboardList, FolderOpen } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import styles from './archives-page.module.css';
 
-interface ArchiveItem {
-  id: string;
+interface Archive {
+  id: number;
+  created_by: string;
   title: string;
-  date: string;
-  type: "video" | "document";
-  duration?: string;
-  fileSize?: string;
-  thumbnail?: string;
+  description: string | null;
+  link: string;
+  image_url: string | null;
+  archive_type: string;
+  created_at: string;
+  updated_at: string;
+  creator_username: string | null;
 }
 
-const ARCHIVE_ITEMS: ArchiveItem[] = [
-  { id: "1", title: "Student Senate Meeting - Fall 2023", date: "October 15, 2023", type: "video", duration: "12:34", thumbnail: "meeting" },
-  { id: "2", title: "Budget Proposal 2024", date: "September 22, 2023", type: "document", fileSize: "PDF • 2.4 MB" },
-  { id: "3", title: "Campus Town Hall Discussion", date: "September 28, 2023", type: "video", duration: "8:42", thumbnail: "townhall" },
-  { id: "4", title: "Meeting Minutes - September", date: "September 30, 2023", type: "document", fileSize: "DOCX • 156 KB" },
-  { id: "5", title: "Student Fee Breakdown", date: "September 10, 2023", type: "document", fileSize: "XLSX • 892 KB" },
-  { id: "6", title: "Student Senate Meeting - Fall 2023", date: "October 1, 2023", type: "video", duration: "12:34", thumbnail: "meeting" },
-  { id: "7", title: "Orientation Presentation", date: "August 25, 2023", type: "document", fileSize: "PPTX • 3.8 MB" },
-  { id: "8", title: "Constitution Amendment", date: "August 12, 2023", type: "document", fileSize: "PDF • 1.2 MB" },
-  { id: "9", title: "Campus Town Hall Discussion", date: "September 28, 2023", type: "video", duration: "8:42", thumbnail: "townhall" },
-  { id: "10", title: "Policy Recommendations", date: "July 15, 2023", type: "document", fileSize: "DOCX • 2.24 KB" },
-  { id: "11", title: "Annual Report 2023", date: "June 30, 2023", type: "document", fileSize: "PDF • 3.7 MB" },
-  { id: "12", title: "Campus Town Hall Discussion", date: "September 28, 2023", type: "video", duration: "8:42", thumbnail: "townhall" },
-  { id: "13", title: "Student Senate Meeting - Fall 2023", date: "October 15, 2023", type: "video", duration: "12:34", thumbnail: "meeting" },
-  { id: "14", title: "Budget Proposal 2024", date: "September 22, 2023", type: "document", fileSize: "PDF • 2.4 MB" },
-  { id: "15", title: "Campus Town Hall Discussion", date: "September 28, 2023", type: "video", duration: "8:42", thumbnail: "townhall" },
-  { id: "16", title: "Meeting Minutes - September", date: "September 30, 2023", type: "document", fileSize: "DOCX • 156 KB" },
-];
-
-const TABS = [
-  { id: "all", label: "All Archives", count: 241 },
-  { id: "videos", label: "Videos", count: 142 },
-  { id: "documents", label: "Documents", count: 106 },
+const ARCHIVE_TYPES = [
+  { id: "all", label: "All Archives" },
+  { id: "video", label: "Videos" },
+  { id: "meeting_minutes", label: "Meeting Minutes" },
+  { id: "document", label: "Documents" },
+  { id: "misc", label: "Misc" },
 ];
 
 export default function ArchivesPage() {
+  const { user } = useUser();
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [fileName, setFileName] = useState("");
-  const [insertUrl, setInsertUrl] = useState("");
-  const [fileDescription, setFileDescription] = useState("");
+  const [title, setTitle] = useState("");
+  const [link, setLink] = useState("");
+  const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [archiveType, setArchiveType] = useState("document");
+  const [archives, setArchives] = useState<Archive[]>([]);
+  const [allArchives, setAllArchives] = useState<Archive[]>([]); // For calculating counts
+  const [isLoading, setIsLoading] = useState(true);
+  const [editingArchive, setEditingArchive] = useState<Archive | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [descriptionPopup, setDescriptionPopup] = useState<{id: number, title: string, description: string} | null>(null);
+
+  const itemsPerPage = 12;
+
+  useEffect(() => {
+    fetchArchives();
+  }, [activeTab]);
+
+  const fetchArchives = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch filtered archives for the current tab
+      const response = await fetch(`/api/get-archives?archive_type=${activeTab}`);
+      if (response.ok) {
+        const data = await response.json();
+        setArchives(data.archives);
+      } else {
+        console.error("Failed to fetch archives");
+      }
+
+      // Fetch all archives for counts (only if we don't have them yet or need to refresh)
+      const allResponse = await fetch(`/api/get-archives?archive_type=all`);
+      if (allResponse.ok) {
+        const allData = await allResponse.json();
+        setAllArchives(allData.archives);
+      }
+    } catch (error) {
+      console.error("Error fetching archives:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleAddFile = () => {
+    setEditingArchive(null);
+    resetForm();
     setIsModalOpen(true);
+  };
+
+  const handleEditArchive = (archive: Archive) => {
+    setEditingArchive(archive);
+    setTitle(archive.title);
+    setLink(archive.link);
+    setDescription(archive.description || "");
+    setImageUrl(archive.image_url || "");
+    setArchiveType(archive.archive_type);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteArchive = async (archiveId: number) => {
+    if (!confirm("Are you sure you want to delete this archive?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/delete-archive?id=${archiveId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        alert("Archive deleted successfully!");
+        fetchArchives();
+      } else {
+        const error = await response.json();
+        alert(`Failed to delete archive: ${error.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Error deleting archive:", error);
+      alert("Failed to delete archive. Please try again.");
+    }
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setFileName("");
-    setInsertUrl("");
-    setFileDescription("");
+    resetForm();
+    setEditingArchive(null);
   };
 
-  const handleConfirm = () => {
-    console.log("File added:", { fileName, insertUrl, fileDescription });
-    handleCloseModal();
+  const resetForm = () => {
+    setTitle("");
+    setLink("");
+    setDescription("");
+    setImageUrl("");
+    setArchiveType("document");
   };
+
+  const handleConfirm = async () => {
+    if (!title || !link || !archiveType) {
+      alert("Please fill in all required fields (Title, Link, and Type)");
+      return;
+    }
+
+    try {
+      const payload = {
+        title,
+        link,
+        description,
+        image_url: imageUrl,
+        archive_type: archiveType,
+      };
+
+      let response;
+      if (editingArchive) {
+        response = await fetch("/api/update-archive", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...payload, id: editingArchive.id }),
+        });
+      } else {
+        response = await fetch("/api/add-archive", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      if (response.ok) {
+        alert(`Archive ${editingArchive ? "updated" : "added"} successfully!`);
+        handleCloseModal();
+        fetchArchives();
+      } else {
+        const error = await response.json();
+        alert(`Failed to ${editingArchive ? "update" : "add"} archive: ${error.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Error saving archive:", error);
+      alert("Failed to save archive. Please try again.");
+    }
+  };
+
+  const filteredArchives = archives.filter((archive) =>
+    archive.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (archive.description && archive.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  const totalPages = Math.ceil(filteredArchives.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentArchives = filteredArchives.slice(startIndex, endIndex);
+
+  const formatUrl = (url: string) => {
+    // If URL already has protocol, use it as is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    // Add https:// to URLs without protocol
+    return `https://${url}`;
+  };
+
+  const getYouTubeThumbnail = (url: string) => {
+    try {
+      const formattedUrl = formatUrl(url);
+      const urlObj = new URL(formattedUrl);
+      let videoId = null;
+
+      // Handle different YouTube URL formats
+      if (urlObj.hostname.includes('youtube.com')) {
+        videoId = urlObj.searchParams.get('v');
+      } else if (urlObj.hostname.includes('youtu.be')) {
+        videoId = urlObj.pathname.slice(1);
+      }
+
+      if (videoId) {
+        // Use hqdefault.jpg which is always available (480x360)
+        return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      }
+    } catch (e) {
+      return null;
+    }
+    return null;
+  };
+
+  const getImageUrl = (item: Archive) => {
+    if (item.image_url) return item.image_url;
+    
+    // Try to get YouTube thumbnail if it's a video type
+    if (item.archive_type === 'video') {
+      const ytThumbnail = getYouTubeThumbnail(item.link);
+      if (ytThumbnail) return ytThumbnail;
+    }
+    
+    return null;
+  };
+
+  const getCounts = () => {
+    const counts: Record<string, number> = { all: allArchives.length };
+    allArchives.forEach((archive) => {
+      counts[archive.archive_type] = (counts[archive.archive_type] || 0) + 1;
+    });
+    return counts;
+  };
+
+  const counts = getCounts();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
+    <div className={styles.pageContainer}>
+      <main className={styles.mainContent}>
+        <div className={styles.contentWrapper}>
           {/* Title and Description */}
-          <div className="text-center mb-8">
-            <h1 className="font-bold text-3xl md:text-4xl text-[#49306e] mb-4 font-kanit">
+          <div className={styles.pageHeader}>
+            <h1 className={styles.pageTitle}>
               Student Government Archives
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto font-kanit">
+            <p className={styles.pageDescription}>
               Access historical documents, meeting recordings, and important resources from
               Minnesota State University Student Government.
             </p>
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-3xl mx-auto mb-8">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <div className={styles.searchSection}>
+            <div className={styles.searchContainer}>
+              <Search className={styles.searchIcon} />
               <input
                 type="text"
                 placeholder="Search through our archives..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className={styles.searchInput}
               />
-              <button className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                <Filter className="w-5 h-5" />
-              </button>
             </div>
           </div>
 
           {/* Tabs and Add File Button */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex gap-4">
-              {TABS.map((tab) => (
+          <div className={styles.tabsAndAddSection}>
+            <div className={styles.tabsContainer}>
+              {ARCHIVE_TYPES.map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`px-4 py-2 rounded-md font-medium transition-colors font-kanit ${
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setCurrentPage(1);
+                  }}
+                  className={`${styles.tabButton} ${
                     activeTab === tab.id
-                      ? "bg-[#49306e] text-white"
-                      : "text-gray-600 hover:bg-gray-200"
+                      ? styles.tabButtonActive
+                      : styles.tabButtonInactive
                   }`}
                 >
                   {tab.label}{" "}
                   <span
-                    className={`ml-1 px-2 py-0.5 rounded-full text-sm ${
+                    className={`${styles.tabBadge} ${
                       activeTab === tab.id
-                        ? "bg-white/20"
-                        : "bg-gray-300"
+                        ? styles.tabBadgeActive
+                        : styles.tabBadgeInactive
                     }`}
                   >
-                    {tab.count}
+                    {counts[tab.id] || 0}
                   </span>
                 </button>
               ))}
             </div>
-            <button
-              onClick={handleAddFile}
-              className="bg-[#49306e] hover:bg-[#49306e]/90 text-white font-semibold px-6 py-2 rounded-md flex items-center gap-2 transition-colors font-kanit"
-            >
-              <Plus className="w-5 h-5" />
-              Add File
-            </button>
+            {user && (
+              <button
+                onClick={handleAddFile}
+                className={styles.addArchiveButton}
+              >
+                <Plus className={styles.addArchiveButtonIcon} />
+                Add Archive
+              </button>
+            )}
           </div>
 
           {/* Pagination Top */}
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <button className="p-2 hover:bg-gray-200 rounded-md transition-colors">
-              <ChevronLeft className="w-5 h-5 text-gray-600" />
-            </button>
-            {[1, 2, 3].map((page) => (
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
               <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`w-10 h-10 rounded-md font-medium transition-colors font-kanit ${
-                  currentPage === page
-                    ? "bg-[#49306e] text-white"
-                    : "text-gray-600 hover:bg-gray-200"
-                }`}
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className={styles.paginationButton}
               >
-                {page}
+                <ChevronLeft className={styles.paginationButtonIcon} />
               </button>
-            ))}
-            <span className="px-2 text-gray-500">...</span>
-            <button
-              onClick={() => setCurrentPage(12)}
-              className={`w-10 h-10 rounded-md font-medium transition-colors font-kanit ${
-                currentPage === 12
-                  ? "bg-[#49306e] text-white"
-                  : "text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              12
-            </button>
-            <button className="p-2 hover:bg-gray-200 rounded-md transition-colors">
-              <ChevronRight className="w-5 h-5 text-gray-600" />
-            </button>
-          </div>
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNum;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`${styles.paginationPageButton} ${
+                      currentPage === pageNum
+                        ? styles.paginationPageButtonActive
+                        : styles.paginationPageButtonInactive
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                className={styles.paginationButton}
+              >
+                <ChevronRight className={styles.paginationButtonIcon} />
+              </button>
+            </div>
+          )}
 
           {/* Archive Items Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {ARCHIVE_ITEMS.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-              >
-                {/* Thumbnail/Preview */}
-                <div className="relative aspect-video bg-[#8b6ba8] flex items-center justify-center">
-                  {item.type === "video" ? (
-                    <>
-                      {/* Video Preview Placeholder */}
-                      <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
-                        <Play className="w-8 h-8 text-[#49306e] ml-1" fill="currentColor" />
-                      </div>
-                      {/* Duration Badge */}
-                      <div className="absolute top-3 right-3 bg-[#febd11] text-[#49306e] font-semibold px-2 py-1 rounded text-sm font-kanit">
-                        {item.duration}
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      {/* Document Icon */}
-                      <FileText className="w-16 h-16 text-[#febd11] opacity-80" />
-                    </>
+          {isLoading ? (
+            <div className={styles.loadingState}>
+              <p className={styles.loadingText}>Loading archives...</p>
+            </div>
+          ) : currentArchives.length === 0 ? (
+            <div className={styles.emptyState}>
+              <p className={styles.emptyText}>No archives found.</p>
+            </div>
+          ) : (
+            <div className={styles.archivesGrid}>
+              {currentArchives.map((item) => (
+                <div
+                  key={item.id}
+                  className={styles.archiveCard}
+                  onMouseEnter={() => setHoveredCard(item.id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  onClick={() => window.open(formatUrl(item.link), "_blank")}
+                >
+                  {/* Edit/Delete Buttons */}
+                  {user && user.id === item.created_by && hoveredCard === item.id && (
+                    <div className={styles.cardActions}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditArchive(item);
+                        }}
+                        className={styles.cardActionButton}
+                      >
+                        <Edit className={`${styles.cardActionIcon} ${styles.cardActionIconEdit}`} />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteArchive(item.id);
+                        }}
+                        className={`${styles.cardActionButton} ${styles.cardActionButtonDelete}`}
+                      >
+                        <Trash2 className={`${styles.cardActionIcon} ${styles.cardActionIconDelete}`} />
+                      </button>
+                    </div>
                   )}
-                </div>
 
-                {/* Card Content */}
-                <div className="bg-[#febd11] p-4">
-                  <h3 className="font-semibold text-[#49306e] mb-1 line-clamp-2 font-kanit">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-[#49306e]/70 font-kanit">
-                    {item.type === "video" ? item.date : item.fileSize}
-                  </p>
+                  {/* Thumbnail/Preview */}
+                  <div className={styles.cardThumbnail}>
+                    {getImageUrl(item) ? (
+                      <img src={getImageUrl(item)!} alt={item.title} className={styles.cardThumbnailImage} />
+                    ) : item.archive_type === "video" ? (
+                      <div className={styles.cardThumbnailIconVideo}>
+                        <Play className={styles.cardThumbnailIcon} fill="currentColor" />
+                      </div>
+                    ) : item.archive_type === "meeting_minutes" ? (
+                      <ClipboardList className={`${styles.cardThumbnailIcon} ${styles.cardThumbnailIconDefault}`} />
+                    ) : item.archive_type === "document" ? (
+                      <FileText className={`${styles.cardThumbnailIcon} ${styles.cardThumbnailIconDefault}`} />
+                    ) : (
+                      <FolderOpen className={`${styles.cardThumbnailIcon} ${styles.cardThumbnailIconDefault}`} />
+                    )}
+                    {/* Type Badge */}
+                    <div className={styles.cardThumbnailTypeBadge}>
+                      {item.archive_type.charAt(0).toUpperCase() + item.archive_type.slice(1).replace('_', ' ')}
+                    </div>
+                  </div>
+
+                  {/* Card Content */}
+                  <div className={styles.cardContent}>
+                    <h3 className={styles.cardTitle}>
+                      {item.title}
+                    </h3>
+                    <div className={styles.cardDescriptionContainer}>
+                      {item.description && (
+                        <>
+                          <p className={styles.cardDescription}>
+                            {item.description}
+                          </p>
+                          {item.description.length > 100 && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDescriptionPopup({
+                                  id: item.id,
+                                  title: item.title,
+                                  description: item.description || ''
+                                });
+                              }}
+                              className={styles.cardReadMoreButton}
+                            >
+                              Read more
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                    <p className={styles.cardDate}>
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Pagination Bottom */}
-          <div className="flex items-center justify-center gap-2">
-            <button className="p-2 hover:bg-gray-200 rounded-md transition-colors">
-              <ChevronLeft className="w-5 h-5 text-gray-600" />
-            </button>
-            {[1, 2, 3].map((page) => (
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
               <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`w-10 h-10 rounded-md font-medium transition-colors font-kanit ${
-                  currentPage === page
-                    ? "bg-[#49306e] text-white"
-                    : "text-gray-600 hover:bg-gray-200"
-                }`}
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className={styles.paginationButton}
               >
-                {page}
+                <ChevronLeft className={styles.paginationButtonIcon} />
               </button>
-            ))}
-            <span className="px-2 text-gray-500">...</span>
-            <button
-              onClick={() => setCurrentPage(12)}
-              className={`w-10 h-10 rounded-md font-medium transition-colors font-kanit ${
-                currentPage === 12
-                  ? "bg-[#49306e] text-white"
-                  : "text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              12
-            </button>
-            <button className="p-2 hover:bg-gray-200 rounded-md transition-colors">
-              <ChevronRight className="w-5 h-5 text-gray-600" />
-            </button>
-          </div>
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNum;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`${styles.paginationPageButton} ${
+                      currentPage === pageNum
+                        ? styles.paginationPageButtonActive
+                        : styles.paginationPageButtonInactive
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+              <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                className={styles.paginationButton}
+              >
+                <ChevronRight className={styles.paginationButtonIcon} />
+              </button>
+            </div>
+          )}
         </div>
       </main>
 
-      {/* Add File Modal */}
+      {/* Description Popup */}
+      {descriptionPopup && (
+        <div className={styles.descriptionPopup}>
+          <div 
+            className={styles.modalBackdrop}
+            onClick={() => setDescriptionPopup(null)}
+          />
+          <div className={styles.modalContent}>
+            <h3 className={styles.modalTitle}>
+              {descriptionPopup.title}
+            </h3>
+            <p className={styles.modalDescription}>
+              {descriptionPopup.description}
+            </p>
+            <button
+              onClick={() => setDescriptionPopup(null)}
+              className={styles.modalCloseButton}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Add/Edit Archive Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className={styles.archiveModal}>
           {/* Backdrop with blur */}
           <div 
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            className={styles.modalBackdrop}
             onClick={handleCloseModal}
           />
           
           {/* Modal */}
-          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 p-8">
+          <div className={styles.largeModalContent}>
+            <h2 className={styles.modalFormTitle}>
+              {editingArchive ? "Edit Archive" : "Add Archive"}
+            </h2>
+            
             {/* Form Fields */}
-            <div className="space-y-6">
-              {/* File Name */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
-                  File Name <span className="text-red-500">*</span>
+            <div className={styles.formFields}>
+              {/* Title */}
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
+                  Title <span className={styles.formRequired}>*</span>
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter file name"
-                  value={fileName}
-                  onChange={(e) => setFileName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                  placeholder="Enter archive title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className={styles.formInput}
                 />
               </div>
 
-              {/* Insert URL */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
-                  Insert Url <span className="text-red-500">*</span>
+              {/* Archive Type */}
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
+                  Archive Type <span className={styles.formRequired}>*</span>
+                </label>
+                <select
+                  value={archiveType}
+                  onChange={(e) => setArchiveType(e.target.value)}
+                  className={styles.formSelect}
+                >
+                  {ARCHIVE_TYPES.filter(type => type.id !== "all").map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Link */}
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
+                  Link <span className={styles.formRequired}>*</span>
                 </label>
                 <input
-                  type="text"
-                  placeholder="Choose File From"
-                  value={insertUrl}
-                  onChange={(e) => setInsertUrl(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent font-kanit"
+                  type="url"
+                  placeholder="https://example.com/document.pdf"
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
+                  className={styles.formInput}
                 />
               </div>
 
-              {/* File Description */}
-              <div>
-                <label className="block text-gray-700 font-medium mb-2 font-kanit">
-                  File Description
+              {/* Image URL */}
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
+                  Image URL (optional)
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://example.com/image.jpg"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  className={styles.formInput}
+                />
+              </div>
+
+              {/* Description */}
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>
+                  Description
                 </label>
                 <textarea
-                  placeholder="Provide details about the file, including agenda, requirements, or special instructions..."
-                  value={fileDescription}
-                  onChange={(e) => setFileDescription(e.target.value)}
-                  maxLength={100}
+                  placeholder="Provide details about this archive..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  maxLength={500}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#49306e] focus:border-transparent resize-none font-kanit"
+                  className={styles.formTextarea}
                 />
-                <p className="text-sm text-gray-500 mt-2 font-kanit">Maximum 100 characters</p>
+                <p className={styles.formHelperText}>Maximum 500 characters</p>
               </div>
 
               {/* Buttons */}
-              <div className="flex gap-4 pt-2">
+              <div className={styles.formButtons}>
                 <button
                   onClick={handleCloseModal}
-                  className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 font-kanit"
+                  className={`${styles.formButton} ${styles.formButtonCancel}`}
                 >
-                  <X className="w-4 h-4" />
+                  <X className={styles.formButtonIcon} />
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className="flex-1 px-6 py-3 bg-[#49306e] hover:bg-[#49306e]/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 font-kanit"
+                  className={`${styles.formButton} ${styles.formButtonSubmit}`}
                 >
-                  <Check className="w-4 h-4" />
-                  Confirm
+                  <Check className={styles.formButtonIcon} />
+                  {editingArchive ? "Update" : "Confirm"}
                 </button>
               </div>
             </div>
@@ -322,4 +643,3 @@ export default function ArchivesPage() {
     </div>
   );
 }
-

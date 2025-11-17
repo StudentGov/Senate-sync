@@ -8,8 +8,7 @@ import Footer from "./components/footer/Footer";
 
 import { CollapsedProvider } from "./components/sideBar/sideBarContext";
 
-import { ClerkProvider, SignedIn } from "@clerk/nextjs";
-import { useAssignRole } from "../app/hooks/useAssignRole";
+import { ClerkProvider } from "@clerk/nextjs";
 
 
 const geistSans = Geist({
@@ -40,9 +39,6 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${kanit.variable} antialiased flex flex-col min-h-screen`}
         >
-          <SignedIn>
-            <AssignRoleAfterLogin />
-          </SignedIn>
           <NavBar />
           <CollapsedProvider>
             <main className="flex-1">
@@ -56,16 +52,4 @@ export default function RootLayout({
   );
 }
 
-/**
- * Component to trigger the role assignment API after user login.
- * Utilizes the custom hook 'useAssignRole' to check and assign the default role.
- * This ensures the role assignment logic is executed only once per login.
- */
-function AssignRoleAfterLogin() {
-  // Custom hook to call the role assignment API
-  useAssignRole();
-  
-  // This component does not render anything on the UI
-  return null;
-}
 

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useMemo } from "react";
 import styles from "../admin/dashboard/admin.module.css";
@@ -23,23 +23,32 @@ export default function UserTable({ users }: UserTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("Name");
   const [roleFilter, setRoleFilter] = useState("All");
-  const [pendingChanges, setPendingChanges] = useState<Record<string, string>>({});
+  const [pendingChanges, setPendingChanges] = useState<Record<string, string>>(
+    {}
+  );
   const [isSaving, setIsSaving] = useState(false);
 
   const filteredUsers = useMemo(() => {
-    let filtered = users.filter(user =>
-      (`${user.firstName} ${user.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-       user.email.toLowerCase().includes(searchQuery.toLowerCase()))
+    let filtered = users.filter(
+      (user) =>
+        `${user.firstName} ${user.lastName}`
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     // Filter by role if not "All"
     if (roleFilter !== "All") {
-      filtered = filtered.filter(user => user.role === roleFilter);
+      filtered = filtered.filter((user) => user.role === roleFilter);
     }
 
     // Sort users
     if (sortOption === "Name") {
-      filtered.sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`));
+      filtered.sort((a, b) =>
+        `${a.firstName} ${a.lastName}`.localeCompare(
+          `${b.firstName} ${b.lastName}`
+        )
+      );
     } else if (sortOption === "Email") {
       filtered.sort((a, b) => a.email.localeCompare(b.email));
     } else if (sortOption === "Role") {
@@ -50,9 +59,9 @@ export default function UserTable({ users }: UserTableProps) {
   }, [users, searchQuery, sortOption, roleFilter]);
 
   const handleRoleChange = (userId: string, newRole: string) => {
-    setPendingChanges(prev => ({
+    setPendingChanges((prev) => ({
       ...prev,
-      [userId]: newRole
+      [userId]: newRole,
     }));
   };
 
@@ -64,8 +73,8 @@ export default function UserTable({ users }: UserTableProps) {
 
     const confirmed = confirm(
       `Save ${Object.keys(pendingChanges).length} role change(s)?\n\n` +
-      `This will update roles in both Clerk and the database.\n` +
-      `Users will need to log out and log back in to see changes.`
+        `This will update roles in both Clerk and the database.\n` +
+        `Users will need to log out and log back in to see changes.`
     );
     if (!confirmed) return;
 
@@ -74,7 +83,7 @@ export default function UserTable({ users }: UserTableProps) {
     try {
       const updates = Object.entries(pendingChanges).map(([userId, role]) => ({
         userId,
-        role
+        role,
       }));
 
       const response = await fetch("/api/batch-update-roles", {
@@ -102,7 +111,7 @@ export default function UserTable({ users }: UserTableProps) {
 
   const handleCancelChanges = () => {
     if (Object.keys(pendingChanges).length === 0) return;
-    
+
     const confirmed = confirm("Discard all unsaved changes?");
     if (confirmed) {
       setPendingChanges({});
@@ -112,11 +121,11 @@ export default function UserTable({ users }: UserTableProps) {
   const handleDelete = async (userId: string, userName: string) => {
     const confirmed = confirm(
       `Are you sure you want to delete ${userName}?\n\n` +
-      `This will permanently delete:\n` +
-      `- User account from Clerk\n` +
-      `- User record from database\n` +
-      `- All related events and hours\n\n` +
-      `This action cannot be undone.`
+        `This will permanently delete:\n` +
+        `- User account from Clerk\n` +
+        `- User record from database\n` +
+        `- All related events and hours\n\n` +
+        `This action cannot be undone.`
     );
     if (!confirmed) return;
 
@@ -133,7 +142,7 @@ export default function UserTable({ users }: UserTableProps) {
         alert("User deleted successfully.");
         location.reload();
       } else {
-        alert(`Failed to delete user: ${data.error || 'Unknown error'}`);
+        alert(`Failed to delete user: ${data.error || "Unknown error"}`);
       }
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -144,15 +153,15 @@ export default function UserTable({ users }: UserTableProps) {
   const hasChanges = Object.keys(pendingChanges).length > 0;
 
   return (
-    <div className={styles.mainContainer}>
-      <div className={styles.topBar}>
-        <div className={styles.searchSortContainer}>
+    <div className={styles['admin-main-container']}>
+      <div className={styles['admin-top-bar']}>
+        <div className={styles['admin-search-sort-container']}>
           <SearchBar onSearch={(query) => setSearchQuery(query)} />
           <DropDownOptions
             options={[
-              { id: 0, optionText: "Name" }, 
+              { id: 0, optionText: "Name" },
               { id: 1, optionText: "Email" },
-              { id: 2, optionText: "Role" }
+              { id: 2, optionText: "Role" },
             ]}
             setSelectedOption={(option) => setSortOption(option.optionText)}
             text="Sort By"
@@ -163,7 +172,7 @@ export default function UserTable({ users }: UserTableProps) {
               { id: 1, optionText: "admin" },
               { id: 2, optionText: "senator" },
               { id: 3, optionText: "coordinator" },
-              { id: 4, optionText: "attorney" }
+              { id: 4, optionText: "attorney" },
             ]}
             setSelectedOption={(option) => setRoleFilter(option.optionText)}
             text="Filter by Role"
@@ -201,58 +210,72 @@ export default function UserTable({ users }: UserTableProps) {
                 fontSize: "0.9rem",
               }}
             >
-              {isSaving ? "Saving..." : `Save Changes (${Object.keys(pendingChanges).length})`}
+              {isSaving
+                ? "Saving..."
+                : `Save Changes (${Object.keys(pendingChanges).length})`}
             </button>
           </div>
         )}
       </div>
-      
-      <div style={{ 
-        padding: "0.5rem 1rem", 
-        backgroundColor: "#f9fafb", 
-        borderRadius: "4px", 
-        marginBottom: "1rem",
-        fontSize: "0.9rem",
-        color: "#6b7280"
-      }}>
+
+      <div
+        style={{
+          padding: "0.5rem 1rem",
+          backgroundColor: "#f9fafb",
+          borderRadius: "4px",
+          marginBottom: "1rem",
+          fontSize: "0.9rem",
+          color: "#6b7280",
+        }}
+      >
         Showing {filteredUsers.length} of {users.length} users
       </div>
 
-      <div className={styles.labelsRow}>
+      <div className={styles['admin-labels-row']}>
         <label>Name</label>
-        <div className={styles.rightLabels}>
+        <div className={styles['admin-right-labels']}>
           <label>Role</label>
           <label>Actions</label>
         </div>
       </div>
 
-      <div className={styles.scrollArea}>
+      <div className={styles['admin-scroll-area']}>
         {filteredUsers.length === 0 ? (
-          <div style={{ 
-            padding: "2rem", 
-            textAlign: "center", 
-            color: "#6b7280",
-            fontSize: "0.95rem"
-          }}>
-            {users.length === 0 ? "No users found in the system." : "No users match your search or filter criteria."}
+          <div
+            style={{
+              padding: "2rem",
+              textAlign: "center",
+              color: "#6b7280",
+              fontSize: "0.95rem",
+            }}
+          >
+            {users.length === 0
+              ? "No users found in the system."
+              : "No users match your search or filter criteria."}
           </div>
         ) : (
           filteredUsers.map((user) => (
-            <div key={user.id} className={styles.userRow}>
-              <div className={styles.userInfo}>
-                <div className={styles.name}>{user.firstName} {user.lastName}</div>
-                <div className={styles.email}>{user.email}</div>
+            <div key={user.id} className={styles['admin-user-row']}>
+              <div className={styles['admin-user-info']}>
+                <div className={styles['admin-user-name']}>
+                  {user.firstName} {user.lastName}
+                </div>
+                <div className={styles['admin-user-email']}>{user.email}</div>
               </div>
-              <div className={styles.userActions}>
-                <div className={styles.actions}>
-                  <select 
+              <div className={styles['admin-user-actions']}>
+                <div className={styles['admin-actions']}>
+                  <select
                     value={pendingChanges[user.id] || user.role}
                     onChange={(e) => handleRoleChange(user.id, e.target.value)}
                     style={{
                       padding: "0.4rem 0.6rem",
                       borderRadius: "4px",
-                      border: pendingChanges[user.id] ? "2px solid #7c3aed" : "1px solid #ddd",
-                      backgroundColor: pendingChanges[user.id] ? "#f5f3ff" : "white",
+                      border: pendingChanges[user.id]
+                        ? "2px solid #7c3aed"
+                        : "1px solid #ddd",
+                      backgroundColor: pendingChanges[user.id]
+                        ? "#f5f3ff"
+                        : "white",
                       cursor: "pointer",
                       fontSize: "0.9rem",
                       fontWeight: pendingChanges[user.id] ? "600" : "normal",
@@ -265,8 +288,13 @@ export default function UserTable({ users }: UserTableProps) {
                     ))}
                   </select>
                   <button
-                    onClick={() => handleDelete(user.id, `${user.firstName} ${user.lastName}`)}
-                    className={styles.deleteButton}
+                    onClick={() =>
+                      handleDelete(
+                        user.id,
+                        `${user.firstName} ${user.lastName}`
+                      )
+                    }
+                    className={styles['admin-delete-button']}
                     title="Delete this user permanently"
                   >
                     Delete

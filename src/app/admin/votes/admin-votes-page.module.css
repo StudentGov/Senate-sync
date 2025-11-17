@@ -1,0 +1,302 @@
+/* Admin Votes Page Styles */
+
+/* Main page container */
+.pageContainer {
+  padding: 1.5rem;
+}
+
+/* Header section */
+.headerSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.backLink {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background-color: #f3f4f6;
+  color: #1f2937;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+  text-decoration: none;
+}
+
+/* Error message */
+.errorMessage {
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
+/* Form section */
+.formSection {
+  margin-bottom: 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+  width: 5rem;
+}
+
+.formLabelRequired {
+  color: #dc2626;
+  margin-left: 0.25rem;
+}
+
+.formInput {
+  border: 1px solid #d1d5db;
+  padding: 0.25rem 0.5rem;
+  flex: 1;
+}
+
+.formCheckboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 1rem;
+}
+
+.formCheckboxLabelText {
+  font-size: 0.875rem;
+}
+
+.formOptionsHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.formOptionsHeaderText {
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.addOptionButton {
+  font-size: 0.875rem;
+  color: #6b7280;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.formOptionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formOptionRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.formOptionInput {
+  border: 1px solid #d1d5db;
+  padding: 0.25rem 0.5rem;
+  flex: 1;
+}
+
+.removeOptionButton {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  color: #dc2626;
+  background: transparent;
+  cursor: pointer;
+}
+
+.submitButton {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+}
+
+/* Votes list */
+.votesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.loadingState {
+  color: #4b5563;
+}
+
+.emptyState {
+  color: #4b5563;
+}
+
+/* Vote card */
+.voteCard {
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+}
+
+.voteCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.voteCardInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.voteCardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.voteCardTitle {
+  font-weight: 600;
+}
+
+.voteCardStatus {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.voteCardStatusRunning {
+  color: #16a34a;
+}
+
+.voteCardStatusClosed {
+  color: #dc2626;
+}
+
+.voteCardOptions {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.voteCardActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.voteCardButton {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.voteCardButtonDelete {
+  color: #dc2626;
+}
+
+/* Edit form */
+.editForm {
+  margin-top: 0.75rem;
+}
+
+.editFormFields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.editFormRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.editFormLabel {
+  font-size: 0.875rem;
+  width: 5rem;
+}
+
+.editFormLabelRequired {
+  color: #dc2626;
+  margin-left: 0.25rem;
+}
+
+.editFormInput {
+  border: 1px solid #d1d5db;
+  padding: 0.25rem 0.5rem;
+  flex: 1;
+}
+
+.editFormCheckboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 1rem;
+}
+
+.editFormCheckboxLabelText {
+  font-size: 0.875rem;
+}
+
+.editFormOptionRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.editFormOptionInput {
+  border: 1px solid #d1d5db;
+  padding: 0.25rem 0.5rem;
+  flex: 1;
+}
+
+.editFormOptionValueInput {
+  width: 5rem;
+  border: 1px solid #d1d5db;
+  padding: 0.25rem 0.5rem;
+  text-align: center;
+}
+
+.editFormActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.editFormSaveButton {
+  background-color: #16a34a;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+}
+
+.editFormCancelButton {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  background: transparent;
+  cursor: pointer;
+}
+

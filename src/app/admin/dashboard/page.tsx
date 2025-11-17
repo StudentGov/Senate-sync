@@ -5,7 +5,7 @@ import styles from "./admin.module.css";
 import UserTable from "../../components/UserTable";
 import CreateUserForm from "../../components/CreateUserForm";
 import AdminHourLogClient from "../components/AdminHourLogClient";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 /**
@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
  */
 export default function AdminDashboard() {
   const router = useRouter();
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { sessionClaims, isSignedIn, isLoaded } = useAuth();
   const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState<"users" | "create" | "hours">("users");
 
@@ -40,9 +40,9 @@ export default function AdminDashboard() {
   useEffect(() => {
     // Don't do anything until user data is loaded
     if (!isSignedIn) return;
-    if (!user) return;
+    if (!sessionClaims) return;
     
-    const userRole = user?.publicMetadata?.role as string;
+    const userRole = sessionClaims?.role as string;
     console.log("Admin Dashboard - User Role:", userRole); // Debug log
     
     // Check if the user has admin access
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
     // Fetch users if the admin is signed in
     console.log("Admin access granted - fetching users"); // Debug log
     fetchUsers();
-  }, [isSignedIn, user, router]);
+  }, [isSignedIn, sessionClaims, router]);
 
   const handleUserCreated = () => {
     // Refresh the user list when a new user is created
@@ -83,31 +83,31 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className={styles.adminPage}>
+    <div className={styles['admin-dashboard-page']}>
       <h1>Admin Dashboard</h1>
       
-      <div className={styles.tabs}>
+      <div className={styles['admin-tabs']}>
         <button
-          className={`${styles.tab} ${activeTab === "users" ? styles.activeTab : ""}`}
+          className={`${styles['admin-tab']} ${activeTab === "users" ? styles['admin-active-tab'] : ""}`}
           onClick={() => setActiveTab("users")}
         >
           Manage Users ({users.length})
         </button>
         <button
-          className={`${styles.tab} ${activeTab === "create" ? styles.activeTab : ""}`}
+          className={`${styles['admin-tab']} ${activeTab === "create" ? styles['admin-active-tab'] : ""}`}
           onClick={() => setActiveTab("create")}
         >
           Create New User
         </button>
         <button
-          className={`${styles.tab} ${activeTab === "hours" ? styles.activeTab : ""}`}
+          className={`${styles['admin-tab']} ${activeTab === "hours" ? styles['admin-active-tab'] : ""}`}
           onClick={() => setActiveTab("hours")}
         >
           Hour Log
         </button>
       </div>
 
-      <div className={styles.tabContent}>
+      <div className={styles['admin-tab-content']}>
         {activeTab === "users" && <UserTable users={users} />}
         {activeTab === "create" && <CreateUserForm onUserCreated={handleUserCreated} />}
         {activeTab === "hours" && <AdminHourLogClient />}
