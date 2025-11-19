@@ -34,35 +34,37 @@ export async function POST(req: Request) {
     const activityText = (activity || notes || '').slice(0, 200) // Limit activity to 200 chars
 
     // Insert each segment as a separate row in the database
-    const insertQueries = segments.map((seg: { date: string; start: string; end: string }) => {
-      if (!seg.date || !seg.start || !seg.end) {
-        return null
-      }
+    const insertQueries = segments
+      .map((seg: { date: string; start: string; end: string }) => {
+        if (!seg.date || !seg.start || !seg.end) {
+          return null
+        }
 
-      // Combine date and time into timestamps
-      const startDateTime = new Date(`${seg.date}T${seg.start}:00`)
-      const endDateTime = new Date(`${seg.date}T${seg.end}:00`)
-      
-      // Handle end time on next day if end <= start
-      if (endDateTime <= startDateTime) {
-        endDateTime.setDate(endDateTime.getDate() + 1)
-      }
+        // Combine date and time into timestamps
+        const startDateTime = new Date(`${seg.date}T${seg.start}:00`)
+        const endDateTime = new Date(`${seg.date}T${seg.end}:00`)
+        
+        // Handle end time on next day if end <= start
+        if (endDateTime <= startDateTime) {
+          endDateTime.setDate(endDateTime.getDate() + 1)
+        }
 
-      return {
-        sql: `
-          INSERT INTO Hours (user_id, activity, comments, start_time, end_time, created_at)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `,
-        args: [
-          userId,
-          activityText,
-          notes,
-          startDateTime.toISOString(),
-          endDateTime.toISOString(),
-          createdAt
-        ]
-      }
-    }).filter((q: any) => q !== null)
+        return {
+          sql: `
+            INSERT INTO Hours (user_id, activity, comments, start_time, end_time, created_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+          `,
+          args: [
+            userId,
+            activityText,
+            notes,
+            startDateTime.toISOString(),
+            endDateTime.toISOString(),
+            createdAt
+          ]
+        }
+      })
+      .filter((q): q is { sql: string; args: any[] } => q !== null)
 
     if (insertQueries.length === 0) {
       return NextResponse.json({ success: false, error: 'No valid segments provided' }, { status: 400 });
@@ -72,18 +74,23 @@ export async function POST(req: Request) {
     await turso.batch(insertQueries)
 
     // Calculate total hours
+    // Equation: For each segment (HH:MM format), convert to minutes, handle next-day if needed,
+    // calculate difference, convert back to hours, and sum all segments
+    // Formula: totalHours = Σ[(endMinutes - startMinutes) / 60] where endMinutes handles next-day
     let totalHours = 0
     segments.forEach((seg: { start: string; end: string }) => {
       if (!seg.start || !seg.end) return
       const [sh, sm] = seg.start.split(':').map(Number)
       const [eh, em] = seg.end.split(':').map(Number)
-      let startM = sh * 60 + sm
-      let endM = eh * 60 + em
-      if (endM <= startM) endM += 24 * 60
-      const mins = Math.max(0, endM - startM)
-      totalHours += mins / 60
+
+      let startM = sh * 60 + sm  // Convert start time to total minutes
+      let endM = eh * 60 + em    // Convert end time to total minutes
+      
+      if (endM <= startM) endM += 24 * 60  // Handle next-day case (e.g., 22:00 - 02:00)
+      const mins = Math.max(0, endM - startM)  // Calculate difference in minutes
+      totalHours += mins / 60  // Convert minutes to hours and add to total
     })
-    totalHours = Math.round(totalHours * 100) / 100
+    totalHours = Math.round(totalHours * 100) / 100  // Round to 2 decimal places
 
     // Return entry in the format expected by the frontend
     const newEntry = {
