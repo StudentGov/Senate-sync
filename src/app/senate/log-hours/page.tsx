@@ -32,7 +32,7 @@ export default function SenateHourLoggingPage() {
   useEffect(() => {
     // load recent logs (best-effort)
     if (!isSignedIn) return // don't fetch if not signed in
-    fetch("/api/senate/log-hours")
+    fetch("/api/senate/get-log-hours")
       .then((r) => r.json())
       .then((d) => setLogs(d?.logs || []))
       .catch(() => {});
@@ -113,7 +113,7 @@ export default function SenateHourLoggingPage() {
         segments,
       };
 
-      const response = await fetch('/api/senate/log-hours', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const response = await fetch('/api/senate/add-log-hours', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       const result = await response.json();
 
       if (!response.ok || !result.success) {
@@ -124,7 +124,7 @@ export default function SenateHourLoggingPage() {
       setSuccessMessage(`Successfully logged ${totalHours} hours!`);
       
       // refresh logs and reset segments
-      const res = await fetch('/api/senate/log-hours');
+      const res = await fetch('/api/senate/get-log-hours');
       const data = await res.json();
       setLogs(data?.logs || []);
       setSegments([{ date: new Date().toISOString().slice(0, 10), start: '', end: '' }]);
@@ -163,7 +163,7 @@ export default function SenateHourLoggingPage() {
 
     setDeleting(entryId);
     try {
-      const response = await fetch('/api/senate/log-hours', {
+      const response = await fetch('/api/senate/delete-log-hours', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ entryId })
@@ -176,7 +176,7 @@ export default function SenateHourLoggingPage() {
       }
 
       // Refresh logs
-      const res = await fetch('/api/senate/log-hours');
+      const res = await fetch('/api/senate/get-log-hours');
       const data = await res.json();
       setLogs(data?.logs || []);
     } catch (err) {
