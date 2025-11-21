@@ -76,8 +76,8 @@ export default function HomePage() {
               </h3>
               <p className={styles.teamCardRole}>President</p>
               <p className={styles.teamCardDescription}>
-                Leading initiatives for student welfare, campus improvements,
-                and academic advocacy.
+                The chief administrative officer of Student Government. 
+                Completes the appointment of all unelected Student Government positions and spearheads the advocacy for the students.
               </p>
             </div>
             {/* Sneha Kafle */}
@@ -90,8 +90,8 @@ export default function HomePage() {
               <h3 className={styles.teamCardName}>Sneha Kafle</h3>
               <p className={styles.teamCardRole}>Vice President</p>
               <p className={styles.teamCardDescription}>
-                Representing student voices in university policies and budget
-                allocation decisions.
+                The supporting member to the President and Speaker. 
+                Set to advertise, recruit, and monitor for any Student Government workgroups. 
               </p>
             </div>
             {/* Dikshyant Thapa */}
@@ -106,8 +106,8 @@ export default function HomePage() {
               </h3>
               <p className={styles.teamCardRole}>Speaker</p>
               <p className={styles.teamCardDescription}>
-                Organizing campus events, student activities, and community
-                engagement programs.
+                Designated person for administrative correspondence with Student Government, 
+                and the Parliamentary for Student Government's Senate meetings.
               </p>
             </div>
           </div>
