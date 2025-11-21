@@ -22,7 +22,16 @@ export default function Footer() {
             <li>1400 Highway 14 West</li>
             <li>Mankato, MN 56001</li>
             <li>(507) 389-2611</li>
-            <li>studentgov@mnsu.edu</li>
+            <li>
+              <a 
+                href="mailto:studentgov@mnsu.edu"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white"
+              >
+                studentgov@mnsu.edu
+              </a>
+            </li>
           </ul>
         </div>
         {/* Follow Us */}

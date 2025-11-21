@@ -263,7 +263,14 @@ export default function HomePage() {
                     alt="Email"
                     className={`${styles.officeInfoIcon} ${styles.mailIcon}`}
                   />
-                  <p className={styles.officeInfoText}>studentgov@mnsu.edu</p>
+                  <a 
+                    href="mailto:studentgov@mnsu.edu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.officeInfoText}
+                  >
+                    studentgov@mnsu.edu
+                  </a>
                 </div>
               </div>
             </div>
