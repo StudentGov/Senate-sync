@@ -399,22 +399,21 @@ export default function SenateHourLoggingPage() {
                     </div>
 
                     <div className={styles.draftHours}>Draft hours: {draft} hrs</div>
-                    <button onClick={() => setShowReport(true)} className={styles.viewReportButton}>View Full Report</button>
+                    {logs.length > 0 && (
+                      <button onClick={() => setShowReport(true)} className={styles.viewReportButton}>View Full Report</button>
+                    )}
                   </>
                 );
               })()}
             </div>
           </div>
-          {showReport && (
+          {showReport && logs.length > 0 && (
             <div className={styles.reportCard}>
               <div className={styles.reportHeader}>
                 <h4 className={styles.reportTitle}>Full Report — by date</h4>
                 <button className={styles.reportCloseButton} onClick={() => setShowReport(false)}>Close</button>
               </div>
-              {logs.length === 0 ? (
-                <div className={styles.reportEmpty}>No logged entries found.</div>
-              ) : (
-                <div className={styles.reportContent}>
+              <div className={styles.reportContent}>
                   <div className={styles.reportScrollContainer}>
                     {logs.map((log) => (
                       <div key={log.id} className={styles.reportRow}>
@@ -437,7 +436,6 @@ export default function SenateHourLoggingPage() {
                     ))}
                   </div>
                 </div>
-              )}
             </div>
           )}
         </aside>

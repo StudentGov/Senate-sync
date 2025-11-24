@@ -49,7 +49,13 @@ export async function GET(req: Request) {
       creator_username: row.creator_username,
     }));
 
-    return NextResponse.json({ archives }, { status: 200 });
+    // Add caching headers - cache for 5 minutes, revalidate in background
+    return NextResponse.json({ archives }, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+      },
+    });
   } catch (error) {
     console.error("Database error:", error);
     return NextResponse.json({ 

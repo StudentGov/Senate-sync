@@ -25,7 +25,6 @@ export default function CalendarPage() {
   const [selectedEventForEdit, setSelectedEventForEdit] = useState<CalendarEvent | null>(null);
   const [popoverPosition, setPopoverPosition] = useState<PopoverPosition>({ top: 0, left: 0 });
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showEventMenu, setShowEventMenu] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<FullCalendar>(null);
@@ -33,6 +32,34 @@ export default function CalendarPage() {
   // Check if user has permission to add events (admin or coordinator)
   const userRole = sessionClaims?.role;
   const canAddEvents = userRole === "admin" || userRole === "coordinator";
+
+  // Fetch events - render calendar immediately, load events in background
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("/api/get-events", {
+        // Use browser cache if available
+        cache: 'default',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        // Ensure all event IDs are strings
+        const formattedEvents = data.map((event: any) => ({
+          ...event,
+          id: String(event.id),
+        }));
+        setEvents(formattedEvents);
+      } else {
+        console.error("Failed to fetch events");
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Load events after component mounts (non-blocking)
+    fetchEvents();
+  }, []);
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     const event = clickInfo.event;
@@ -125,35 +152,6 @@ export default function CalendarPage() {
     setSelectedEventForEdit(null);
   };
 
-  // Fetch events from the database
-  const fetchEvents = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("/api/get-events");
-      if (response.ok) {
-        const data = await response.json();
-        console.log("API Response - First Event:", data[0]);
-        // Ensure all event IDs are strings
-        const formattedEvents = data.map((event: any) => ({
-          ...event,
-          id: String(event.id),
-        }));
-        console.log("Formatted Events - First Event:", formattedEvents[0]);
-        setEvents(formattedEvents);
-      } else {
-        console.error("Failed to fetch events");
-      }
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
   // Close popover when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -190,62 +188,56 @@ export default function CalendarPage() {
         </div>
 
         <div className={`${styles.calendarWrapper} full-calendar-wrapper-container`}>
-          {loading ? (
-            <div className={styles.calendarContainer}>
-              <p className={styles.loadingText}>Loading events...</p>
-            </div>
-          ) : (
-            <FullCalendar
-              ref={calendarRef}
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-              initialView="timeGridWeek"
-              headerToolbar={{
-                left: "prev,next",
-                center: "title",
-                right: "timeGridWeek,dayGridMonth",
-              }}
-              height="auto"
-              selectable={false}
-              selectMirror={false}
-              dayMaxEvents={false}
-              eventClick={handleEventClick}
-              eventDisplay="block"
-              displayEventTime={true}
-              expandRows={true}
-              slotMinTime="07:00:00"
-              slotMaxTime="22:00:00"
-              slotDuration="00:30:00"
-              scrollTime="08:00:00"
-              allDaySlot={true}
-              dayMaxEventRows={2}
-              nowIndicator={true}
-              eventTimeFormat={{
-                hour: "numeric",
-                minute: "2-digit",
-                meridiem: "short",
-                hour12: true,
-              }}
-              slotLabelFormat={{
-                hour: "numeric",
-                minute: "2-digit",
-                meridiem: "short",
-                hour12: true,
-              }}
-              events={events}
-              eventContent={(eventInfo) => {
-                return (
-                  <div className="fc-event-main-frame">
-                    <div className="fc-event-time">{eventInfo.timeText}</div>
-                    <div className="fc-event-title-container">
-                      <div className="fc-event-title fc-sticky">
-                        {eventInfo.event.title}
-                      </div>
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            initialView="timeGridWeek"
+            headerToolbar={{
+              left: "prev,next",
+              center: "title",
+              right: "timeGridWeek,dayGridMonth",
+            }}
+            height="auto"
+            selectable={false}
+            selectMirror={false}
+            dayMaxEvents={false}
+            eventClick={handleEventClick}
+            eventDisplay="block"
+            displayEventTime={true}
+            expandRows={true}
+            slotMinTime="07:00:00"
+            slotMaxTime="22:00:00"
+            slotDuration="00:30:00"
+            scrollTime="08:00:00"
+            allDaySlot={true}
+            dayMaxEventRows={2}
+            nowIndicator={true}
+            eventTimeFormat={{
+              hour: "numeric",
+              minute: "2-digit",
+              meridiem: "short",
+              hour12: true,
+            }}
+            slotLabelFormat={{
+              hour: "numeric",
+              minute: "2-digit",
+              meridiem: "short",
+              hour12: true,
+            }}
+            events={events}
+            eventContent={(eventInfo) => {
+              return (
+                <div className="fc-event-main-frame">
+                  <div className="fc-event-time">{eventInfo.timeText}</div>
+                  <div className="fc-event-title-container">
+                    <div className="fc-event-title fc-sticky">
+                      {eventInfo.event.title}
                     </div>
                   </div>
-                );
-              }}
-            />
-          )}
+                </div>
+              );
+            }}
+          />
         </div>
       </section>
 

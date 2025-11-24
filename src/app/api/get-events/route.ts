@@ -74,7 +74,13 @@ export async function GET(req: Request) {
       };
     });
 
-    return NextResponse.json(events, { status: 200 });
+    // Add caching headers - cache for 2 minutes, revalidate in background
+    return NextResponse.json(events, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=300',
+      },
+    });
   } catch (error) {
     console.error("Failed to fetch events:", error);
     return NextResponse.json(

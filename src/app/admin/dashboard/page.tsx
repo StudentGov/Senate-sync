@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styles from "./admin.module.css";
 import UserTable from "../../components/UserTable";
 import CreateUserForm from "../../components/CreateUserForm";
@@ -21,17 +21,56 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<"users" | "create" | "hours">("users");
   const [hasPendingChanges, setHasPendingChanges] = useState(false);
   const [userTableKey, setUserTableKey] = useState(0);
+  
+  // Hour log data - cached in parent so it persists across tab switches
+  const [hourLogData, setHourLogData] = useState<{
+    periods: Record<string, Record<string, { total: number; name?: string; entries: any[] }>>;
+    sortedPeriodKeys: string[];
+    targetHours: number;
+  } | null>(null);
+  const [hourLogLoading, setHourLogLoading] = useState(false);
+  const [hourLogError, setHourLogError] = useState<string | null>(null);
+  const hasFetchedHourLogs = useRef(false);
 
   /**
    * Function to fetch all users from the backend API.
    */
   const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/get-all-users");
+      const response = await fetch("/api/get-all-users", {
+        cache: 'default', // Use browser cache
+      });
       const data = await response.json();
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
+    }
+  };
+
+  /**
+   * Function to fetch hour log data from the backend API.
+   */
+  const fetchHourLogData = async () => {
+    setHourLogLoading(true);
+    setHourLogError(null);
+    try {
+      const response = await fetch("/api/admin/hour-log", {
+        cache: 'default', // Use browser cache
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch hour logs");
+      }
+      const data = await response.json();
+      setHourLogData({
+        periods: data.periods || {},
+        sortedPeriodKeys: data.sortedPeriodKeys || [],
+        targetHours: data.TARGET_HOURS || 6,
+      });
+    } catch (error) {
+      console.error("Error fetching hour logs:", error);
+      setHourLogError(error instanceof Error ? error.message : "Failed to fetch hour logs");
+    } finally {
+      setHourLogLoading(false);
     }
   };
 
@@ -58,6 +97,17 @@ export default function AdminDashboard() {
     console.log("Admin access granted - fetching users"); // Debug log
     fetchUsers();
   }, [isSignedIn, sessionClaims, router]);
+
+  /**
+   * Separate useEffect to fetch hour log data once when component mounts
+   * Uses a ref to ensure we only fetch once
+   */
+  useEffect(() => {
+    if (hasFetchedHourLogs.current) return;
+    hasFetchedHourLogs.current = true;
+    fetchHourLogData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   /**
    * Warn user before leaving page with unsaved changes
@@ -169,7 +219,14 @@ export default function AdminDashboard() {
           />
         )}
         {activeTab === "create" && <CreateUserForm onUserCreated={handleUserCreated} />}
-        {activeTab === "hours" && <AdminHourLogClient />}
+        {activeTab === "hours" && (
+          <AdminHourLogClient 
+            hourLogData={hourLogData}
+            loading={hourLogLoading}
+            error={hourLogError}
+            users={users}
+          />
+        )}
       </div>
     </div>
   );

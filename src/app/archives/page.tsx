@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Search, Plus, Play, ChevronLeft, ChevronRight, FileText, X, Check, Edit, Trash2, ClipboardList, FolderOpen } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import styles from './archives-page.module.css';
@@ -37,8 +37,7 @@ export default function ArchivesPage() {
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [archiveType, setArchiveType] = useState("document");
-  const [archives, setArchives] = useState<Archive[]>([]);
-  const [allArchives, setAllArchives] = useState<Archive[]>([]); // For calculating counts
+  const [allArchives, setAllArchives] = useState<Archive[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingArchive, setEditingArchive] = useState<Archive | null>(null);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -46,34 +45,36 @@ export default function ArchivesPage() {
 
   const itemsPerPage = 12;
 
-  useEffect(() => {
-    fetchArchives();
-  }, [activeTab]);
-
-  const fetchArchives = async () => {
-    setIsLoading(true);
+  // Fetch all archives once on mount - cache in state, filter client-side
+  const fetchArchives = useCallback(async () => {
     try {
-      // Fetch filtered archives for the current tab
-      const response = await fetch(`/api/get-archives?archive_type=${activeTab}`);
+      const response = await fetch(`/api/get-archives?archive_type=all`, {
+        cache: 'default', // Use browser cache
+      });
       if (response.ok) {
         const data = await response.json();
-        setArchives(data.archives);
+        setAllArchives(data.archives);
       } else {
         console.error("Failed to fetch archives");
-      }
-
-      // Fetch all archives for counts (only if we don't have them yet or need to refresh)
-      const allResponse = await fetch(`/api/get-archives?archive_type=all`);
-      if (allResponse.ok) {
-        const allData = await allResponse.json();
-        setAllArchives(allData.archives);
       }
     } catch (error) {
       console.error("Error fetching archives:", error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchArchives();
+  }, [fetchArchives]);
+
+  // Filter archives client-side based on activeTab - no refetch needed!
+  const archives = useMemo(() => {
+    if (activeTab === "all") {
+      return allArchives;
+    }
+    return allArchives.filter((archive) => archive.archive_type === activeTab);
+  }, [allArchives, activeTab]);
 
   const handleAddFile = () => {
     setEditingArchive(null);
@@ -96,6 +97,10 @@ export default function ArchivesPage() {
       return;
     }
 
+    // Optimistic update - remove from UI immediately
+    const previousArchives = [...allArchives];
+    setAllArchives((prev) => prev.filter((archive) => archive.id !== archiveId));
+
     try {
       const response = await fetch(`/api/delete-archive?id=${archiveId}`, {
         method: "DELETE",
@@ -103,12 +108,17 @@ export default function ArchivesPage() {
 
       if (response.ok) {
         alert("Archive deleted successfully!");
+        // Optionally refetch to ensure consistency, but UI already updated
         fetchArchives();
       } else {
+        // Rollback on error
+        setAllArchives(previousArchives);
         const error = await response.json();
         alert(`Failed to delete archive: ${error.error || "Unknown error"}`);
       }
     } catch (error) {
+      // Rollback on error
+      setAllArchives(previousArchives);
       console.error("Error deleting archive:", error);
       alert("Failed to delete archive. Please try again.");
     }
@@ -134,39 +144,71 @@ export default function ArchivesPage() {
       return;
     }
 
-    try {
-      const payload = {
-        title,
-        link,
-        description,
-        image_url: imageUrl,
-        archive_type: archiveType,
-      };
+    const payload = {
+      title,
+      link,
+      description,
+      image_url: imageUrl,
+      archive_type: archiveType,
+    };
 
-      let response;
-      if (editingArchive) {
-        response = await fetch("/api/update-archive", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...payload, id: editingArchive.id }),
-        });
-      } else {
-        response = await fetch("/api/add-archive", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      }
+    const isEdit = !!editingArchive;
+    const previousArchives = [...allArchives];
+
+    // Optimistic update
+    if (isEdit && editingArchive) {
+      setAllArchives((prev) =>
+        prev.map((archive) =>
+          archive.id === editingArchive.id
+            ? {
+                ...archive,
+                title: payload.title,
+                link: payload.link,
+                description: payload.description,
+                image_url: payload.image_url,
+                archive_type: payload.archive_type,
+              }
+            : archive
+        )
+      );
+    } else {
+      // Optimistic add
+      const tempArchive: Archive = {
+        id: Date.now(), // Temporary ID
+        created_by: user?.id || "",
+        title: payload.title,
+        link: payload.link,
+        description: payload.description,
+        image_url: payload.image_url,
+        archive_type: payload.archive_type,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        creator_username: null,
+      };
+      setAllArchives((prev) => [tempArchive, ...prev]);
+    }
+
+    try {
+      const response = await fetch(isEdit ? "/api/update-archive" : "/api/add-archive", {
+        method: isEdit ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(isEdit ? { ...payload, id: editingArchive!.id } : payload),
+      });
 
       if (response.ok) {
-        alert(`Archive ${editingArchive ? "updated" : "added"} successfully!`);
+        alert(`Archive ${isEdit ? "updated" : "added"} successfully!`);
         handleCloseModal();
+        // Refetch to get server data (with proper IDs, timestamps, etc.)
         fetchArchives();
       } else {
+        // Rollback on error
+        setAllArchives(previousArchives);
         const error = await response.json();
-        alert(`Failed to ${editingArchive ? "update" : "add"} archive: ${error.error || "Unknown error"}`);
+        alert(`Failed to ${isEdit ? "update" : "add"} archive: ${error.error || "Unknown error"}`);
       }
     } catch (error) {
+      // Rollback on error
+      setAllArchives(previousArchives);
       console.error("Error saving archive:", error);
       alert("Failed to save archive. Please try again.");
     }
@@ -264,6 +306,7 @@ export default function ArchivesPage() {
                   setCurrentPage(1);
                 }}
                 className={styles.searchInput}
+                // Debounce is handled by React's state batching, but we could add a debounce hook if needed
               />
             </div>
           </div>

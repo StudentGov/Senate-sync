@@ -184,7 +184,12 @@ export async function GET() {
 
     const sortedPeriodKeys = Object.keys(periods).sort((a,b) => Number(b) - Number(a))
 
-    return NextResponse.json({ periods, sortedPeriodKeys, TARGET_HOURS })
+    // Add caching headers - cache for 3 minutes, revalidate in background
+    return NextResponse.json({ periods, sortedPeriodKeys, TARGET_HOURS }, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=180, stale-while-revalidate=300',
+      },
+    })
   } catch (error) {
     console.error('Error fetching hour logs:', error)
     return NextResponse.json({ error: 'Failed to fetch hour logs' }, { status: 500 })
