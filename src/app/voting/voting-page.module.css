@@ -10,7 +10,19 @@
 .contentWrapper {
   max-width: 64rem;
   margin: 0 auto;
-  padding: 4rem 1.5rem;
+  padding: 2rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .contentWrapper {
+    padding: 3rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .contentWrapper {
+    padding: 4rem 1.5rem;
+  }
 }
 
 /* Header section */
@@ -22,14 +34,27 @@
 }
 
 .pageTitle {
-  font-size: 1.875rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #1f2937;
+}
+
+@media (min-width: 768px) {
+  .pageTitle {
+    font-size: 1.875rem;
+  }
 }
 
 .pageDescription {
   margin-top: 0.5rem;
   color: #4b5563;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .pageDescription {
+    font-size: 1rem;
+  }
 }
 
 /* Voting cards grid */
@@ -37,7 +62,13 @@
   margin-top: 2rem;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .votingCardsGrid {
+    gap: 1.5rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -51,18 +82,43 @@
   background-color: white;
   border-radius: 0.5rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  padding: 1.5rem;
+  padding: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+@media (min-width: 768px) {
+  .votingCard {
+    padding: 1.5rem;
+  }
+}
+
+.votingCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .votingCardTitle {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 500;
   color: #1f2937;
+}
+
+@media (min-width: 768px) {
+  .votingCardTitle {
+    font-size: 1.25rem;
+  }
 }
 
 .votingCardDescription {
   margin-top: 0.5rem;
   color: #4b5563;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .votingCardDescription {
+    font-size: 1rem;
+  }
 }
 
 .votingCardLink {
@@ -73,5 +129,12 @@
 .votingCardLinkText {
   color: #7c3aed;
   font-weight: 500;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .votingCardLinkText {
+    font-size: 1rem;
+  }
 }
 
