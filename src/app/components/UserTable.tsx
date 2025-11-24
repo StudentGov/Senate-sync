@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import styles from "../admin/dashboard/admin.module.css";
 import SearchBar from "./searchBar/SearchBar";
 import DropDownOptions from "./dropDown/dropDown";
@@ -15,16 +15,20 @@ interface User {
 
 interface UserTableProps {
   users: User[];
+  onPendingChangesChange?: (hasChanges: boolean) => void;
 }
 
 const roles = ["admin", "senator", "coordinator", "attorney"];
 
-export default function UserTable({ users }: UserTableProps) {
+export default function UserTable({ users, onPendingChangesChange }: UserTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("Name");
   const [roleFilter, setRoleFilter] = useState("All");
-  const [pendingChanges, setPendingChanges] = useState<Record<string, string>>(
+  const [pendingRoleChanges, setPendingRoleChanges] = useState<Record<string, string>>(
     {}
+  );
+  const [pendingDeletions, setPendingDeletions] = useState<Set<string>>(
+    new Set()
   );
   const [isSaving, setIsSaving] = useState(false);
 
@@ -56,50 +60,126 @@ export default function UserTable({ users }: UserTableProps) {
     }
 
     return filtered;
-  }, [users, searchQuery, sortOption, roleFilter]);
+  }, [users, searchQuery, sortOption, roleFilter, pendingDeletions]);
+
+  // Notify parent of pending changes
+  useEffect(() => {
+    const hasChanges = Object.keys(pendingRoleChanges).length > 0 || pendingDeletions.size > 0;
+    onPendingChangesChange?.(hasChanges);
+  }, [pendingRoleChanges, pendingDeletions, onPendingChangesChange]);
 
   const handleRoleChange = (userId: string, newRole: string) => {
-    setPendingChanges((prev) => ({
+    // If user is marked for deletion, don't allow role changes
+    if (pendingDeletions.has(userId)) {
+      return;
+    }
+    setPendingRoleChanges((prev) => ({
       ...prev,
       [userId]: newRole,
     }));
   };
 
   const handleSaveChanges = async () => {
-    if (Object.keys(pendingChanges).length === 0) {
+    const roleChangeCount = Object.keys(pendingRoleChanges).length;
+    const deletionCount = pendingDeletions.size;
+    
+    if (roleChangeCount === 0 && deletionCount === 0) {
       alert("No changes to save.");
       return;
     }
 
-    const confirmed = confirm(
-      `Save ${Object.keys(pendingChanges).length} role change(s)?\n\n` +
-        `This will update roles in both Clerk and the database.\n` +
-        `Users will need to log out and log back in to see changes.`
-    );
+    let confirmMessage = "Save the following changes?\n\n";
+    if (roleChangeCount > 0) {
+      confirmMessage += `- ${roleChangeCount} role change(s)\n`;
+    }
+    if (deletionCount > 0) {
+      confirmMessage += `- ${deletionCount} user deletion(s)\n`;
+    }
+    confirmMessage += "\nThis will update both Clerk and the database.\n";
+    if (roleChangeCount > 0) {
+      confirmMessage += "Users will need to log out and log back in to see role changes.\n";
+    }
+    if (deletionCount > 0) {
+      confirmMessage += "Deletions cannot be undone.\n";
+    }
+
+    const confirmed = confirm(confirmMessage);
     if (!confirmed) return;
 
     setIsSaving(true);
 
     try {
-      const updates = Object.entries(pendingChanges).map(([userId, role]) => ({
-        userId,
-        role,
-      }));
+      const errors: string[] = [];
 
-      const response = await fetch("/api/batch-update-roles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ updates }),
-      });
+      // Process role changes
+      if (roleChangeCount > 0) {
+        const updates = Object.entries(pendingRoleChanges)
+          .filter(([userId]) => !pendingDeletions.has(userId))
+          .map(([userId, role]) => ({
+            userId,
+            role,
+          }));
 
-      const data = await response.json();
+        if (updates.length > 0) {
+          const response = await fetch("/api/batch-update-roles", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ updates }),
+          });
 
-      if (response.ok) {
-        alert(`Successfully updated ${data.results.length} user role(s)!`);
-        setPendingChanges({});
-        location.reload();
+          const data = await response.json();
+
+          if (response.ok) {
+            console.log(`Successfully updated ${data.results.length} user role(s)!`);
+          } else {
+            errors.push(`Failed to update roles: ${data.error}`);
+          }
+        }
+      }
+
+      // Process deletions
+      if (deletionCount > 0) {
+        const deletePromises = Array.from(pendingDeletions).map(async (userId) => {
+          try {
+            const res = await fetch("/api/delete-user", {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+              errors.push(`Failed to delete user ${userId}: ${data.error || "Unknown error"}`);
+            }
+          } catch (error) {
+            console.error(`Error deleting user ${userId}:`, error);
+            errors.push(`Error deleting user ${userId}`);
+          }
+        });
+
+        await Promise.all(deletePromises);
+      }
+
+      if (errors.length > 0) {
+        alert(`Some operations failed:\n${errors.join("\n")}`);
       } else {
-        alert(`Failed to update roles: ${data.error}`);
+        const successMessages = [];
+        if (roleChangeCount > 0) {
+          successMessages.push(`${roleChangeCount} role change(s)`);
+        }
+        if (deletionCount > 0) {
+          successMessages.push(`${deletionCount} deletion(s)`);
+        }
+        alert(`Successfully saved ${successMessages.join(" and ")}!`);
+        // Clear pending changes and notify parent before reload
+        setPendingRoleChanges({});
+        setPendingDeletions(new Set());
+        onPendingChangesChange?.(false);
+        // Small delay to ensure state updates propagate before reload
+        setTimeout(() => {
+          location.reload();
+        }, 100);
       }
     } catch (error) {
       console.error("Error saving changes:", error);
@@ -110,47 +190,44 @@ export default function UserTable({ users }: UserTableProps) {
   };
 
   const handleCancelChanges = () => {
-    if (Object.keys(pendingChanges).length === 0) return;
+    const hasChanges = Object.keys(pendingRoleChanges).length > 0 || pendingDeletions.size > 0;
+    if (!hasChanges) return;
 
     const confirmed = confirm("Discard all unsaved changes?");
     if (confirmed) {
-      setPendingChanges({});
+      setPendingRoleChanges({});
+      setPendingDeletions(new Set());
     }
   };
 
-  const handleDelete = async (userId: string, userName: string) => {
-    const confirmed = confirm(
-      `Are you sure you want to delete ${userName}?\n\n` +
-        `This will permanently delete:\n` +
-        `- User account from Clerk\n` +
-        `- User record from database\n` +
-        `- All related events and hours\n\n` +
-        `This action cannot be undone.`
-    );
-    if (!confirmed) return;
-
-    try {
-      const res = await fetch("/api/delete-user", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
+  const handleDelete = (userId: string, userName: string) => {
+    // If already marked for deletion, remove it (undo)
+    if (pendingDeletions.has(userId)) {
+      setPendingDeletions((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
       });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert("User deleted successfully.");
-        location.reload();
-      } else {
-        alert(`Failed to delete user: ${data.error || "Unknown error"}`);
-      }
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      alert("An error occurred while deleting the user.");
+      // Also remove any pending role changes for this user
+      setPendingRoleChanges((prev) => {
+        const newChanges = { ...prev };
+        delete newChanges[userId];
+        return newChanges;
+      });
+      return;
     }
+
+    // Mark for deletion
+    setPendingDeletions((prev) => new Set(prev).add(userId));
+    // Remove any pending role changes for this user
+    setPendingRoleChanges((prev) => {
+      const newChanges = { ...prev };
+      delete newChanges[userId];
+      return newChanges;
+    });
   };
 
-  const hasChanges = Object.keys(pendingChanges).length > 0;
+  const hasChanges = Object.keys(pendingRoleChanges).length > 0 || pendingDeletions.size > 0;
 
   return (
     <div className={styles['admin-main-container']}>
@@ -212,7 +289,7 @@ export default function UserTable({ users }: UserTableProps) {
             >
               {isSaving
                 ? "Saving..."
-                : `Save Changes (${Object.keys(pendingChanges).length})`}
+                : `Save Changes (${Object.keys(pendingRoleChanges).length + pendingDeletions.size})`}
             </button>
           </div>
         )}
@@ -254,31 +331,55 @@ export default function UserTable({ users }: UserTableProps) {
               : "No users match your search or filter criteria."}
           </div>
         ) : (
-          filteredUsers.map((user) => (
-            <div key={user.id} className={styles['admin-user-row']}>
+          filteredUsers.map((user) => {
+            const isMarkedForDeletion = pendingDeletions.has(user.id);
+            return (
+            <div 
+              key={user.id} 
+              className={styles['admin-user-row']}
+              style={{
+                opacity: isMarkedForDeletion ? 0.6 : 1,
+                backgroundColor: isMarkedForDeletion ? "#fee2e2" : undefined,
+                borderLeft: isMarkedForDeletion ? "4px solid #dc2626" : undefined,
+              }}
+            >
               <div className={styles['admin-user-info']}>
                 <div className={styles['admin-user-name']}>
                   {user.firstName} {user.lastName}
+                  {isMarkedForDeletion && (
+                    <span style={{ 
+                      marginLeft: "0.5rem", 
+                      color: "#dc2626", 
+                      fontSize: "0.85rem",
+                      fontWeight: "600"
+                    }}>
+                      (Marked for deletion)
+                    </span>
+                  )}
                 </div>
                 <div className={styles['admin-user-email']}>{user.email}</div>
               </div>
               <div className={styles['admin-user-actions']}>
                 <div className={styles['admin-actions']}>
                   <select
-                    value={pendingChanges[user.id] || user.role}
+                    value={pendingRoleChanges[user.id] || user.role}
                     onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                    disabled={pendingDeletions.has(user.id)}
                     style={{
                       padding: "0.4rem 0.6rem",
                       borderRadius: "4px",
-                      border: pendingChanges[user.id]
+                      border: pendingRoleChanges[user.id]
                         ? "2px solid #7c3aed"
                         : "1px solid #ddd",
-                      backgroundColor: pendingChanges[user.id]
+                      backgroundColor: pendingDeletions.has(user.id)
+                        ? "#fee2e2"
+                        : pendingRoleChanges[user.id]
                         ? "#f5f3ff"
                         : "white",
-                      cursor: "pointer",
+                      cursor: pendingDeletions.has(user.id) ? "not-allowed" : "pointer",
                       fontSize: "0.9rem",
-                      fontWeight: pendingChanges[user.id] ? "600" : "normal",
+                      fontWeight: pendingRoleChanges[user.id] ? "600" : "normal",
+                      opacity: pendingDeletions.has(user.id) ? 0.6 : 1,
                     }}
                   >
                     {roles.map((role) => (
@@ -295,14 +396,18 @@ export default function UserTable({ users }: UserTableProps) {
                       )
                     }
                     className={styles['admin-delete-button']}
-                    title="Delete this user permanently"
+                    title={pendingDeletions.has(user.id) ? "Undo deletion" : "Mark for deletion"}
+                    style={{
+                      backgroundColor: pendingDeletions.has(user.id) ? "#dc2626" : undefined,
+                    }}
                   >
-                    Delete
+                    {pendingDeletions.has(user.id) ? "Undo Delete" : "Delete"}
                   </button>
                 </div>
               </div>
             </div>
-          ))
+          );
+          })
         )}
       </div>
     </div>

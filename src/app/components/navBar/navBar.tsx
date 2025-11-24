@@ -13,9 +13,10 @@ export default function Navbar() {
   const isHome = pathname === '/'
   const showButton = pathname !== '/auth/sign-in'
   
-  // Check if user is an admin
+  // Check if user is an admin or attorney
   const userRole = sessionClaims?.role as string;
   const isAdmin = userRole === "admin";
+  const isAttorney = userRole === "attorney";
 
   return (
     <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-6 md:px-12 relative z-50">
@@ -41,13 +42,15 @@ export default function Navbar() {
       {/* Auth Section */}
       <div className="flex items-center gap-4">
         <SignedIn>
-          {/* Dashboard shortcut button (visible to all signed-in users) */}
-          <button
-            onClick={() => router.push('/senate/dashboard')}
-            className="bg-white text-purple-700 rounded-md px-3 py-2 font-medium hover:bg-gray-100"
-          >
-            Dashboard
-          </button>
+          {/* Dashboard shortcut button (hidden for attorneys - they have their own dashboard) */}
+          {!isAttorney && (
+            <button
+              onClick={() => router.push('/senate/dashboard')}
+              className="bg-white text-purple-700 rounded-md px-3 py-2 font-medium hover:bg-gray-100"
+            >
+              Dashboard
+            </button>
+          )}
           <UserButton 
             afterSignOutUrl="/"
             appearance={{
@@ -57,6 +60,32 @@ export default function Navbar() {
             }}
           >
             <UserButton.MenuItems>
+              {isAttorney && (
+                <UserButton.Action
+                  label="Attorney Dashboard"
+                  labelIcon={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4"
+                    >
+                      <path d="m14 13-8.381 8.38a1 1 0 0 1-3.001-3l8.384-8.381"/>
+                      <path d="m16 16 6-6"/>
+                      <path d="m21.5 10.5-8-8"/>
+                      <path d="m8 8 6-6"/>
+                      <path d="m8.5 7.5 8 8"/>
+                    </svg>
+                  }
+                  onClick={() => router.push('/attorney/dashboard')}
+                />
+              )}
               {isAdmin && (
                 <UserButton.Action
                   label="Admin Dashboard"
