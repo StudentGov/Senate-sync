@@ -4,6 +4,7 @@ interface AppointmentSummaryProps {
   attorney: string;
   duration: string;
   onConfirm: () => void;
+  disabled?: boolean;
 }
 
 export const AppointmentSummary = ({
@@ -12,6 +13,7 @@ export const AppointmentSummary = ({
   attorney,
   duration,
   onConfirm,
+  disabled = false,
 }: AppointmentSummaryProps) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 sticky top-6">
@@ -41,9 +43,14 @@ export const AppointmentSummary = ({
 
       <button
         onClick={onConfirm}
-        className="w-full bg-[#febd11] text-[#49306e] py-3 rounded-md font-bold hover:bg-[#fdd14d] transition-colors"
+        disabled={disabled || date === "-" || time === "-"}
+        className={`w-full py-3 rounded-md font-bold transition-colors ${
+          disabled || date === "-" || time === "-"
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-[#febd11] text-[#49306e] hover:bg-[#fdd14d]"
+        }`}
       >
-        Confirm Appointment
+        {disabled ? "Booking..." : "Confirm Appointment"}
       </button>
     </div>
   );

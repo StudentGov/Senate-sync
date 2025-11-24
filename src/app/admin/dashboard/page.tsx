@@ -19,6 +19,8 @@ export default function AdminDashboard() {
   const { sessionClaims, isSignedIn, isLoaded } = useAuth();
   const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState<"users" | "create" | "hours">("users");
+  const [hasPendingChanges, setHasPendingChanges] = useState(false);
+  const [userTableKey, setUserTableKey] = useState(0);
 
   /**
    * Function to fetch all users from the backend API.
@@ -57,6 +59,24 @@ export default function AdminDashboard() {
     fetchUsers();
   }, [isSignedIn, sessionClaims, router]);
 
+  /**
+   * Warn user before leaving page with unsaved changes
+   */
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasPendingChanges) {
+        e.preventDefault();
+        e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+        return e.returnValue;
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [hasPendingChanges]);
+
   const handleUserCreated = () => {
     // Refresh the user list when a new user is created
     fetchUsers();
@@ -89,26 +109,65 @@ export default function AdminDashboard() {
       <div className={styles['admin-tabs']}>
         <button
           className={`${styles['admin-tab']} ${activeTab === "users" ? styles['admin-active-tab'] : ""}`}
-          onClick={() => setActiveTab("users")}
+          onClick={() => {
+            if (hasPendingChanges && activeTab !== "users") {
+              const confirmed = confirm(
+                "You have unsaved changes. Switching tabs will discard all changes. Continue?"
+              );
+              if (!confirmed) return;
+              // Reset UserTable by changing key to force remount
+              setUserTableKey((prev) => prev + 1);
+              setHasPendingChanges(false);
+            }
+            setActiveTab("users");
+          }}
         >
           Manage Users ({users.length})
         </button>
         <button
           className={`${styles['admin-tab']} ${activeTab === "create" ? styles['admin-active-tab'] : ""}`}
-          onClick={() => setActiveTab("create")}
+          onClick={() => {
+            if (hasPendingChanges && activeTab !== "create") {
+              const confirmed = confirm(
+                "You have unsaved changes. Switching tabs will discard all changes. Continue?"
+              );
+              if (!confirmed) return;
+              // Reset UserTable by changing key to force remount
+              setUserTableKey((prev) => prev + 1);
+              setHasPendingChanges(false);
+            }
+            setActiveTab("create");
+          }}
         >
           Create New User
         </button>
         <button
           className={`${styles['admin-tab']} ${activeTab === "hours" ? styles['admin-active-tab'] : ""}`}
-          onClick={() => setActiveTab("hours")}
+          onClick={() => {
+            if (hasPendingChanges && activeTab !== "hours") {
+              const confirmed = confirm(
+                "You have unsaved changes. Switching tabs will discard all changes. Continue?"
+              );
+              if (!confirmed) return;
+              // Reset UserTable by changing key to force remount
+              setUserTableKey((prev) => prev + 1);
+              setHasPendingChanges(false);
+            }
+            setActiveTab("hours");
+          }}
         >
           Hour Log
         </button>
       </div>
 
       <div className={styles['admin-tab-content']}>
-        {activeTab === "users" && <UserTable users={users} />}
+        {activeTab === "users" && (
+          <UserTable 
+            key={userTableKey}
+            users={users} 
+            onPendingChangesChange={setHasPendingChanges}
+          />
+        )}
         {activeTab === "create" && <CreateUserForm onUserCreated={handleUserCreated} />}
         {activeTab === "hours" && <AdminHourLogClient />}
       </div>

@@ -14,6 +14,39 @@ interface Slot {
   date: string;
   start_time: string;
   end_time: string;
+  is_booked?: boolean;
+}
+
+// Helper function to check if a slot is past (same logic as in time-slots.tsx)
+function isSlotPast(slot: Slot): boolean {
+  try {
+    const trimmedTime = slot.start_time.trim();
+    let timePart: string;
+    let modifier: string;
+    
+    if (trimmedTime.includes(" ")) {
+      [timePart, modifier] = trimmedTime.split(" ");
+    } else {
+      modifier = trimmedTime.slice(-2).toUpperCase();
+      timePart = trimmedTime.slice(0, -2);
+    }
+    
+    const [hours, minutes] = timePart.split(":").map(Number);
+    modifier = modifier.toUpperCase();
+    
+    let hours24 = hours;
+    if (modifier === "PM" && hours !== 12) hours24 += 12;
+    if (modifier === "AM" && hours === 12) hours24 = 0;
+    
+    const [year, month, day] = slot.date.split("-").map(Number);
+    const slotDateTime = new Date(year, month - 1, day, hours24, minutes, 0, 0);
+    const now = new Date();
+    
+    return slotDateTime.getTime() < now.getTime();
+  } catch (error) {
+    console.error("Error checking if slot is past:", error, slot);
+    return false;
+  }
 }
 
 export default function SchedulingPage() {
@@ -31,6 +64,11 @@ export default function SchedulingPage() {
   };
 
   const handleSlotSelect = (slot: Slot) => {
+    // Prevent selecting past or booked slots
+    if (isSlotPast(slot) || slot.is_booked === true) {
+      console.warn("Attempted to select unavailable slot:", slot);
+      return;
+    }
     setSelectedSlot(slot);
   };
 

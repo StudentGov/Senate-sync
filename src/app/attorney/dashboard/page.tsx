@@ -7,7 +7,7 @@ import SideBar from '../../components/attorneySideBar/AttorneySideBar';
 import { useCollapsedContext, CollapsedProvider } from '../../components/attorneySideBar/attorneySideBarContext';
 
 function AttorneyDashboardContent() {
-  const { collapsed, setCollapsed } = useCollapsedContext();
+  const { collapsed } = useCollapsedContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -16,12 +16,12 @@ function AttorneyDashboardContent() {
 
   return (
     <div className={styles.attorneyPage}>
-      <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
+      <SideBar collapsed={collapsed} setCollapsed={() => {}} />
     </div>
   );
 }
 
-export default function AttorneyPage() {
+export default function AttorneyDashboard() {
   return (
     <CollapsedProvider>
       <AttorneyDashboardContent />
