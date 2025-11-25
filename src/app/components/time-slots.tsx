@@ -10,12 +10,62 @@ export interface Slot {
   date: string;
   start_time: string;
   end_time: string;
+  is_booked?: boolean; // Optional field for defensive programming
 }
 
 interface TimeSlotsProps {
   date: Date;
   selectedSlot: Slot | null; // ✅ selectedSlot is now a Slot (not string)
   onSelectSlot: (slot: Slot) => void; // ✅ onSelectSlot receives a Slot
+}
+
+// Helper function to parse time string (format: "HH:MM AM/PM") and combine with date
+function parseSlotDateTime(dateStr: string, timeStr: string): Date {
+  // Handle time string with or without space between time and AM/PM
+  const trimmedTime = timeStr.trim();
+  let timePart: string;
+  let modifier: string;
+  
+  // Check if there's a space between time and AM/PM
+  if (trimmedTime.includes(" ")) {
+    [timePart, modifier] = trimmedTime.split(" ");
+  } else {
+    // If no space, extract AM/PM from the end
+    modifier = trimmedTime.slice(-2).toUpperCase();
+    timePart = trimmedTime.slice(0, -2);
+  }
+  
+  const [hours, minutes] = timePart.split(":").map(Number);
+  modifier = modifier.toUpperCase();
+  
+  let hours24 = hours;
+  if (modifier === "PM" && hours !== 12) hours24 += 12;
+  if (modifier === "AM" && hours === 12) hours24 = 0;
+  
+  // Create date in local timezone by parsing the date string and setting time components
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const slotDate = new Date(year, month - 1, day, hours24, minutes, 0, 0);
+  
+  return slotDate;
+}
+
+// Check if a slot has already passed
+function isSlotPast(slot: Slot): boolean {
+  try {
+    const slotDateTime = parseSlotDateTime(slot.date, slot.start_time);
+    const now = new Date();
+    // Compare with a small buffer to account for any timing issues
+    // If the slot time is in the past (even by 1 second), it's considered past
+    return slotDateTime.getTime() < now.getTime();
+  } catch (error) {
+    console.error("Error parsing slot date/time:", error, slot);
+    return false;
+  }
+}
+
+// Check if a slot is unavailable (past or booked)
+function isSlotUnavailable(slot: Slot): boolean {
+  return isSlotPast(slot) || slot.is_booked === true;
 }
 
 export default function TimeSlots({ date, selectedSlot, onSelectSlot }: TimeSlotsProps) {
@@ -73,13 +123,33 @@ export default function TimeSlots({ date, selectedSlot, onSelectSlot }: TimeSlot
     <div className="flex flex-col gap-3 overflow-y-auto max-h-[350px] p-2">
       {availableSlots.map((slot) => {
         const timeLabel = `${slot.start_time} - ${slot.end_time}`;
+        const isUnavailable = isSlotUnavailable(slot);
+        const isPast = isSlotPast(slot);
 
         return (
           <Button
             key={slot.id}
-            variant={selectedSlot?.id === slot.id ? "default" : "outline"} // ✅ Compare by ID
-            className="w-full justify-between font-medium"
-            onClick={() => onSelectSlot(slot)} // ✅ Pass full slot
+            variant={selectedSlot?.id === slot.id ? "default" : "outline"}
+            className={`w-full justify-between font-medium ${
+              isUnavailable 
+                ? "cursor-not-allowed bg-muted text-muted-foreground" 
+                : ""
+            }`}
+            disabled={isUnavailable}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!isUnavailable) {
+                onSelectSlot(slot);
+              }
+            }}
+            onMouseDown={(e) => {
+              if (isUnavailable) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }}
+            title={isPast ? "This time slot has already passed" : slot.is_booked ? "This time slot is already booked" : undefined}
           >
             {timeLabel}
           </Button>
