@@ -1,18 +1,14 @@
 "use client";
-import Image from "next/image";
-import styles from './navBar.module.css'
-import purpleLogo from '../../assets/purpleImage.png'
-import whiteLogo from '../../assets/whiteImage.png'
+import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useUser, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 
 export default function Navbar() {
   const router = useRouter();
-  const pathname = usePathname()
+  const pathname = usePathname();
   const { user } = useUser(); // Get user info from Clerk
-  const isHome = pathname === '/'
-  const showButton = pathname !== '/auth/sign-in'
-  
+  const showButton = pathname !== "/auth/sign-in";
+
   // Check if user is an admin
   const userRole = user?.publicMetadata?.role as string;
   const isAdmin = userRole === "admin";
@@ -21,21 +17,49 @@ export default function Navbar() {
     <header className="w-full bg-[#49306e] h-16 flex items-center justify-between px-6 md:px-12 relative z-50">
       {/* Logo Section */}
       <div className="flex items-center h-16">
-        <a href="/">
+        <Link href="/">
           <img
             alt="MSU Logo"
             className="h-10 w-auto object-contain cursor-pointer"
             src="/images/MSU Logo.png"
           />
-        </a>
+        </Link>
       </div>
 
       {/* Navigation Links */}
       <nav className="flex gap-10 text-white font-kanit text-base">
-        <a href="/calendar" className={`hover:text-[#febd11] ${pathname === '/calendar' ? 'text-[#febd11]' : ''}`}>Calendar</a>
-        <a href="/attorney" className={`hover:text-[#febd11] ${pathname === '/attorney' ? 'text-[#febd11]' : ''}`}>Attorney</a>
-        <a href="/resources" className={`hover:text-[#febd11] ${pathname === '/resources' ? 'text-[#febd11]' : ''}`}>Resources</a>
-        <a href="/archives" className={`hover:text-[#febd11] ${pathname === '/archives' ? 'text-[#febd11]' : ''}`}>Archives</a>
+        <a
+          href="/calendar"
+          className={`hover:text-[#febd11] ${
+            pathname === "/calendar" ? "text-[#febd11]" : ""
+          }`}
+        >
+          Calendar
+        </a>
+        <a
+          href="/attorney"
+          className={`hover:text-[#febd11] ${
+            pathname === "/attorney" ? "text-[#febd11]" : ""
+          }`}
+        >
+          Attorney
+        </a>
+        <a
+          href="/resources"
+          className={`hover:text-[#febd11] ${
+            pathname === "/resources" ? "text-[#febd11]" : ""
+          }`}
+        >
+          Resources
+        </a>
+        <a
+          href="/archives"
+          className={`hover:text-[#febd11] ${
+            pathname === "/archives" ? "text-[#febd11]" : ""
+          }`}
+        >
+          Archives
+        </a>
       </nav>
 
       {/* Auth Section */}
@@ -43,17 +67,17 @@ export default function Navbar() {
         <SignedIn>
           {/* Dashboard shortcut button (visible to all signed-in users) */}
           <button
-            onClick={() => router.push('/student/dashboard')}
+            onClick={() => router.push("/student/dashboard")}
             className="bg-white text-purple-700 rounded-md px-3 py-2 font-medium hover:bg-gray-100"
           >
             Dashboard
           </button>
-          <UserButton 
+          <UserButton
             afterSignOutUrl="/"
             appearance={{
               elements: {
-                avatarBox: "w-10 h-10"
-              }
+                avatarBox: "w-10 h-10",
+              },
             }}
           >
             <UserButton.MenuItems>
@@ -81,7 +105,7 @@ export default function Navbar() {
                       />
                     </svg>
                   }
-                  onClick={() => router.push('/admin/dashboard')}
+                  onClick={() => router.push("/admin/dashboard")}
                 />
               )}
             </UserButton.MenuItems>
@@ -89,12 +113,12 @@ export default function Navbar() {
         </SignedIn>
         <SignedOut>
           {showButton && (
-            <a
+            <Link
               href="/auth/sign-in"
               className="bg-[#febd11] text-white rounded-lg px-6 py-2 font-kanit hover:bg-[#e6a900] transition"
             >
               Sign In
-            </a>
+            </Link>
           )}
         </SignedOut>
       </div>

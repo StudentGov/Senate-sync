@@ -17,6 +17,7 @@ export default function SchedulePage() {
     attorney: string;
     slot: TimeSlot;
   } | null>(null);
+  const [currentWeek, setCurrentWeek] = useState(0);
 
   const sarahTimeSlots: TimeSlot[] = [
     { id: "sj-1", time: "Mon 9:00 AM", duration: "30 minutes" },
@@ -40,8 +41,38 @@ export default function SchedulePage() {
     { id: "mc-8", time: "Thu 12:30 PM", duration: "30 minutes" },
   ];
 
-  const handleSlotSelect = (attorney: string, slot: TimeSlot) => {
+  const handleSlotSelect = (
+    attorney: string,
+    slot: TimeSlot,
+    dayOfWeek: number
+  ) => {
     setSelectedSlot({ attorney, slot });
+  };
+
+  // Helper to get week range string
+  const getWeekRange = (weekOffset: number): string => {
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay() + weekOffset * 7);
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+    const formatDate = (date: Date) => {
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+    };
+
+    return `${formatDate(startOfWeek)} - ${formatDate(endOfWeek)}`;
+  };
+
+  const handlePreviousWeek = () => {
+    setCurrentWeek((prev) => prev - 1);
+  };
+
+  const handleNextWeek = () => {
+    setCurrentWeek((prev) => prev + 1);
   };
 
   const handleFormSubmit = (data: any) => {
@@ -62,10 +93,12 @@ export default function SchedulePage() {
             Schedule Your Legal Consultation
           </h1>
           <p className="text-gray-600 max-w-3xl mx-auto mb-2">
-            Connect with qualified student attorneys for free legal advice and guidance.
+            Connect with qualified student attorneys for free legal advice and
+            guidance.
           </p>
           <p className="text-gray-600 max-w-3xl mx-auto">
-            Our experienced law students provide professional consultation services under faculty supervision.
+            Our experienced law students provide professional consultation
+            services under faculty supervision.
           </p>
         </div>
       </section>
@@ -75,7 +108,9 @@ export default function SchedulePage() {
         <div className="container mx-auto px-4 flex justify-center">
           <div className="bg-[#febd11]/20 border-2 border-[#febd11] rounded-lg px-8 py-4 inline-flex items-center gap-2">
             <MapPin className="w-5 h-5 text-[#49306e]" />
-            <span className="font-semibold text-[#49306e]">Location: Student Government Office</span>
+            <span className="font-semibold text-[#49306e]">
+              Location: Student Government Office
+            </span>
           </div>
         </div>
       </section>
@@ -97,6 +132,9 @@ export default function SchedulePage() {
               timeSlots={sarahTimeSlots}
               onSelectSlot={handleSlotSelect}
               selectedSlotId={selectedSlot?.slot.id}
+              weekRange={getWeekRange(currentWeek)}
+              onPreviousWeek={handlePreviousWeek}
+              onNextWeek={handleNextWeek}
             />
             <AttorneyCard
               initials="MC"
@@ -106,6 +144,9 @@ export default function SchedulePage() {
               timeSlots={michaelTimeSlots}
               onSelectSlot={handleSlotSelect}
               selectedSlotId={selectedSlot?.slot.id}
+              weekRange={getWeekRange(currentWeek)}
+              onPreviousWeek={handlePreviousWeek}
+              onNextWeek={handleNextWeek}
             />
           </div>
 

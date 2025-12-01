@@ -22,8 +22,10 @@ export async function GET() {
       dbUsers.map(async (dbUser) => {
         try {
           // Fetch user details from Clerk
-          const clerkUser = await clerkClient.users.getUser(dbUser.id as string);
-          
+          const clerkUser = await clerkClient.users.getUser(
+            dbUser.id as string
+          );
+
           return {
             id: dbUser.id,
             username: dbUser.username,
@@ -34,7 +36,7 @@ export async function GET() {
             created_at: dbUser.created_at,
             updated_at: dbUser.updated_at,
           };
-        } catch (clerkError) {
+        } catch {
           // If user exists in DB but not in Clerk, return DB data only
           console.warn(`User ${dbUser.id} found in database but not in Clerk`);
           return {
@@ -54,6 +56,9 @@ export async function GET() {
     return NextResponse.json(userList);
   } catch (error) {
     console.error("Error fetching users:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

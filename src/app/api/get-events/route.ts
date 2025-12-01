@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { turso } from "@/db";
-import { getEventTypeConfig, isValidEventType, type EventType } from "@/lib/eventTypes";
+import {
+  getEventTypeConfig,
+  isValidEventType,
+  type EventType,
+} from "@/lib/eventTypes";
 
 export async function GET(req: Request) {
   try {
@@ -9,7 +13,7 @@ export async function GET(req: Request) {
     const endTimestamp = searchParams.get("end");
 
     let sql = "SELECT * FROM Events";
-    const args: any[] = [];
+    const args: (string | number)[] = [];
 
     if (startTimestamp && endTimestamp) {
       sql += " WHERE start_time >= ? AND start_time <= ?";
@@ -27,17 +31,17 @@ export async function GET(req: Request) {
       const isAllDay = Boolean(row.is_all_day);
       const startTime = String(row.start_time);
       const endTime = row.end_time ? String(row.end_time) : undefined;
-      
+
       // For all-day events, use date-only format (YYYY-MM-DD)
       // For timed events, use full datetime
       let start = startTime;
       let end = endTime;
-      
+
       if (isAllDay) {
         // Extract just the date part for all-day events
-        start = startTime.split(' ')[0];
+        start = startTime.split(" ")[0];
         if (endTime) {
-          end = endTime.split(' ')[0];
+          end = endTime.split(" ")[0];
         }
       }
 
@@ -53,7 +57,7 @@ export async function GET(req: Request) {
         borderColor = config.borderColor;
         textColor = config.textColor;
       }
-      
+
       return {
         id: String(row.id),
         title: String(row.title),
@@ -70,7 +74,7 @@ export async function GET(req: Request) {
           location: row.location || "",
           is_all_day: isAllDay,
           event_type: eventType || "misc",
-        }
+        },
       };
     });
 
@@ -83,4 +87,3 @@ export async function GET(req: Request) {
     );
   }
 }
-

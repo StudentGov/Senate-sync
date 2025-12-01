@@ -17,12 +17,15 @@ export async function POST(req: Request) {
 
     // Validate that userId and email are provided
     if (!userId || !email) {
-      return NextResponse.json({ error: "Missing userId or email" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing userId or email" },
+        { status: 400 }
+      );
     }
 
-    // Define allowed email domains
-    const allowedDomains = ["@mnsu.edu", "@go.minnstate.edu", "@minnstate.edu"];
-    const emailDomain = email.substring(email.indexOf("@"));
+    // Define allowed email domains (currently not enforced - all users get "senator" role)
+    // const allowedDomains = ["@mnsu.edu", "@go.minnstate.edu", "@minnstate.edu"];
+    // const emailDomain = email.substring(email.indexOf("@"));
 
     // Fetch user metadata from Clerk
     const user = await clerkClient.users.getUser(userId);
@@ -44,24 +47,28 @@ export async function POST(req: Request) {
                 VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
           args: [userId, username, existingRole],
         });
-        console.log(`User ${userId} synced to database with existing role: ${existingRole}`);
+        console.log(
+          `User ${userId} synced to database with existing role: ${existingRole}`
+        );
       } else if (dbUser.rows[0].role !== existingRole) {
         // User exists but role is different - update database to match Clerk
         await turso.execute({
           sql: "UPDATE Users SET role = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
           args: [existingRole, userId],
         });
-        console.log(`User ${userId} role updated in database to: ${existingRole}`);
+        console.log(
+          `User ${userId} role updated in database to: ${existingRole}`
+        );
       }
 
       return NextResponse.json({
         message: `User already has role: ${existingRole}`,
-        role: existingRole, 
+        role: existingRole,
       });
     }
 
     // Check if the email domain is allowed
-    const isAllowedDomain = allowedDomains.some(domain => emailDomain.endsWith(domain));
+    // const isAllowedDomain = allowedDomains.some(domain => emailDomain.endsWith(domain));
 
     // Determine role: "senator" for all new users (admin can change later)
     const defaultRole = "senator";
@@ -73,7 +80,7 @@ export async function POST(req: Request) {
 
     // Save user to database with the assigned role
     const username = email.split("@")[0]; // Extract username from email
-    
+
     // Check if user already exists in database (in case of partial sync)
     const existingUser = await turso.execute({
       sql: "SELECT id FROM Users WHERE id = ?",
@@ -87,14 +94,18 @@ export async function POST(req: Request) {
               VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
         args: [userId, username, defaultRole],
       });
-      console.log(`New user ${userId} created in database with role: ${defaultRole}`);
+      console.log(
+        `New user ${userId} created in database with role: ${defaultRole}`
+      );
     } else {
       // Update existing user
       await turso.execute({
         sql: "UPDATE Users SET role = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
         args: [defaultRole, userId],
       });
-      console.log(`Existing user ${userId} updated in database with role: ${defaultRole}`);
+      console.log(
+        `Existing user ${userId} updated in database with role: ${defaultRole}`
+      );
     }
 
     // Return a success message confirming the role assignment
@@ -105,6 +116,9 @@ export async function POST(req: Request) {
   } catch (error) {
     // Error Handling
     console.error("Error assigning default role:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

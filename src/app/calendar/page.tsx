@@ -5,11 +5,12 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { EventClickArg, CalendarApi } from "@fullcalendar/core";
+import { EventClickArg } from "@fullcalendar/core";
 import { useUser } from "@clerk/nextjs";
 
 import AddEventModal from "@/app/components/add-event-modal";
 import { EventDetails, CalendarEvent } from "@/types/calendar";
+import { EventType } from "@/lib/eventTypes";
 import "./calendar.css";
 
 interface PopoverPosition {
@@ -22,16 +23,22 @@ export default function CalendarPage() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventDetails | null>(null);
-  const [selectedEventForEdit, setSelectedEventForEdit] = useState<CalendarEvent | null>(null);
-  const [popoverPosition, setPopoverPosition] = useState<PopoverPosition>({ top: 0, left: 0 });
+  const [selectedEventForEdit, setSelectedEventForEdit] =
+    useState<CalendarEvent | null>(null);
+  const [popoverPosition, setPopoverPosition] = useState<PopoverPosition>({
+    top: 0,
+    left: 0,
+  });
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [showEventMenu, setShowEventMenu] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const calendarRef = useRef<FullCalendar>(null);
-  
+
   // Check if user has permission to add events (admin or coordinator)
-  const canAddEvents = user?.publicMetadata?.role === "admin" || user?.publicMetadata?.role === "coordinator";
+  const canAddEvents =
+    user?.publicMetadata?.role === "admin" ||
+    user?.publicMetadata?.role === "coordinator";
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     const event = clickInfo.event;
@@ -42,18 +49,26 @@ export default function CalendarPage() {
     console.log("Event clicked:", event.title);
     console.log("Extended props:", event.extendedProps);
     console.log("Location:", event.extendedProps.location);
-    
+
     // Store full event for editing
+    const extendedProps = event.extendedProps as Record<string, unknown>;
     const fullEvent: CalendarEvent = {
       id: event.id,
       title: event.title,
       start: event.start?.toISOString() || "",
       end: event.end?.toISOString(),
       allDay: event.allDay,
-      extendedProps: event.extendedProps as any,
+      extendedProps: {
+        created_by: String(extendedProps.created_by || ""),
+        description: String(extendedProps.description || ""),
+        location: String(extendedProps.location || ""),
+        is_all_day: Boolean(extendedProps.is_all_day ?? false),
+        event_type:
+          (extendedProps.event_type as EventType) || ("misc" as EventType),
+      },
     };
     setSelectedEventForEdit(fullEvent);
-    
+
     setSelectedEvent({
       title: event.title,
       start: event.allDay
@@ -95,15 +110,18 @@ export default function CalendarPage() {
 
   const handleDeleteEvent = async () => {
     if (!selectedEventForEdit) return;
-    
+
     if (!confirm("Are you sure you want to delete this event?")) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/delete-event?id=${selectedEventForEdit.id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/delete-event?id=${selectedEventForEdit.id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
         alert("Event deleted successfully!");
@@ -133,7 +151,7 @@ export default function CalendarPage() {
         const data = await response.json();
         console.log("API Response - First Event:", data[0]);
         // Ensure all event IDs are strings
-        const formattedEvents = data.map((event: any) => ({
+        const formattedEvents = data.map((event: CalendarEvent) => ({
           ...event,
           id: String(event.id),
         }));
@@ -179,7 +197,7 @@ export default function CalendarPage() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Calendar</h1>
           {canAddEvents && (
-            <button 
+            <button
               onClick={() => setIsAddEventModalOpen(true)}
               className="px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-colors flex items-center gap-2"
             >
@@ -281,7 +299,7 @@ export default function CalendarPage() {
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                      <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                     </svg>
                   </button>
                   {showEventMenu && (

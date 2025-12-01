@@ -12,14 +12,17 @@ export async function POST(req: Request) {
   try {
     // Verify admin authentication
     const { userId: adminId, sessionClaims } = await auth();
-    
+
     if (!adminId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const adminRole = sessionClaims?.role;
     if (adminRole !== "admin") {
-      return NextResponse.json({ error: "Forbidden: Admin access required" }, { status: 403 });
+      return NextResponse.json(
+        { error: "Forbidden: Admin access required" },
+        { status: 403 }
+      );
     }
 
     // Parse request body
@@ -78,21 +81,28 @@ export async function POST(req: Request) {
         username,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating user:", error);
 
     // Handle specific Clerk errors
-    if (error?.errors?.[0]?.code === "form_identifier_exists") {
+    type ClerkError = {
+      errors?: Array<{ code?: string }>;
+      message?: string;
+    };
+    const clerkError = error as ClerkError;
+    if (clerkError?.errors?.[0]?.code === "form_identifier_exists") {
       return NextResponse.json(
         { error: "A user with this email already exists" },
         { status: 409 }
       );
     }
 
+    const errorMessage =
+      clerkError?.message ||
+      (error instanceof Error ? error.message : "Unknown error");
     return NextResponse.json(
-      { error: "Failed to create user", details: error.message },
+      { error: "Failed to create user", details: errorMessage },
       { status: 500 }
     );
   }
 }
-
