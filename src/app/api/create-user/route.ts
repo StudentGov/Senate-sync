@@ -43,14 +43,21 @@ export async function POST(req: Request) {
     }
 
     // Create user in Clerk
-    const newUser = await clerkClient.users.createUser({
+    const createUserParams: any = {
       emailAddress: [email],
       firstName,
       lastName,
-      password, // If password is provided, user can sign in immediately
-      skipPasswordChecks: !password, // If no password, skip checks and require password reset
       publicMetadata: { role },
-    });
+    };
+
+    // Always skip password checks for admin-created users
+    // These are default accounts that users will change passwords for later
+    createUserParams.skipPasswordChecks = true;
+    if (password) {
+      createUserParams.password = password;
+    }
+
+    const newUser = await clerkClient.users.createUser(createUserParams);
 
     console.log(`Clerk user created: ${newUser.id}`);
 
