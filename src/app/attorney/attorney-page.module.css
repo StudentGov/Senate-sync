@@ -11,25 +11,45 @@
 /* Hero section */
 .heroSection {
   background-color: white;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .heroSection {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
 }
 
 .heroContent {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 0.75rem;
   text-align: center;
+}
+
+@media (min-width: 768px) {
+  .heroContent {
+    padding: 0 1rem;
+  }
 }
 
 .heroTitle {
   font-weight: 700;
-  font-size: 1.875rem;
+  font-size: 1.5rem;
   color: #111827;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 @media (min-width: 768px) {
+  .heroTitle {
+    font-size: 1.875rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
   .heroTitle {
     font-size: 2.25rem;
   }
@@ -40,36 +60,71 @@
   max-width: 48rem;
   margin: 0 auto;
   margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .heroDescription {
+    font-size: 1rem;
+  }
 }
 
 /* Location banner */
 .locationBanner {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .locationBanner {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
 }
 
 .locationBannerContent {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 0.75rem;
   display: flex;
   justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .locationBannerContent {
+    padding: 0 1rem;
+  }
 }
 
 .locationBannerBox {
   background-color: rgba(254, 189, 17, 0.2);
   border: 2px solid #febd11;
   border-radius: 0.5rem;
-  padding: 1rem 2rem;
+  padding: 0.75rem 1.5rem;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  .locationBannerBox {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
 }
 
 .locationBannerIcon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1rem;
+  height: 1rem;
   color: #49306e;
+}
+
+@media (min-width: 768px) {
+  .locationBannerIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
 }
 
 .locationBannerText {
@@ -79,26 +134,46 @@
 
 /* Main content section */
 .mainContent {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
   flex: 1;
+}
+
+@media (min-width: 768px) {
+  .mainContent {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
 }
 
 .mainContentWrapper {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .mainContentWrapper {
+    padding: 0 1rem;
+  }
 }
 
 .sectionTitle {
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: #111827;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 @media (min-width: 768px) {
+  .sectionTitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
   .sectionTitle {
     font-size: 1.875rem;
   }
@@ -108,8 +183,15 @@
 .attorneyCardsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .attorneyCardsGrid {
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -122,7 +204,13 @@
 .formAndSummaryGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .formAndSummaryGrid {
+    gap: 1.5rem;
+  }
 }
 
 @media (min-width: 1024px) {

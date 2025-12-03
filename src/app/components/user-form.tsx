@@ -1,23 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 
 interface UserFormProps {
   onSubmit: (data: any) => void;
+  onFormReady?: (submitForm: () => void) => void;
 }
 
-export const UserForm = ({ onSubmit }: UserFormProps) => {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    techId: "",
-    reason: "",
-  });
+export const UserForm = forwardRef<{ submit: () => void }, UserFormProps>(
+  ({ onSubmit, onFormReady }, ref) => {
+    const [formData, setFormData] = useState({
+      fullName: "",
+      email: "",
+      techId: "",
+      reason: "",
+    });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+    const handleSubmit = (e?: React.FormEvent) => {
+      if (e) {
+        e.preventDefault();
+      }
+      onSubmit(formData);
+    };
+
+    useImperativeHandle(ref, () => ({
+      submit: handleSubmit,
+    }));
+
+    useEffect(() => {
+      if (onFormReady) {
+        onFormReady(handleSubmit);
+      }
+    }, [formData, onFormReady]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -95,8 +109,16 @@ export const UserForm = ({ onSubmit }: UserFormProps) => {
             placeholder="Briefly describe your legal concern..."
           />
         </div>
+        <button
+          type="submit"
+          className="w-full bg-[#49306e] text-white py-3 rounded-md font-bold hover:bg-[#382450] transition-colors mt-4"
+        >
+          Submit Information
+        </button>
       </form>
     </div>
   );
-};
+});
+
+UserForm.displayName = "UserForm";
 

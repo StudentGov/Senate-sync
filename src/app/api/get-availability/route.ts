@@ -26,8 +26,22 @@ export async function GET() {
 
     for (const row of result.rows) {
       const { date, start_time, end_time } = row;
-      const start = new Date(`${date} ${start_time}`);
-      const end = new Date(`${date} ${end_time}`);
+      // Parse date and time correctly - date is YYYY-MM-DD, time is "HH:MM AM/PM"
+      // Convert time to 24-hour format for proper Date parsing
+      const [timePart, modifier] = (start_time as string).split(" ");
+      const [hours, minutes] = timePart.split(":").map(Number);
+      let startHours = hours;
+      if (modifier === "PM" && hours !== 12) startHours += 12;
+      if (modifier === "AM" && hours === 12) startHours = 0;
+      
+      const [endTimePart, endModifier] = (end_time as string).split(" ");
+      const [endHours, endMinutes] = endTimePart.split(":").map(Number);
+      let endHours24 = endHours;
+      if (endModifier === "PM" && endHours !== 12) endHours24 += 12;
+      if (endModifier === "AM" && endHours === 12) endHours24 = 0;
+      
+      const start = new Date(`${date}T${String(startHours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`);
+      const end = new Date(`${date}T${String(endHours24).padStart(2, "0")}:${String(endMinutes).padStart(2, "0")}:00`);
 
       let current = new Date(start);
       while (current < end) {

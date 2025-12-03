@@ -134,7 +134,7 @@ export async function PUT(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("❌ Failed to update event:", error);
+    console.error("Failed to update event:", error);
     return NextResponse.json(
       { error: "Failed to update event", details: (error as Error).message },
       { status: 500 }
