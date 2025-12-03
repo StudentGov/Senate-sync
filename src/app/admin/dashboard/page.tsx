@@ -5,6 +5,7 @@ import styles from "./admin.module.css";
 import UserTable from "../../components/UserTable";
 import CreateUserForm from "../../components/CreateUserForm";
 import AdminHourLogClient from "../components/AdminHourLogClient";
+import TeamMemberEditor from "../components/TeamMemberEditor";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
@@ -18,7 +19,7 @@ export default function AdminDashboard() {
   const router = useRouter();
   const { sessionClaims, isSignedIn, isLoaded } = useAuth();
   const [users, setUsers] = useState([]);
-  const [activeTab, setActiveTab] = useState<"users" | "create" | "hours">("users");
+  const [activeTab, setActiveTab] = useState<"users" | "create" | "hours" | "team">("users");
 
   /**
    * Function to fetch all users from the backend API.
@@ -105,12 +106,19 @@ export default function AdminDashboard() {
         >
           Hour Log
         </button>
+        <button
+          className={`${styles['admin-tab']} ${activeTab === "team" ? styles['admin-active-tab'] : ""}`}
+          onClick={() => setActiveTab("team")}
+        >
+          Edit Team
+        </button>
       </div>
 
       <div className={styles['admin-tab-content']}>
         {activeTab === "users" && <UserTable users={users} />}
         {activeTab === "create" && <CreateUserForm onUserCreated={handleUserCreated} />}
         {activeTab === "hours" && <AdminHourLogClient />}
+        {activeTab === "team" && <TeamMemberEditor />}
       </div>
     </div>
   );
