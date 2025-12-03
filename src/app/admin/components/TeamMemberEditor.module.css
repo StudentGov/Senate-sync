@@ -1,0 +1,215 @@
+.container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2rem;
+  color: #382450;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.teamCard {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 2px solid #e0e0e0;
+}
+
+.cardHeader {
+  background: linear-gradient(135deg, #382450 0%, #4a2f6b 100%);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.cardHeader h3 {
+  color: white;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.cardBody {
+  padding: 1.5rem;
+}
+
+.previewSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.previewImage {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #febd11;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.formGroup {
+  margin-bottom: 1.25rem;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: 600;
+  color: #382450;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #382450;
+}
+
+.hint {
+  display: block;
+  margin-top: 0.4rem;
+  color: #666;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.descriptionBox {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e0e0e0;
+}
+
+.descriptionBox label {
+  display: block;
+  font-weight: 600;
+  color: #382450;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.descriptionBox p {
+  margin: 0;
+  color: #555;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.updateButton {
+  width: 100%;
+  padding: 0.875rem;
+  background: linear-gradient(135deg, #382450 0%, #4a2f6b 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.updateButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(56, 36, 80, 0.3);
+}
+
+.updateButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.uploadButton {
+  width: 100%;
+  padding: 0.75rem;
+  background: #febd11;
+  color: #382450;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 0.5rem;
+}
+
+.uploadButton:hover:not(:disabled) {
+  background: #e6a900;
+  transform: translateY(-1px);
+}
+
+.uploadButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fileInput {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .teamGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .container {
+    padding: 1rem;
+  }
+}
