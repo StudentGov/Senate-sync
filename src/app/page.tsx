@@ -84,7 +84,7 @@ export default function HomePage() {
               Dedicated students working for your interests
             </p>
           </div>
-          {teamMembers ? (
+          {teamMembers && teamMembers.president && teamMembers.vicePresident && teamMembers.speaker ? (
             <div className={styles.teamCardGrid}>
               {/* President */}
               <div className={styles.teamCard}>

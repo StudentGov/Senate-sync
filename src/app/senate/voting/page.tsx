@@ -41,8 +41,9 @@ export default function Agendas() {
   const { user, isSignedIn } = useUser();
   const { sessionClaims } = useAuth();
 
-  const [isMember, setIsMember] = useState(false);
-  const [isSpeaker, setIsSpeaker] = useState(false);
+  const [isSenator, setIsSenator] = useState(false);
+  const [canManageAgendas, setCanManageAgendas] = useState(false);
+  const [canVote, setCanVote] = useState(false);
   const [agendaData, setAgendaData] = useState<Agenda[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
@@ -118,8 +119,9 @@ export default function Agendas() {
   useEffect(() => {
     if (isSignedIn) {
       const role = sessionClaims?.role;
-      if (role === "senate_member" || role === "super_admin") setIsMember(true);
-      if (role === "senate_speaker" || role === "super_admin") setIsSpeaker(true);
+      if (role === "senator") setIsSenator(true);
+      if (role === "admin" || role === "coordinator") setCanManageAgendas(true);
+      if (role === "senator" || role === "coordinator") setCanVote(true);
     }
   }, [isSignedIn, sessionClaims]);
 
@@ -172,7 +174,7 @@ export default function Agendas() {
                 className="pl-10"
               />
             </div>
-            {isSpeaker && (
+            {canManageAgendas && (
               <Button onClick={() => setAddAgendaModalOpen(true)} className="bg-[#63439a] hover:bg-[#8257cb]">
                 <Plus className="h-4 w-4 mr-1" /> Add Agenda
               </Button>
@@ -260,7 +262,7 @@ export default function Agendas() {
         <div className="col-span-6 sm:col-span-5">Title</div>
         <div className="hidden sm:block col-span-6 sm:col-span-3">Date</div>
 
-        {isSpeaker ? (
+        {canManageAgendas ? (
             <div className="hidden sm:block sm:col-span-2 text-center">Visible</div>
         ) : (
             <div className="hidden sm:block sm:col-span-2 text-center">Your Vote</div>
@@ -285,8 +287,8 @@ export default function Agendas() {
                 key={index}
                 agenda={item}
                 page={agendaType}
-                isMember={isMember}
-                isSpeaker={isSpeaker}
+                isMember={canVote}
+                isSpeaker={canManageAgendas}
                 user={userData}
               />
             ))

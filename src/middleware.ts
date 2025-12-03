@@ -15,7 +15,6 @@ const PUBLIC_PAGE_ROUTES = [
   "/calendar",
   "/resources",
   "/archives",
-  "/voting",
   "/attorney",
   "/unauthorized",
   "/auth/sign-in",
@@ -29,8 +28,6 @@ const PUBLIC_API_ROUTES = [
   "/api/get-events",
   "/api/get-archives",
   "/api/get-resources",
-  "/api/voting/list",
-  "/api/voting/public(.*)",
   "/api/student(.*)",
   "/api/get-availability",
 ];
@@ -69,9 +66,8 @@ const PROTECTED_API_ROUTES: Record<string, string[]> = {
   senator: [
     // Senate-specific
     "/api/senate(.*)",
-    // Agenda-Voting (agendas and voting system)
+    // Agenda-Voting (agendas system)
     "/api/get-agendas",
-    "/api/voting(.*)",
     "/api/get-vote",
     "/api/get-vote-count",
     "/api/get-individual-votes",
@@ -89,11 +85,10 @@ const PROTECTED_API_ROUTES: Record<string, string[]> = {
   coordinator: [
     // Senate-specific
     "/api/senate(.*)",
-    // Agenda-Voting (agendas and voting system)
+    // Agenda-Voting (agendas system)
     "/api/get-agendas",
     "/api/add-agenda",
     "/api/update-agenda-visibility",
-    "/api/voting(.*)",
     "/api/get-vote",
     "/api/get-vote-count",
     "/api/get-individual-votes",
