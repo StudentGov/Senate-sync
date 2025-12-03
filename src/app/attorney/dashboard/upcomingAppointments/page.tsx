@@ -23,11 +23,6 @@ import {
   Hash,
   Trash2,
 } from "lucide-react";
-import SideBar from "../../../components/attorneySideBar/AttorneySideBar";
-import {
-  CollapsedProvider,
-  useCollapsedContext,
-} from "../../../components/attorneySideBar/attorneySideBarContext";
 
 interface Appointment {
   id: number;
@@ -42,7 +37,6 @@ interface Appointment {
 }
 
 function UpcomingAppointmentsContent() {
-  const { collapsed } = useCollapsedContext();
   const router = useRouter();
   const pathname = usePathname();
   const { user, isLoaded } = useUser();
@@ -186,7 +180,6 @@ function UpcomingAppointmentsContent() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <SideBar collapsed={collapsed} setCollapsed={() => {}} />
       <div className="flex-1 overflow-auto">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white border-b shadow-sm  pt-9">
@@ -380,9 +373,5 @@ function UpcomingAppointmentsContent() {
 }
 
 export default function UpcomingAppointmentsPage() {
-  return (
-    <CollapsedProvider>
-      <UpcomingAppointmentsContent />
-    </CollapsedProvider>
-  );
+  return <UpcomingAppointmentsContent />;
 }
