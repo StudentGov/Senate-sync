@@ -4,11 +4,12 @@ import { Geist, Geist_Mono, Kanit  } from "next/font/google";
 
 import "./globals.css";
 import NavBar from "./components/navBar/navBar";
+import Footer from "./components/footer/Footer";
 
 import { CollapsedProvider } from "./components/sideBar/sideBarContext";
 
 import { ClerkProvider, SignedIn } from "@clerk/nextjs";
-import { useAssignRole } from "../app/hooks/useAssignRole"; 
+import { useAssignRole } from "../app/hooks/useAssignRole";
 
 
 const geistSans = Geist({
@@ -37,17 +38,18 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} ${kanit.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} ${kanit.variable} antialiased flex flex-col min-h-screen`}
         >
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
-            <SignedIn>
-              <AssignRoleAfterLogin />
-            </SignedIn>
-          </header>
-          <CollapsedProvider>   
-            <NavBar />
-            {children}
+          <SignedIn>
+            <AssignRoleAfterLogin />
+          </SignedIn>
+          <NavBar />
+          <CollapsedProvider>
+            <main className="flex-1">
+              {children}
+            </main>
           </CollapsedProvider>
+          <Footer />
         </body>
       </html>
     </ClerkProvider>
