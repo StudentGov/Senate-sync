@@ -21,6 +21,17 @@ interface UserHourData extends User {
   entries: any[];
 }
 
+interface AdminHourLogClientProps {
+  hourLogData: {
+    periods: PeriodsShape;
+    sortedPeriodKeys: string[];
+    targetHours: number;
+  } | null;
+  loading: boolean;
+  error: string | null;
+  users: User[];
+}
+
 function segmentHours(seg: any) {
   try {
     const [sh, sm] = String(seg.start || '').split(':').map((x: string) => Number(x) || 0)
@@ -47,65 +58,28 @@ function formatPeriodDate(periodKey: string): string {
   return `${startStr} - ${endStr}`
 }
 
-export default function AdminHourLogClient() {
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [periods, setPeriods] = useState<PeriodsShape>({})
-  const [sortedKeys, setSortedKeys] = useState<string[]>([])
-  const [targetHours, setTargetHours] = useState<number>(6)
+export default function AdminHourLogClient({ 
+  hourLogData, 
+  loading, 
+  error, 
+  users: allUsers 
+}: AdminHourLogClientProps) {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('')
-  const [allUsers, setAllUsers] = useState<User[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [sortOption, setSortOption] = useState('Name')
   const [roleFilter, setRoleFilter] = useState('All')
 
+  // Extract data from props
+  const periods = hourLogData?.periods || {}
+  const sortedKeys = hourLogData?.sortedPeriodKeys || []
+  const targetHours = hourLogData?.targetHours || 6
+
+  // Set default period when data loads
   useEffect(() => {
-    let mounted = true
-    const fetchData = async () => {
-      try {
-        // Fetch both hour logs and all users in parallel
-        const [hourLogRes, usersRes] = await Promise.all([
-          fetch('/api/admin/hour-log'),
-          fetch('/api/get-all-users')
-        ])
-        
-        if (!hourLogRes.ok) {
-          const txt = await hourLogRes.text()
-          throw new Error(txt || 'Failed to fetch hour logs')
-        }
-        
-        if (!usersRes.ok) {
-          const txt = await usersRes.text()
-          throw new Error(txt || 'Failed to fetch users')
-        }
-        
-        const [hourLogData, usersData] = await Promise.all([
-          hourLogRes.json(),
-          usersRes.json()
-        ])
-        
-        if (!mounted) return
-        
-        setPeriods(hourLogData.periods || {})
-        const sorted = hourLogData.sortedPeriodKeys || []
-        setSortedKeys(sorted)
-        setTargetHours(hourLogData.TARGET_HOURS || 6)
-        setAllUsers(usersData || [])
-        
-        // Set default to most recent period if not already set
-        if (sorted.length > 0) {
-          setSelectedPeriod((prev) => prev || sorted[0])
-        }
-      } catch (err: any) {
-        console.error(err)
-        setError(err?.message || String(err))
-      } finally {
-        if (mounted) setLoading(false)
-      }
+    if (sortedKeys.length > 0 && !selectedPeriod) {
+      setSelectedPeriod(sortedKeys[0])
     }
-    fetchData()
-    return () => { mounted = false }
-  }, [])
+  }, [sortedKeys, selectedPeriod])
 
   // Combine all users with their hour log data for the selected period
   const usersWithHours = useMemo(() => {

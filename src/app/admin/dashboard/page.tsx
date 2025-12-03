@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styles from "./admin.module.css";
 import UserTable from "../../components/UserTable";
 import CreateUserForm from "../../components/CreateUserForm";
@@ -20,17 +20,58 @@ export default function AdminDashboard() {
   const { sessionClaims, isSignedIn, isLoaded } = useAuth();
   const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState<"users" | "create" | "hours" | "team">("users");
+  const [hasPendingChanges, setHasPendingChanges] = useState(false);
+  const [userTableKey, setUserTableKey] = useState(0);
+  
+  // Hour log data - cached in parent so it persists across tab switches
+  const [hourLogData, setHourLogData] = useState<{
+    periods: Record<string, Record<string, { total: number; name?: string; entries: any[] }>>;
+    sortedPeriodKeys: string[];
+    targetHours: number;
+  } | null>(null);
+  const [hourLogLoading, setHourLogLoading] = useState(false);
+  const [hourLogError, setHourLogError] = useState<string | null>(null);
+  const hasFetchedHourLogs = useRef(false);
 
   /**
    * Function to fetch all users from the backend API.
    */
   const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/get-all-users");
+      const response = await fetch("/api/get-all-users", {
+        cache: 'default', // Use browser cache
+      });
       const data = await response.json();
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
+    }
+  };
+
+  /**
+   * Function to fetch hour log data from the backend API.
+   */
+  const fetchHourLogData = async () => {
+    setHourLogLoading(true);
+    setHourLogError(null);
+    try {
+      const response = await fetch("/api/admin/hour-log", {
+        cache: 'default', // Use browser cache
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch hour logs");
+      }
+      const data = await response.json();
+      setHourLogData({
+        periods: data.periods || {},
+        sortedPeriodKeys: data.sortedPeriodKeys || [],
+        targetHours: data.TARGET_HOURS || 6,
+      });
+    } catch (error) {
+      console.error("Error fetching hour logs:", error);
+      setHourLogError(error instanceof Error ? error.message : "Failed to fetch hour logs");
+    } finally {
+      setHourLogLoading(false);
     }
   };
 
@@ -57,6 +98,35 @@ export default function AdminDashboard() {
     console.log("Admin access granted - fetching users"); // Debug log
     fetchUsers();
   }, [isSignedIn, sessionClaims, router]);
+
+  /**
+   * Separate useEffect to fetch hour log data once when component mounts
+   * Uses a ref to ensure we only fetch once
+   */
+  useEffect(() => {
+    if (hasFetchedHourLogs.current) return;
+    hasFetchedHourLogs.current = true;
+    fetchHourLogData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
+
+  /**
+   * Warn user before leaving page with unsaved changes
+   */
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasPendingChanges) {
+        e.preventDefault();
+        e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+        return e.returnValue;
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [hasPendingChanges]);
 
   const handleUserCreated = () => {
     // Refresh the user list when a new user is created
@@ -90,19 +160,52 @@ export default function AdminDashboard() {
       <div className={styles['admin-tabs']}>
         <button
           className={`${styles['admin-tab']} ${activeTab === "users" ? styles['admin-active-tab'] : ""}`}
-          onClick={() => setActiveTab("users")}
+          onClick={() => {
+            if (hasPendingChanges && activeTab !== "users") {
+              const confirmed = confirm(
+                "You have unsaved changes. Switching tabs will discard all changes. Continue?"
+              );
+              if (!confirmed) return;
+              // Reset UserTable by changing key to force remount
+              setUserTableKey((prev) => prev + 1);
+              setHasPendingChanges(false);
+            }
+            setActiveTab("users");
+          }}
         >
           Manage Users ({users.length})
         </button>
         <button
           className={`${styles['admin-tab']} ${activeTab === "create" ? styles['admin-active-tab'] : ""}`}
-          onClick={() => setActiveTab("create")}
+          onClick={() => {
+            if (hasPendingChanges && activeTab !== "create") {
+              const confirmed = confirm(
+                "You have unsaved changes. Switching tabs will discard all changes. Continue?"
+              );
+              if (!confirmed) return;
+              // Reset UserTable by changing key to force remount
+              setUserTableKey((prev) => prev + 1);
+              setHasPendingChanges(false);
+            }
+            setActiveTab("create");
+          }}
         >
           Create New User
         </button>
         <button
           className={`${styles['admin-tab']} ${activeTab === "hours" ? styles['admin-active-tab'] : ""}`}
-          onClick={() => setActiveTab("hours")}
+          onClick={() => {
+            if (hasPendingChanges && activeTab !== "hours") {
+              const confirmed = confirm(
+                "You have unsaved changes. Switching tabs will discard all changes. Continue?"
+              );
+              if (!confirmed) return;
+              // Reset UserTable by changing key to force remount
+              setUserTableKey((prev) => prev + 1);
+              setHasPendingChanges(false);
+            }
+            setActiveTab("hours");
+          }}
         >
           Hour Log
         </button>
@@ -115,9 +218,22 @@ export default function AdminDashboard() {
       </div>
 
       <div className={styles['admin-tab-content']}>
-        {activeTab === "users" && <UserTable users={users} />}
+        {activeTab === "users" && (
+          <UserTable 
+            key={userTableKey}
+            users={users} 
+            onPendingChangesChange={setHasPendingChanges}
+          />
+        )}
         {activeTab === "create" && <CreateUserForm onUserCreated={handleUserCreated} />}
-        {activeTab === "hours" && <AdminHourLogClient />}
+        {activeTab === "hours" && (
+          <AdminHourLogClient 
+            hourLogData={hourLogData}
+            loading={hourLogLoading}
+            error={hourLogError}
+            users={users}
+          />
+        )}
         {activeTab === "team" && <TeamMemberEditor />}
       </div>
     </div>

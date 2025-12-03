@@ -21,6 +21,7 @@ import {
   User,
   FileText,
   Hash,
+  Trash2,
 } from "lucide-react";
 import SideBar from "../../../components/attorneySideBar/AttorneySideBar";
 import {
@@ -41,7 +42,7 @@ interface Appointment {
 }
 
 function UpcomingAppointmentsContent() {
-  const { collapsed, setCollapsed } = useCollapsedContext();
+  const { collapsed } = useCollapsedContext();
   const router = useRouter();
   const pathname = usePathname();
   const { user, isLoaded } = useUser();
@@ -52,6 +53,7 @@ function UpcomingAppointmentsContent() {
     Record<number, boolean>
   >({});
   const [activeFilter, setActiveFilter] = useState<string>("all");
+  const [deletingAppointmentId, setDeletingAppointmentId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!isLoaded || !user) return;
@@ -84,6 +86,45 @@ function UpcomingAppointmentsContent() {
       ...prev,
       [id]: !prev[id],
     }));
+  };
+
+  const handleDeleteAppointment = async (appointmentId: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent expanding/collapsing when clicking delete
+    
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this appointment? This action cannot be undone."
+    );
+    
+    if (!confirmed) return;
+
+    setDeletingAppointmentId(appointmentId);
+    
+    try {
+      const res = await fetch("/api/delete-appointment", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ appointmentId }),
+      });
+
+      if (res.ok) {
+        // Remove the appointment from the list
+        setAppointments((prev) => prev.filter((apt) => apt.id !== appointmentId));
+        // Close the expanded view if it was open
+        setExpandedAppointments((prev) => {
+          const updated = { ...prev };
+          delete updated[appointmentId];
+          return updated;
+        });
+      } else {
+        const error = await res.json();
+        alert(`Failed to delete appointment: ${error.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
+      alert("An error occurred while deleting the appointment.");
+    } finally {
+      setDeletingAppointmentId(null);
+    }
   };
 
   const getFilteredAppointments = () => {
@@ -145,7 +186,7 @@ function UpcomingAppointmentsContent() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
+      <SideBar collapsed={collapsed} setCollapsed={() => {}} />
       <div className="flex-1 overflow-auto">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white border-b shadow-sm  pt-9">
@@ -247,37 +288,39 @@ function UpcomingAppointmentsContent() {
                         key={appt.id}
                         className="transition duration-150 ease-in-out hover:bg-gray-50"
                       >
-                        <button
-                          className="w-full text-left px-6 py-4"
-                          onClick={() => toggleAppointmentDetails(appt.id)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <div className="flex-shrink-0">
-                                <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                  <User className="h-5 w-5 text-indigo-600" />
+                        <div className="px-6 py-4">
+                          <button
+                            className="w-full text-left"
+                            onClick={() => toggleAppointmentDetails(appt.id)}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="flex-shrink-0">
+                                  <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                    <User className="h-5 w-5 text-indigo-600" />
+                                  </div>
+                                </div>
+                                <div className="ml-4">
+                                  <h3 className="text-base font-medium text-gray-900">
+                                    {appt.student_name}
+                                  </h3>
+                                  <div className="flex items-center mt-1 text-sm text-gray-500">
+                                    <Clock className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
+                                    <span>
+                                      {appt.start_time} – {appt.end_time}
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
-                              <div className="ml-4">
-                                <h3 className="text-base font-medium text-gray-900">
-                                  {appt.student_name}
-                                </h3>
-                                <div className="flex items-center mt-1 text-sm text-gray-500">
-                                  <Clock className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
-                                  <span>
-                                    {appt.start_time} – {appt.end_time}
-                                  </span>
-                                </div>
+                              <div className="ml-2">
+                                {expandedAppointments[appt.id] ? (
+                                  <ChevronUp className="h-5 w-5 text-gray-400" />
+                                ) : (
+                                  <ChevronDown className="h-5 w-5 text-gray-400" />
+                                )}
                               </div>
                             </div>
-                            <div className="ml-2">
-                              {expandedAppointments[appt.id] ? (
-                                <ChevronUp className="h-5 w-5 text-gray-400" />
-                              ) : (
-                                <ChevronDown className="h-5 w-5 text-gray-400" />
-                              )}
-                            </div>
-                          </div>
+                          </button>
 
                           {expandedAppointments[appt.id] && (
                             <div className="mt-4 pt-4 border-t border-gray-200">
@@ -289,15 +332,6 @@ function UpcomingAppointmentsContent() {
                                   </dt>
                                   <dd className="mt-1 text-sm text-gray-900">
                                     {appt.student_email}
-                                  </dd>
-                                </div>
-                                <div className="sm:col-span-1">
-                                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                                    <Hash className="mr-1 h-4 w-4" />
-                                    Star ID
-                                  </dt>
-                                  <dd className="mt-1 text-sm text-gray-900">
-                                    {appt.star_id}
                                   </dd>
                                 </div>
                                 <div className="sm:col-span-1">
@@ -319,9 +353,19 @@ function UpcomingAppointmentsContent() {
                                   </dd>
                                 </div>
                               </dl>
+                              <div className="mt-4 flex justify-end">
+                                <button
+                                  onClick={(e) => handleDeleteAppointment(appt.id, e)}
+                                  disabled={deletingAppointmentId === appt.id}
+                                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  {deletingAppointmentId === appt.id ? "Deleting..." : "Delete Appointment"}
+                                </button>
+                              </div>
                             </div>
                           )}
-                        </button>
+                        </div>
                       </div>
                     ))}
                   </div>

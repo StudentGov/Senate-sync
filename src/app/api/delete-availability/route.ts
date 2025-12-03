@@ -1,10 +1,36 @@
 import { NextResponse } from "next/server";
 import { turso } from "@/db";
+import { auth } from "@clerk/nextjs/server";
 
 export async function DELETE(req: Request) {
   try {
+    // Verify authentication
+    const { userId, sessionClaims } = await auth();
+    
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userRole = sessionClaims?.role;
+    
+    // Only attorneys and admins can delete availability
+    if (userRole !== "attorney" && userRole !== "admin") {
+      return NextResponse.json(
+        { error: "Forbidden - Only attorneys can delete availability" },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
     const { attorney_id, start, end } = body;
+
+    // Verify the attorney owns this availability slot (unless admin)
+    if (userRole !== "admin" && attorney_id !== userId) {
+      return NextResponse.json(
+        { error: "Forbidden - You can only delete your own availability" },
+        { status: 403 }
+      );
+    }
 
     // Parse timestamps
     const startDate = new Date(start);

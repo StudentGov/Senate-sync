@@ -30,6 +30,7 @@ const PUBLIC_API_ROUTES = [
   "/api/get-resources",
   "/api/student(.*)",
   "/api/get-availability",
+  "/api/get-attorneys-availability",
 ];
 
 // Create route matchers for public routes
@@ -81,6 +82,8 @@ const PROTECTED_API_ROUTES: Record<string, string[]> = {
     "/api/get-booked-appointments",
     "/api/add-availability",
     "/api/delete-availability",
+    "/api/bulk-delete-availability",
+    "/api/delete-appointment(.*)",
   ],
   coordinator: [
     // Senate-specific
@@ -151,7 +154,7 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  // Only call auth() if route is not public to save time
+  // Only call auth() if route is not public to save time/compute
   const { userId, sessionClaims, redirectToSignIn } = await auth();
 
   // =================================================================================
