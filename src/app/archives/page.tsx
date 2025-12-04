@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Search, Plus, Play, ChevronLeft, ChevronRight, FileText, X, Check, Edit, Trash2, ClipboardList, FolderOpen } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 import styles from './archives-page.module.css';
 
 interface Archive {
@@ -28,6 +28,7 @@ const ARCHIVE_TYPES = [
 
 export default function ArchivesPage() {
   const { user } = useUser();
+  const { sessionClaims } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -416,7 +417,7 @@ export default function ArchivesPage() {
                   onClick={() => window.open(formatUrl(item.link), "_blank")}
                 >
                   {/* Edit/Delete Buttons */}
-                  {user && user.id === item.created_by && hoveredCard === item.id && (
+                  {user && (sessionClaims?.role === "admin" || user.id === item.created_by) && hoveredCard === item.id && (
                     <div className={styles.cardActions}>
                       <button
                         onClick={(e) => {

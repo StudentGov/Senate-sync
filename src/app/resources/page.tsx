@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, ChevronLeft, ChevronRight, ExternalLink, X, Check, Edit, Trash2, BookOpen } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useAuth } from "@clerk/nextjs";
 import styles from './resources-page.module.css';
 
 interface Resource {
@@ -19,6 +19,7 @@ interface Resource {
 
 export default function ResourcesPage() {
   const { user } = useUser();
+  const { sessionClaims } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -254,7 +255,7 @@ export default function ResourcesPage() {
                   onClick={() => window.open(formatUrl(item.link), "_blank")}
                 >
                   {/* Edit/Delete Buttons */}
-                  {user && user.id === item.created_by && hoveredCard === item.id && (
+                  {user && (sessionClaims?.role === "admin" || user.id === item.created_by) && hoveredCard === item.id && (
                     <div className={styles.cardActions}>
                       <button
                         onClick={(e) => {
