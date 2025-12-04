@@ -3,11 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from './attorney.module.css';
-import SideBar from '../../components/attorneySideBar/AttorneySideBar';
-import { useCollapsedContext, CollapsedProvider } from '../../components/attorneySideBar/attorneySideBarContext';
 
-function AttorneyDashboardContent() {
-  const { collapsed } = useCollapsedContext();
+export default function AttorneyDashboard() {
   const router = useRouter();
 
   useEffect(() => {
@@ -16,15 +13,7 @@ function AttorneyDashboardContent() {
 
   return (
     <div className={styles.attorneyPage}>
-      <SideBar collapsed={collapsed} setCollapsed={() => {}} />
+      {/* Sidebar removed - navigation available through navbar */}
     </div>
-  );
-}
-
-export default function AttorneyDashboard() {
-  return (
-    <CollapsedProvider>
-      <AttorneyDashboardContent />
-    </CollapsedProvider>
   );
 }

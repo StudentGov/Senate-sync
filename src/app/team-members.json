@@ -1,0 +1,20 @@
+{
+  "president": {
+    "name": "Andrew Colleran",
+    "image": "/images/Student_President_Andrew_Colleran.png",
+    "role": "President",
+    "description": "The chief administrative officer of Student Government. Completes the appointment of all unelected Student Government positions and spearheads the advocacy for the students."
+  },
+  "vicePresident": {
+    "name": "Sneha Kafle",
+    "image": "/images/Vice_President_Sneha_Kafle.jpg",
+    "role": "Vice President",
+    "description": "The supporting member to the President and Speaker. Set to advertise, recruit, and monitor for any Student Government workgroups."
+  },
+  "speaker": {
+    "name": "Dikshyant Thapa",
+    "image": "/images/Speaker_Dikshyant_Thapa.png",
+    "role": "Speaker",
+    "description": "Designated person for administrative correspondence with Student Government, and the Parliamentary for Student Government's Senate meetings."
+  }
+}

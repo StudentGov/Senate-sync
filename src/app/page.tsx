@@ -1,12 +1,10 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import styles from './home-page.module.css';
 
 // Local image assets (from public/images)
 const imgCampusClockTower1 = "/images/campus_clock_tower_1.png";
-// Person/team avatars - use uploaded photos from public/images
-const imgImages2 = "/images/Student_President_Andrew_Colleran.png";
-const imgWillSmithCHfpa20161 = "/images/Vice_President_Sneha_Kafle.jpg";
-const imgW65Td5ShV2ZUJxmYfoYeV9V9MsrIzSydCdZtO2RrZIc1 =
-  "/images/Speaker_Dikshyant_Thapa.png";
 // Logos & icons
 const imgMsuLogo = "/images/MSU Logo.png";
 const imgFrame = "/images/students.png";
@@ -16,7 +14,30 @@ const imgFrame3 = "/images/students.png";
 const imgFrame4 = "/images/students.png";
 const imgFrame5 = "/images/students.png";
 
+interface TeamMember {
+  name: string;
+  image: string;
+  role: string;
+  description: string;
+}
+
+interface TeamMembers {
+  president: TeamMember;
+  vicePresident: TeamMember;
+  speaker: TeamMember;
+}
+
 export default function HomePage() {
+  const [teamMembers, setTeamMembers] = useState<TeamMembers | null>(null);
+
+  useEffect(() => {
+    // Fetch team members from API
+    fetch('/api/get-team-members')
+      .then(res => res.json())
+      .then(data => setTeamMembers(data))
+      .catch(err => console.error('Error fetching team members:', err));
+  }, []);
+
   return (
     <div className={styles.pageContainer}>
       {/* Hero Section */}
@@ -63,54 +84,57 @@ export default function HomePage() {
               Dedicated students working for your interests
             </p>
           </div>
-          <div className={styles.teamCardGrid}>
-            {/* Andrew Colleran */}
-            <div className={styles.teamCard}>
-              <img
-                src={imgImages2}
-                alt="Andrew Colleran"
-                className={styles.teamCardImage}
-              />
-              <h3 className={styles.teamCardName}>
-                Andrew Colleran
-              </h3>
-              <p className={styles.teamCardRole}>President</p>
-              <p className={styles.teamCardDescription}>
-                The chief administrative officer of Student Government. 
-                Completes the appointment of all unelected Student Government positions and spearheads the advocacy for the students.
-              </p>
+          {teamMembers && teamMembers.president && teamMembers.vicePresident && teamMembers.speaker ? (
+            <div className={styles.teamCardGrid}>
+              {/* President */}
+              <div className={styles.teamCard}>
+                <img
+                  src={teamMembers.president.image}
+                  alt={teamMembers.president.name}
+                  className={styles.teamCardImage}
+                />
+                <h3 className={styles.teamCardName}>
+                  {teamMembers.president.name}
+                </h3>
+                <p className={styles.teamCardRole}>{teamMembers.president.role}</p>
+                <p className={styles.teamCardDescription}>
+                  {teamMembers.president.description}
+                </p>
+              </div>
+              {/* Vice President */}
+              <div className={styles.teamCard}>
+                <img
+                  src={teamMembers.vicePresident.image}
+                  alt={teamMembers.vicePresident.name}
+                  className={styles.teamCardImage}
+                />
+                <h3 className={styles.teamCardName}>{teamMembers.vicePresident.name}</h3>
+                <p className={styles.teamCardRole}>{teamMembers.vicePresident.role}</p>
+                <p className={styles.teamCardDescription}>
+                  {teamMembers.vicePresident.description}
+                </p>
+              </div>
+              {/* Speaker */}
+              <div className={styles.teamCard}>
+                <img
+                  src={teamMembers.speaker.image}
+                  alt={teamMembers.speaker.name}
+                  className={styles.teamCardImage}
+                />
+                <h3 className={styles.teamCardName}>
+                  {teamMembers.speaker.name}
+                </h3>
+                <p className={styles.teamCardRole}>{teamMembers.speaker.role}</p>
+                <p className={styles.teamCardDescription}>
+                  {teamMembers.speaker.description}
+                </p>
+              </div>
             </div>
-            {/* Sneha Kafle */}
-            <div className={styles.teamCard}>
-              <img
-                src={imgWillSmithCHfpa20161}
-                alt="Sneha Kafle"
-                className={styles.teamCardImage}
-              />
-              <h3 className={styles.teamCardName}>Sneha Kafle</h3>
-              <p className={styles.teamCardRole}>Vice President</p>
-              <p className={styles.teamCardDescription}>
-                The supporting member to the President and Speaker. 
-                Set to advertise, recruit, and monitor for any Student Government workgroups. 
-              </p>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '2rem' }}>
+              <p>Loading team members...</p>
             </div>
-            {/* Dikshyant Thapa */}
-            <div className={styles.teamCard}>
-              <img
-                src={imgW65Td5ShV2ZUJxmYfoYeV9V9MsrIzSydCdZtO2RrZIc1}
-                alt="Dikshyant Thapa"
-                className={styles.teamCardImage}
-              />
-              <h3 className={styles.teamCardName}>
-                Dikshyant Thapa
-              </h3>
-              <p className={styles.teamCardRole}>Speaker</p>
-              <p className={styles.teamCardDescription}>
-                Designated person for administrative correspondence with Student Government, 
-                and the Parliamentary for Student Government's Senate meetings.
-              </p>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
