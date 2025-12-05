@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import styles from './home-page.module.css';
+import teamMembersData from './team-members.json';
 
 // Local image assets (from public/images)
 const imgCampusClockTower1 = "/images/campus_clock_tower_1.png";
@@ -28,10 +29,10 @@ interface TeamMembers {
 }
 
 export default function HomePage() {
-  const [teamMembers, setTeamMembers] = useState<TeamMembers | null>(null);
+  const [teamMembers, setTeamMembers] = useState<TeamMembers>(teamMembersData);
 
   useEffect(() => {
-    // Fetch team members from API
+    // Fetch team members from API to get any updates
     fetch('/api/get-team-members')
       .then(res => res.json())
       .then(data => setTeamMembers(data))
@@ -84,57 +85,51 @@ export default function HomePage() {
               Dedicated students working for your interests
             </p>
           </div>
-          {teamMembers && teamMembers.president && teamMembers.vicePresident && teamMembers.speaker ? (
-            <div className={styles.teamCardGrid}>
-              {/* President */}
-              <div className={styles.teamCard}>
-                <img
-                  src={teamMembers.president.image}
-                  alt={teamMembers.president.name}
-                  className={styles.teamCardImage}
-                />
-                <h3 className={styles.teamCardName}>
-                  {teamMembers.president.name}
-                </h3>
-                <p className={styles.teamCardRole}>{teamMembers.president.role}</p>
-                <p className={styles.teamCardDescription}>
-                  {teamMembers.president.description}
-                </p>
-              </div>
-              {/* Vice President */}
-              <div className={styles.teamCard}>
-                <img
-                  src={teamMembers.vicePresident.image}
-                  alt={teamMembers.vicePresident.name}
-                  className={styles.teamCardImage}
-                />
-                <h3 className={styles.teamCardName}>{teamMembers.vicePresident.name}</h3>
-                <p className={styles.teamCardRole}>{teamMembers.vicePresident.role}</p>
-                <p className={styles.teamCardDescription}>
-                  {teamMembers.vicePresident.description}
-                </p>
-              </div>
-              {/* Speaker */}
-              <div className={styles.teamCard}>
-                <img
-                  src={teamMembers.speaker.image}
-                  alt={teamMembers.speaker.name}
-                  className={styles.teamCardImage}
-                />
-                <h3 className={styles.teamCardName}>
-                  {teamMembers.speaker.name}
-                </h3>
-                <p className={styles.teamCardRole}>{teamMembers.speaker.role}</p>
-                <p className={styles.teamCardDescription}>
-                  {teamMembers.speaker.description}
-                </p>
-              </div>
+          <div className={styles.teamCardGrid}>
+            {/* President */}
+            <div className={styles.teamCard}>
+              <img
+                src={teamMembers.president.image}
+                alt={teamMembers.president.name}
+                className={styles.teamCardImage}
+              />
+              <h3 className={styles.teamCardName}>
+                {teamMembers.president.name}
+              </h3>
+              <p className={styles.teamCardRole}>{teamMembers.president.role}</p>
+              <p className={styles.teamCardDescription}>
+                {teamMembers.president.description}
+              </p>
             </div>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>
-              <p>Loading team members...</p>
+            {/* Vice President */}
+            <div className={styles.teamCard}>
+              <img
+                src={teamMembers.vicePresident.image}
+                alt={teamMembers.vicePresident.name}
+                className={styles.teamCardImage}
+              />
+              <h3 className={styles.teamCardName}>{teamMembers.vicePresident.name}</h3>
+              <p className={styles.teamCardRole}>{teamMembers.vicePresident.role}</p>
+              <p className={styles.teamCardDescription}>
+                {teamMembers.vicePresident.description}
+              </p>
             </div>
-          )}
+            {/* Speaker */}
+            <div className={styles.teamCard}>
+              <img
+                src={teamMembers.speaker.image}
+                alt={teamMembers.speaker.name}
+                className={styles.teamCardImage}
+              />
+              <h3 className={styles.teamCardName}>
+                {teamMembers.speaker.name}
+              </h3>
+              <p className={styles.teamCardRole}>{teamMembers.speaker.role}</p>
+              <p className={styles.teamCardDescription}>
+                {teamMembers.speaker.description}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
