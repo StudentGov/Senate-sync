@@ -31,6 +31,7 @@ const PUBLIC_API_ROUTES = [
   "/api/student(.*)",
   "/api/get-availability",
   "/api/get-attorneys-availability",
+  "/api/get-team-members",
 ];
 
 // Create route matchers for public routes

@@ -34,9 +34,22 @@ export default function HomePage() {
   useEffect(() => {
     // Fetch team members from API to get any updates
     fetch('/api/get-team-members')
-      .then(res => res.json())
-      .then(data => setTeamMembers(data))
-      .catch(err => console.error('Error fetching team members:', err));
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch team members');
+        }
+        return res.json();
+      })
+      .then(data => {
+        // Only update if we have valid data structure
+        if (data && data.president && data.vicePresident && data.speaker) {
+          setTeamMembers(data);
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching team members:', err);
+        // Keep the initial state from teamMembersData if fetch fails
+      });
   }, []);
 
   return (
