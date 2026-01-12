@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Plus, ChevronLeft, ChevronRight, ExternalLink, X, Check, Edit, Trash2, BookOpen } from "lucide-react";
 import { useUser, useAuth } from "@clerk/nextjs";
+import FeedbackSection from "../components/FeedbackSection/FeedbackSection";
 import styles from './resources-page.module.css';
 
 interface Resource {
@@ -493,6 +494,9 @@ export default function ResourcesPage() {
           </div>
         </div>
       )}
+
+      {/* Feedback Section */}
+      <FeedbackSection />
     </div>
   );
 }

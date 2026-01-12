@@ -242,11 +242,7 @@
   border: 2px solid transparent;
 }
 
-.teamCard:hover {
-  transform: translateY(-0.25rem);
-  box-shadow: 0 8px 30px rgba(254, 189, 17, 0.4);
-  border-color: #febd11;
-}
+
 
 .teamCardImage {
   border-radius: 50%;
@@ -308,11 +304,7 @@
   border: 2px solid transparent;
 }
 
-.offeringCard:hover {
-  transform: translateY(-0.25rem);
-  box-shadow: 0 8px 30px rgba(254, 189, 17, 0.4);
-  border-color: #febd11;
-}
+
 
 .offeringIconContainer {
   background-color: #49306e;

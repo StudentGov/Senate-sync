@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Search, Plus, Play, ChevronLeft, ChevronRight, FileText, X, Check, Edit, Trash2, ClipboardList, FolderOpen } from "lucide-react";
 import { useUser, useAuth } from "@clerk/nextjs";
+import FeedbackSection from "../components/FeedbackSection/FeedbackSection";
 import styles from './archives-page.module.css';
 
 interface Archive {
@@ -684,6 +685,9 @@ export default function ArchivesPage() {
           </div>
         </div>
       )}
+
+      {/* Feedback Section */}
+      <FeedbackSection />
     </div>
   );
 }
