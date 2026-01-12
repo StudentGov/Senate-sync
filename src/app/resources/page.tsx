@@ -256,7 +256,7 @@ export default function ResourcesPage() {
                   onClick={() => window.open(formatUrl(item.link), "_blank")}
                 >
                   {/* Edit/Delete Buttons */}
-                  {user && (sessionClaims?.role === "admin" || user.id === item.created_by) && hoveredCard === item.id && (
+                  {user && (sessionClaims?.role === "admin" || sessionClaims?.role === "coordinator" || user.id === item.created_by) && hoveredCard === item.id && (
                     <div className={styles.cardActions}>
                       <button
                         onClick={(e) => {
