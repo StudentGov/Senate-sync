@@ -42,7 +42,9 @@ export default function ResourcesPage() {
   const fetchResources = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/get-resources`);
+      const response = await fetch(`/api/get-resources`, {
+        cache: 'no-store', // Don't cache to ensure fresh data after deletions
+      });
       if (response.ok) {
         const data = await response.json();
         setResources(data.resources);
