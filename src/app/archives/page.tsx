@@ -51,7 +51,7 @@ export default function ArchivesPage() {
   const fetchArchives = useCallback(async () => {
     try {
       const response = await fetch(`/api/get-archives?archive_type=all`, {
-        cache: 'default', // Use browser cache
+        cache: 'no-store', // Don't cache to ensure fresh data after deletions
       });
       if (response.ok) {
         const data = await response.json();
