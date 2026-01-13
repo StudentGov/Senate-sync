@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { AttorneyCard } from "../components/attorney-card";
 import { UserForm } from "../components/user-form";
 import { AppointmentSummary } from "../components/appointment-summary";
+import FeedbackSection from "../components/FeedbackSection/FeedbackSection";
 import { MapPin } from "lucide-react";
 import styles from './attorney-page.module.css';
 
@@ -322,6 +323,8 @@ export default function AttorneyPage() {
         </div>
       </section>
 
+      {/* Feedback Section */}
+      <FeedbackSection />
     </div>
   );
 }

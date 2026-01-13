@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Plus, ChevronLeft, ChevronRight, ExternalLink, X, Check, Edit, Trash2, BookOpen } from "lucide-react";
 import { useUser, useAuth } from "@clerk/nextjs";
+import FeedbackSection from "../components/FeedbackSection/FeedbackSection";
 import styles from './resources-page.module.css';
 
 interface Resource {
@@ -255,7 +256,7 @@ export default function ResourcesPage() {
                   onClick={() => window.open(formatUrl(item.link), "_blank")}
                 >
                   {/* Edit/Delete Buttons */}
-                  {user && (sessionClaims?.role === "admin" || user.id === item.created_by) && hoveredCard === item.id && (
+                  {user && (sessionClaims?.role === "admin" || sessionClaims?.role === "coordinator" || user.id === item.created_by) && hoveredCard === item.id && (
                     <div className={styles.cardActions}>
                       <button
                         onClick={(e) => {
@@ -493,6 +494,9 @@ export default function ResourcesPage() {
           </div>
         </div>
       )}
+
+      {/* Feedback Section */}
+      <FeedbackSection />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Search, Plus, Play, ChevronLeft, ChevronRight, FileText, X, Check, Edit, Trash2, ClipboardList, FolderOpen } from "lucide-react";
 import { useUser, useAuth } from "@clerk/nextjs";
+import FeedbackSection from "../components/FeedbackSection/FeedbackSection";
 import styles from './archives-page.module.css';
 
 interface Archive {
@@ -417,7 +418,7 @@ export default function ArchivesPage() {
                   onClick={() => window.open(formatUrl(item.link), "_blank")}
                 >
                   {/* Edit/Delete Buttons */}
-                  {user && (sessionClaims?.role === "admin" || user.id === item.created_by) && hoveredCard === item.id && (
+                  {user && (sessionClaims?.role === "admin" || sessionClaims?.role === "coordinator" || user.id === item.created_by) && hoveredCard === item.id && (
                     <div className={styles.cardActions}>
                       <button
                         onClick={(e) => {
@@ -684,6 +685,9 @@ export default function ArchivesPage() {
           </div>
         </div>
       )}
+
+      {/* Feedback Section */}
+      <FeedbackSection />
     </div>
   );
 }

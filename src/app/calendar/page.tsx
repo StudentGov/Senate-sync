@@ -9,6 +9,7 @@ import { EventClickArg, CalendarApi } from "@fullcalendar/core";
 import { useAuth } from "@clerk/nextjs";
 
 import AddEventModal from "@/app/components/add-event-modal";
+import FeedbackSection from "@/app/components/FeedbackSection/FeedbackSection";
 import { EventDetails, CalendarEvent } from "@/types/calendar";
 import styles from "./calendar-page.module.css";
 
@@ -401,6 +402,9 @@ export default function CalendarPage() {
         onEventAdded={fetchEvents}
         editEvent={selectedEventForEdit}
       />
+
+      {/* Feedback Section */}
+      <FeedbackSection />
     </main>
   );
 }
