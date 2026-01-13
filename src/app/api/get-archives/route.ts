@@ -49,11 +49,11 @@ export async function GET(req: Request) {
       creator_username: row.creator_username,
     }));
 
-    // Add caching headers - cache for 5 minutes, revalidate in background
+    // No caching - always return fresh data
     return NextResponse.json({ archives }, {
       status: 200,
       headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
       },
     });
   } catch (error) {
